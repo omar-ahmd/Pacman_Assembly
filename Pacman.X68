@@ -11,14 +11,24 @@ START:                  ; first instruction of program
 
 * Open Window
      MOVE.B #33,D0
-     MOVE.L #2,D1        Set screen to 1024 x 768
+     MOVE.L #512*$10000+512,D1        Set screen to 1024 x 768
      TRAP   #15
      
+     
+     ;DRAW BLOCKS
+     MOVE.B #80,D0
+     Move.L #$00FF0000,D1
+     TRAP   #15
+     MOVE.B #81,D0
+     Move.L #$00FF0000,D1
+     TRAP   #15
+     
+     
      MOVE.B #87,D0
-     MOVE.L #50,D1        
-     MOVE.L #50,D2
-     MOVE.L #100,D3
-     MOVE.L #100,D4
+     MOVE.L #0,D1        
+     MOVE.L #0,D2
+     MOVE.L #16,D3
+     MOVE.L #16,D4
      TRAP   #15
 
     
