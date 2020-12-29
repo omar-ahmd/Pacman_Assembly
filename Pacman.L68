@@ -1,0 +1,74 @@
+00001000 Starting Address
+Assembler used: EASy68K Editor/Assembler v5.16.01
+Created On: 29-Dec-20 10:43:37 PM
+
+00000000                             1  *-----------------------------------------------------------
+00000000                             2  * Title      :
+00000000                             3  * Written by :
+00000000                             4  * Date       :
+00000000                             5  * Description:
+00000000                             6  *-----------------------------------------------------------
+00001000                             7      ORG    $1000
+00001000                             8  START:                  ; first instruction of program
+00001000                             9  
+00001000                            10  * Put program code here
+00001000                            11  
+00001000                            12  * Open Window
+00001000  103C 0021                 13       MOVE.B #33,D0
+00001004  7202                      14       MOVE.L #2,D1        Set screen to 1024 x 768
+00001006  4E4F                      15       TRAP   #15
+00001008                            16       
+00001008  103C 0057                 17       MOVE.B #87,D0
+0000100C  7232                      18       MOVE.L #50,D1        
+0000100E  7432                      19       MOVE.L #50,D2
+00001010  7664                      20       MOVE.L #100,D3
+00001012  7864                      21       MOVE.L #100,D4
+00001014  4E4F                      22       TRAP   #15
+00001016                            23  
+00001016                            24      
+00001016                            25       
+00001016                            26  
+00001016  FFFF FFFF                 27      SIMHALT             ; halt simulator
+0000101A                            28  * Put variables and constants here
+0000101A  =00000000                 29  BLACK equ $00000000 
+0000101A  =00000080                 30  MAROON equ $00000080 
+0000101A  =00008000                 31  GREEN equ $00008000 
+0000101A  =00008080                 32  OLIVE equ $00008080 
+0000101A  =00800000                 33  NAVY equ $00800000 
+0000101A  =00800080                 34  PURPLE equ $00800080 
+0000101A  =00808000                 35  TEAL equ $00808000 
+0000101A  =00808080                 36  GRAY equ $00808080 
+0000101A  =000000FF                 37  RED equ $000000FF 
+0000101A  =0000FF00                 38  LIME equ $0000FF00 
+0000101A  =0000FFFF                 39  YELLOW equ $0000FFFF 
+0000101A  =00FF0000                 40  BLUE equ $00FF0000 
+0000101A  =00FF00FF                 41  FUCHSIA equ $00FF00FF 
+0000101A  =00FFFF00                 42  AQUA equ $00FFFF00 
+0000101A  =00C0C0C0                 43  LTGRAY equ $00C0C0C0 
+0000101A  =00FFFFFF                 44  WHITE equ $00FFFFFF 
+0000101A                            45      END    START        ; last line of source
+
+No errors detected
+No warnings generated
+
+
+SYMBOL TABLE INFORMATION
+Symbol-name         Value
+-------------------------
+AQUA                FFFF00
+BLACK               0
+BLUE                FF0000
+FUCHSIA             FF00FF
+GRAY                808080
+GREEN               8000
+LIME                FF00
+LTGRAY              C0C0C0
+MAROON              80
+NAVY                800000
+OLIVE               8080
+PURPLE              800080
+RED                 FF
+START               1000
+TEAL                808000
+WHITE               FFFFFF
+YELLOW              FFFF
