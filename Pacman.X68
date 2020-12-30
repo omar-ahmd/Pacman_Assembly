@@ -31,10 +31,10 @@ Loop_draw_map
      CMP.B   #$42,D0
      BEQ draw_block
 Ctn0 ADDQ #1,D6
-     CMP #18,D6
+     CMP #19,D6
      BNE Loop_draw_map
      ADDQ #1,D5
-     CMP #20,D5
+     CMP #21,D5
      BNE Draw_map
 
 draw_player
@@ -164,27 +164,28 @@ DY EQU 16
 
 BX EQU 16
 BY EQU 16
-MAP  DC.B 'BBBBBBBBBBBBBBBBBBBB'                01
-     DC.B 'BEEEEEEEEEEEEEEEEEBB'                02
-     DC.B 'BBBBBBBBBBBBBBBBBBBB'                03
-     DC.B 'BBBBBBBBBBBBBBBBBBBB'                04
-     DC.B 'BBBBBBBBBBBBBBBBBBBB'                05
-     DC.B 'BBBBBBBBBBBBBBBBBBBB'                06
-     DC.B 'BEEEEEEEEEEEEEEEEEBB'                07
-     DC.B 'BBBBBBBBBBBBBBBBBBBB'                08
-     DC.B 'BBBBBBBBBBBBBBBBBBBB'                09
-     DC.B 'BEEEEEEEEEEEEEEEEEBB'                10
-     DC.B 'BBBBBBBBBBBBBBBBBBBB'                11
-     DC.B 'BBBBBBBBBBBBBBBBBBBB'                12
-     DC.B 'BBBBBBBBBBBBBBBBBBBB'                13
-     DC.B 'BEEEEEEEEEEEEEEEEEBB'                14
-     DC.B 'BBBBBBBBBBBBBBBBBBBB'                15
-     DC.B 'BBBBBBBBBBBBBBBBBBBB'                16
-     DC.B 'BBBBBBBBBBBBBBBBBBBB'                17
-     DC.B 'BBBBBBBBBBBBBBBBBBBB'                18
-     DC.B 'BBBBBBBBBBBBBBBBBBBB'                19
-     DC.B 'BBBBBBBBBBBBBBBBBBBB'                20
-     DC.B 'BEEEEEEEEEEEEEEEEEBB'                21
+MAP  
+     DC.B 'BBBBBBBBBBBBBBBBBBB'                01
+     DC.B 'BCCCCCCCCBCCCCCCCCB'                02
+     DC.B 'BGBBCBBBCBCBBBCBBGB'                03
+     DC.B 'BCCCCCCCCBCCCCCCCCB'                04
+     DC.B 'BCBBCBCBBBBBCBCBBCB'                05
+     DC.B 'BCCCCBCCCBCCCBCCCCB'                06
+     DC.B 'BBBBCBBBEBEBBBCBBBB'                07
+     DC.B 'EEEBCBEEEEEEEBCBEEE'                08
+     DC.B 'BBBBCBEBBEBBEBCBBBB'                09
+     DC.B 'EEEECEEBEEEBEECEEEE'                10
+     DC.B 'BBBBCBEBBBBBEBCBBBB'                11
+     DC.B 'EEEBCBEEEEEEEBCBEEE'                12
+     DC.B 'BBBBCBEBBBBBEBCBBBB'                13
+     DC.B 'BCCCCCCCCBCCCCCCCCB'                14
+     DC.B 'BCBBCBBBCBCBBBCBBCB'                15
+     DC.B 'BGCBCCCCCECCCCCBCGB'                16
+     DC.B 'BBCBCBCBBBBBCBCBCBB'                17
+     DC.B 'BCCCCBCCCBCCCBCCCCB'                18
+     DC.B 'BCBBBBBBCBCBBBBBBCB'                19
+     DC.B 'BCCCCCCCCCCCCCCCCCB'                20
+     DC.B 'BBBBBBBBBBBBBBBBBBB'                21
 
 
 BLACK equ $00000000  
@@ -198,6 +199,7 @@ YELLOW equ $0000FFFF
 BLUE equ $00FF0000 
 WHITE equ $00FFFFFF 
     END    START        ; last line of source
+
 
 
 

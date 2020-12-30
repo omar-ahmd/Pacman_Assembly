@@ -1,6 +1,6 @@
 00001000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.16.01
-Created On: 30-Dec-20 3:40:07 PM
+Created On: 12/30/2020 3:49:59 PM
 
 00000000                             1  *-----------------------------------------------------------
 00000000                             2  * Title      :
@@ -35,10 +35,10 @@ Created On: 30-Dec-20 3:40:07 PM
 00001030  B03C 0042                 31       CMP.B   #$42,D0
 00001034  6700 00D4                 32       BEQ draw_block
 00001038  5246                      33  Ctn0 ADDQ #1,D6
-0000103A  BC7C 0012                 34       CMP #18,D6
+0000103A  BC7C 0013                 34       CMP #19,D6
 0000103E  66D8                      35       BNE Loop_draw_map
 00001040  5245                      36       ADDQ #1,D5
-00001042  BA7C 0014                 37       CMP #20,D5
+00001042  BA7C 0015                 37       CMP #21,D5
 00001046  66CE                      38       BNE Draw_map
 00001048                            39  
 00001048                            40  draw_player
@@ -168,40 +168,41 @@ Created On: 30-Dec-20 3:40:07 PM
 00002008                           164  
 00002008  =00000010                165  BX EQU 16
 00002008  =00000010                166  BY EQU 16
-00002008= 42 42 42 42 42 42 ...    167  MAP  DC.B 'BBBBBBBBBBBBBBBBBBBB'                01
-0000201C= 42 45 45 45 45 45 ...    168       DC.B 'BEEEEEEEEEEEEEEEEEBB'                02
-00002030= 42 42 42 42 42 42 ...    169       DC.B 'BBBBBBBBBBBBBBBBBBBB'                03
-00002044= 42 42 42 42 42 42 ...    170       DC.B 'BBBBBBBBBBBBBBBBBBBB'                04
-00002058= 42 42 42 42 42 42 ...    171       DC.B 'BBBBBBBBBBBBBBBBBBBB'                05
-0000206C= 42 42 42 42 42 42 ...    172       DC.B 'BBBBBBBBBBBBBBBBBBBB'                06
-00002080= 42 45 45 45 45 45 ...    173       DC.B 'BEEEEEEEEEEEEEEEEEBB'                07
-00002094= 42 42 42 42 42 42 ...    174       DC.B 'BBBBBBBBBBBBBBBBBBBB'                08
-000020A8= 42 42 42 42 42 42 ...    175       DC.B 'BBBBBBBBBBBBBBBBBBBB'                09
-000020BC= 42 45 45 45 45 45 ...    176       DC.B 'BEEEEEEEEEEEEEEEEEBB'                10
-000020D0= 42 42 42 42 42 42 ...    177       DC.B 'BBBBBBBBBBBBBBBBBBBB'                11
-000020E4= 42 42 42 42 42 42 ...    178       DC.B 'BBBBBBBBBBBBBBBBBBBB'                12
-000020F8= 42 42 42 42 42 42 ...    179       DC.B 'BBBBBBBBBBBBBBBBBBBB'                13
-0000210C= 42 45 45 45 45 45 ...    180       DC.B 'BEEEEEEEEEEEEEEEEEBB'                14
-00002120= 42 42 42 42 42 42 ...    181       DC.B 'BBBBBBBBBBBBBBBBBBBB'                15
-00002134= 42 42 42 42 42 42 ...    182       DC.B 'BBBBBBBBBBBBBBBBBBBB'                16
-00002148= 42 42 42 42 42 42 ...    183       DC.B 'BBBBBBBBBBBBBBBBBBBB'                17
-0000215C= 42 42 42 42 42 42 ...    184       DC.B 'BBBBBBBBBBBBBBBBBBBB'                18
-00002170= 42 42 42 42 42 42 ...    185       DC.B 'BBBBBBBBBBBBBBBBBBBB'                19
-00002184= 42 42 42 42 42 42 ...    186       DC.B 'BBBBBBBBBBBBBBBBBBBB'                20
-00002198= 42 45 45 45 45 45 ...    187       DC.B 'BEEEEEEEEEEEEEEEEEBB'                21
-000021AC                           188  
-000021AC                           189  
-000021AC  =00000000                190  BLACK equ $00000000  
-000021AC  =00008000                191  GREEN equ $00008000   
-000021AC  =00800080                192  PURPLE equ $00800080 
-000021AC  =00808000                193  TEAL equ $00808000 
-000021AC  =00808080                194  GRAY equ $00808080 
-000021AC  =000000FF                195  RED equ $000000FF 
-000021AC  =0000FF00                196  LIME equ $0000FF00 
-000021AC  =0000FFFF                197  YELLOW equ $0000FFFF 
-000021AC  =00FF0000                198  BLUE equ $00FF0000 
-000021AC  =00FFFFFF                199  WHITE equ $00FFFFFF 
-000021AC                           200      END    START        ; last line of source
+00002008                           167  MAP  
+00002008= 42 42 42 42 42 42 ...    168       DC.B 'BBBBBBBBBBBBBBBBBBB'                01
+0000201B= 42 43 43 43 43 43 ...    169       DC.B 'BCCCCCCCCBCCCCCCCCB'                02
+0000202E= 42 47 42 42 43 42 ...    170       DC.B 'BGBBCBBBCBCBBBCBBGB'                03
+00002041= 42 43 43 43 43 43 ...    171       DC.B 'BCCCCCCCCBCCCCCCCCB'                04
+00002054= 42 43 42 42 43 42 ...    172       DC.B 'BCBBCBCBBBBBCBCBBCB'                05
+00002067= 42 43 43 43 43 42 ...    173       DC.B 'BCCCCBCCCBCCCBCCCCB'                06
+0000207A= 42 42 42 42 43 42 ...    174       DC.B 'BBBBCBBBEBEBBBCBBBB'                07
+0000208D= 45 45 45 42 43 42 ...    175       DC.B 'EEEBCBEEEEEEEBCBEEE'                08
+000020A0= 42 42 42 42 43 42 ...    176       DC.B 'BBBBCBEBBEBBEBCBBBB'                09
+000020B3= 45 45 45 45 43 45 ...    177       DC.B 'EEEECEEBEEEBEECEEEE'                10
+000020C6= 42 42 42 42 43 42 ...    178       DC.B 'BBBBCBEBBBBBEBCBBBB'                11
+000020D9= 45 45 45 42 43 42 ...    179       DC.B 'EEEBCBEEEEEEEBCBEEE'                12
+000020EC= 42 42 42 42 43 42 ...    180       DC.B 'BBBBCBEBBBBBEBCBBBB'                13
+000020FF= 42 43 43 43 43 43 ...    181       DC.B 'BCCCCCCCCBCCCCCCCCB'                14
+00002112= 42 43 42 42 43 42 ...    182       DC.B 'BCBBCBBBCBCBBBCBBCB'                15
+00002125= 42 47 43 42 43 43 ...    183       DC.B 'BGCBCCCCCECCCCCBCGB'                16
+00002138= 42 42 43 42 43 42 ...    184       DC.B 'BBCBCBCBBBBBCBCBCBB'                17
+0000214B= 42 43 43 43 43 42 ...    185       DC.B 'BCCCCBCCCBCCCBCCCCB'                18
+0000215E= 42 43 42 42 42 42 ...    186       DC.B 'BCBBBBBBCBCBBBBBBCB'                19
+00002171= 42 43 43 43 43 43 ...    187       DC.B 'BCCCCCCCCCCCCCCCCCB'                20
+00002184= 42 42 42 42 42 42 ...    188       DC.B 'BBBBBBBBBBBBBBBBBBB'                21
+00002197                           189  
+00002197                           190  
+00002197  =00000000                191  BLACK equ $00000000  
+00002197  =00008000                192  GREEN equ $00008000   
+00002197  =00800080                193  PURPLE equ $00800080 
+00002197  =00808000                194  TEAL equ $00808000 
+00002197  =00808080                195  GRAY equ $00808080 
+00002197  =000000FF                196  RED equ $000000FF 
+00002197  =0000FF00                197  LIME equ $0000FF00 
+00002197  =0000FFFF                198  YELLOW equ $0000FFFF 
+00002197  =00FF0000                199  BLUE equ $00FF0000 
+00002197  =00FFFFFF                200  WHITE equ $00FFFFFF 
+00002197                           201      END    START        ; last line of source
 
 No errors detected
 No warnings generated
