@@ -1,6 +1,6 @@
 00001000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.16.01
-Created On: 30-Dec-20 3:27:55 PM
+Created On: 30-Dec-20 3:30:18 PM
 
 00000000                             1  *-----------------------------------------------------------
 00000000                             2  * Title      :
@@ -167,26 +167,26 @@ Created On: 30-Dec-20 3:27:55 PM
 00002008  =00000010                163  BX EQU 16
 00002008  =00000010                164  BY EQU 16
 00002008= 42 42 42 42 42 42 ...    165  MAP  DC.B 'BBBBBBBBBBBBBBBBBBBB'                01
-0000201C= 42 42 42 42 42 42 ...    166       DC.B 'BBBBBBBBBBBBBBBBBBBB'                02
+0000201C= 42 45 45 45 45 45 ...    166       DC.B 'BEEEEEEEEEEEEEEEEEBB'                02
 00002030= 42 42 42 42 42 42 ...    167       DC.B 'BBBBBBBBBBBBBBBBBBBB'                03
 00002044= 42 42 42 42 42 42 ...    168       DC.B 'BBBBBBBBBBBBBBBBBBBB'                04
 00002058= 42 42 42 42 42 42 ...    169       DC.B 'BBBBBBBBBBBBBBBBBBBB'                05
 0000206C= 42 42 42 42 42 42 ...    170       DC.B 'BBBBBBBBBBBBBBBBBBBB'                06
-00002080= 42 42 42 42 42 42 ...    171       DC.B 'BBBBBBBBBBBBBBBBBBBB'                07
+00002080= 42 45 45 45 45 45 ...    171       DC.B 'BEEEEEEEEEEEEEEEEEBB'                07
 00002094= 42 42 42 42 42 42 ...    172       DC.B 'BBBBBBBBBBBBBBBBBBBB'                08
 000020A8= 42 42 42 42 42 42 ...    173       DC.B 'BBBBBBBBBBBBBBBBBBBB'                09
-000020BC= 42 42 42 42 42 42 ...    174       DC.B 'BBBBBBBBBBBBBBBBBBBB'                10
+000020BC= 42 45 45 45 45 45 ...    174       DC.B 'BEEEEEEEEEEEEEEEEEBB'                10
 000020D0= 42 42 42 42 42 42 ...    175       DC.B 'BBBBBBBBBBBBBBBBBBBB'                11
 000020E4= 42 42 42 42 42 42 ...    176       DC.B 'BBBBBBBBBBBBBBBBBBBB'                12
 000020F8= 42 42 42 42 42 42 ...    177       DC.B 'BBBBBBBBBBBBBBBBBBBB'                13
-0000210C= 42 42 42 42 42 42 ...    178       DC.B 'BBBBBBBBBBBBBBBBBBBB'                14
+0000210C= 42 45 45 45 45 45 ...    178       DC.B 'BEEEEEEEEEEEEEEEEEBB'                14
 00002120= 42 42 42 42 42 42 ...    179       DC.B 'BBBBBBBBBBBBBBBBBBBB'                15
 00002134= 42 42 42 42 42 42 ...    180       DC.B 'BBBBBBBBBBBBBBBBBBBB'                16
 00002148= 42 42 42 42 42 42 ...    181       DC.B 'BBBBBBBBBBBBBBBBBBBB'                17
 0000215C= 42 42 42 42 42 42 ...    182       DC.B 'BBBBBBBBBBBBBBBBBBBB'                18
 00002170= 42 42 42 42 42 42 ...    183       DC.B 'BBBBBBBBBBBBBBBBBBBB'                19
 00002184= 42 42 42 42 42 42 ...    184       DC.B 'BBBBBBBBBBBBBBBBBBBB'                20
-00002198= 42 42 42 42 42 42 ...    185       DC.B 'BBBBBBBBBBBBBBBBBBBB'                21
+00002198= 42 45 45 45 45 45 ...    185       DC.B 'BEEEEEEEEEEEEEEEEEBB'                21
 000021AC                           186  
 000021AC                           187  
 000021AC  =00000000                188  BLACK equ $00000000  

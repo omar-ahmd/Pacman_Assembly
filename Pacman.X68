@@ -103,6 +103,8 @@ draw_block
      MOVE.B #87,D0 
      MOVE.L D3,D5                   
      MOVE.L D4,D6
+     MOVE.L D5,D1                 
+     MOVE.L D6,D2
      Add.L #BX,D5
      Add.L #BY,D6
      MOVE.L D5,D3
@@ -163,26 +165,26 @@ DY EQU 32
 BX EQU 16
 BY EQU 16
 MAP  DC.B 'BBBBBBBBBBBBBBBBBBBB'                01
-     DC.B 'BBBBBBBBBBBBBBBBBBBB'                02
+     DC.B 'BEEEEEEEEEEEEEEEEEBB'                02
      DC.B 'BBBBBBBBBBBBBBBBBBBB'                03
      DC.B 'BBBBBBBBBBBBBBBBBBBB'                04
      DC.B 'BBBBBBBBBBBBBBBBBBBB'                05
      DC.B 'BBBBBBBBBBBBBBBBBBBB'                06
-     DC.B 'BBBBBBBBBBBBBBBBBBBB'                07
+     DC.B 'BEEEEEEEEEEEEEEEEEBB'                07
      DC.B 'BBBBBBBBBBBBBBBBBBBB'                08
      DC.B 'BBBBBBBBBBBBBBBBBBBB'                09
-     DC.B 'BBBBBBBBBBBBBBBBBBBB'                10
+     DC.B 'BEEEEEEEEEEEEEEEEEBB'                10
      DC.B 'BBBBBBBBBBBBBBBBBBBB'                11
      DC.B 'BBBBBBBBBBBBBBBBBBBB'                12
      DC.B 'BBBBBBBBBBBBBBBBBBBB'                13
-     DC.B 'BBBBBBBBBBBBBBBBBBBB'                14
+     DC.B 'BEEEEEEEEEEEEEEEEEBB'                14
      DC.B 'BBBBBBBBBBBBBBBBBBBB'                15
      DC.B 'BBBBBBBBBBBBBBBBBBBB'                16
      DC.B 'BBBBBBBBBBBBBBBBBBBB'                17
      DC.B 'BBBBBBBBBBBBBBBBBBBB'                18
      DC.B 'BBBBBBBBBBBBBBBBBBBB'                19
      DC.B 'BBBBBBBBBBBBBBBBBBBB'                20
-     DC.B 'BBBBBBBBBBBBBBBBBBBB'                21
+     DC.B 'BEEEEEEEEEEEEEEEEEBB'                21
 
 
 BLACK equ $00000000  
