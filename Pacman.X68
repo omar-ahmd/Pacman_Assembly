@@ -13,8 +13,8 @@ START:                  ; first instruction of program
      MOVE.B #33,D0
      MOVE.L #640*$10000+520,D1        Set screen to 512 x 512
      TRAP   #15
-
-
+    
+     Move.L #$0,D1                  RESET D1
      Move.L #$0,D5                  VERTICAL LOOP INDEX INIT
      Move.L #MAP,A0                 LOAD MAP POSITION IN MEMORY
 Draw_map
@@ -23,8 +23,12 @@ Loop_draw_map
      Move.L D5,D7                   Calculate New Memory Position
      MULU.W #19,D7                  Calculate New Memory Position
      ADD.L D6,D7                    Calculate New Memory Position
+     Move.L D5,D3
+     MULU.W #DX,D3                  PUT NEW X POSITION IN D3
+     Move.L D6,D4
+     MULU.W #DY,D4                  PUT NEW Y POSITION IN D4
      MOVE.B (A0,D7.w),D0
-     CMP.B   #$43,D0
+     CMP.B   #$42,D0
      BSR draw_block
      ADDQ #1,D6
      CMP #19,D6
@@ -97,8 +101,8 @@ draw_block
      Move.L #BLUE,D1
      TRAP   #15
      MOVE.B #87,D0 
-     MOVE.L D5,D1                   
-     MOVE.L D6,D2
+     MOVE.L D3,D5                   
+     MOVE.L D4,D6
      Add.L #BX,D5
      Add.L #BY,D6
      MOVE.L D5,D3
