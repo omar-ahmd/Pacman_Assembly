@@ -29,12 +29,12 @@ Loop_draw_map
      MULU.W #DY,D4                  PUT NEW Y POSITION IN D4
      MOVE.B (A0,D7.w),D0
      CMP.B   #$42,D0
-     BSR draw_block
-     ADDQ #1,D6
-     CMP #19,D6
+     BEQ draw_block
+Ctn0 ADDQ #1,D6
+     CMP #18,D6
      BNE Loop_draw_map
      ADDQ #1,D5
-     CMP #21,D5
+     CMP #20,D5
      BNE Draw_map
 
 draw_player
@@ -101,16 +101,16 @@ draw_block
      Move.L #BLUE,D1
      TRAP   #15
      MOVE.B #87,D0 
-     MOVE.L D3,D5                   
-     MOVE.L D4,D6
-     MOVE.L D5,D1                 
-     MOVE.L D6,D2
-     Add.L #BX,D5
-     Add.L #BY,D6
-     MOVE.L D5,D3
-     MOVE.L D6,D4
+     MOVE.L D3,A3                 
+     MOVE.L D4,A4
+     MOVE.L A4,D1                 
+     MOVE.L A3,D2
+     Add.L #BX,A4
+     Add.L #BY,A3
+     MOVE.L A4,D3
+     MOVE.L A3,D4
      TRAP   #15
-     RTS
+     BRA Ctn0
 
 
 draw_coin     
@@ -159,8 +159,8 @@ FIN
  ORG $2000
 PACMAN_POSITION_X DC.L 16
 PACMAN_POSITION_Y DC.L 16
-DX EQU 32
-DY EQU 32
+DX EQU 16
+DY EQU 16
 
 BX EQU 16
 BY EQU 16
