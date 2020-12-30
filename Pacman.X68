@@ -23,13 +23,13 @@ Loop_draw_map
      Move.L D5,D7                   Calculate New Memory Position
      MULU.W #25,D7                  Calculate New Memory Position
      ADD.L D6,D7                    Calculate New Memory Position
-     Move.L D5,D3
+     Move.L D6,D3
      MULU.W #DX,D3                  PUT NEW X POSITION IN D3
-     Move.L D6,D4
+     Move.L D5,D4
      MULU.W #DY,D4                  PUT NEW Y POSITION IN D4
      MOVE.B (A0,D7.w),D0
      
-     CMP.B   #$42,D0
+     CMP.B   #'B',D0
      BEQ draw_block
      
      CMP.B   #'C',D0
@@ -106,14 +106,10 @@ draw_block
      Move.L #BLUE,D1
      TRAP   #15
      MOVE.B #87,D0 
-     MOVE.L D3,A3                 
-     MOVE.L D4,A4
-     MOVE.L A4,D1                 
-     MOVE.L A3,D2
-     Add.L #BX,A4
-     Add.L #BY,A3
-     MOVE.L A4,D3
-     MOVE.L A3,D4
+     MOVE.L D3,D1                 
+     MOVE.L D4,D2
+     Add.L #BX,D3
+     Add.L #BY,D4
      TRAP   #15
      BRA Ctn0
 
@@ -128,8 +124,8 @@ draw_coin
      MOVE.B #88,D0
      ADD.L #8,D3
      ADD.L #8,D4
-     Move.L D4,D2
      Move.L D3,D1
+     Move.L D4,D2
      
      ADD.L #16,D3
      ADD.L #16,D4
@@ -219,6 +215,7 @@ YELLOW equ $0000FFFF
 BLUE equ $00FF0000 
 WHITE equ $00FFFFFF 
     END    START        ; last line of source
+
 
 
 
