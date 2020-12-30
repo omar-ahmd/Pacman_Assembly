@@ -1,6 +1,6 @@
 00001000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.16.01
-Created On: 30-Dec-20 5:17:43 AM
+Created On: 30-Dec-20 3:08:23 PM
 
 00000000                             1  *-----------------------------------------------------------
 00000000                             2  * Title      :
@@ -18,174 +18,185 @@ Created On: 30-Dec-20 5:17:43 AM
 00001004  223C 02800208             14       MOVE.L #640*$10000+520,D1        Set screen to 512 x 512
 0000100A  4E4F                      15       TRAP   #15
 0000100C                            16  
-0000100C                            17  draw_blocks
-0000100C  103C 0050                 18       MOVE.B #80,D0
-00001010  223C 00FF0000             19       Move.L #BLUE,D1                Draw player pen and fill color
-00001016  4E4F                      20       TRAP   #15
-00001018  103C 0051                 21       MOVE.B #81,D0
-0000101C  223C 00FF0000             22       Move.L #BLUE,D1
-00001022  4E4F                      23       TRAP   #15
-00001024  207C 00002008             24       Move.L #BLOCK_BEGIN_X,A0
-0000102A  227C 00002057             25       Move.L #BLOCK_BEGIN_Y,A1
-00001030  7E00                      26       Move.L #$0,D7
-00001032                            27  Loop_draw_blocks
-00001032  7A00                      28       Move.L #0,D5
-00001034  7C00                      29       Move.L #0,D6
-00001036  1A30 7000                 30       Move.B (A0,D7.w),D5 
-0000103A  1C31 7000                 31       Move.B (A1,D7.w),D6    
-0000103E  CAFC 0010                 32       MULU.W #BX,D5
-00001042  CCFC 0010                 33       MULU.W #BY,D6
-00001046  103C 0057                 34       MOVE.B #87,D0
-0000104A  2205                      35       MOVE.L D5,D1        
-0000104C  2406                      36       MOVE.L D6,D2
-0000104E  0685 00000010             37       Add.L #BX,D5
-00001054  0686 00000010             38       Add.L #BY,D6
-0000105A  2605                      39       MOVE.L D5,D3
-0000105C  2806                      40       MOVE.L D6,D4
-0000105E  4E4F                      41       TRAP   #15
-00001060                            42       
-00001060  103C 0057                 43       MOVE.B #87,D0
-00001064  0486 00000010             44       Sub.L #BY,D6
-0000106A  223C 00000200             45       MOVE.L #512,D1
-00001070  9285                      46       Sub.L D5,D1
-00001072  2406                      47       MOVE.L D6,D2
-00001074  2A01                      48       MOVE.L D1,D5
-00001076  2C02                      49       MOVE.L D2,D6     
-00001078  0685 00000010             50       Add.L #BX,D5
-0000107E  0686 00000010             51       Add.L #BY,D6
-00001084  2605                      52       MOVE.L D5,D3
-00001086  2806                      53       MOVE.L D6,D4
-00001088  4E4F                      54       TRAP   #15
-0000108A                            55          
-0000108A  243C 00000200             56       MOVE.L #512,D2
-00001090  103C 0057                 57       MOVE.B #87,D0
-00001094                            58       ;Sub.L D5,D1
-00001094  9486                      59       Sub.L D6,D2 
-00001096  2A01                      60       MOVE.L D1,D5
-00001098  2C02                      61       MOVE.L D2,D6     
-0000109A  0685 00000010             62       Add.L #BX,D5
-000010A0  0686 00000010             63       Add.L #BY,D6
-000010A6  2605                      64       MOVE.L D5,D3
-000010A8  2806                      65       MOVE.L D6,D4
-000010AA  4E4F                      66       TRAP   #15
-000010AC                            67       
-000010AC  5287                      68       Add.L #$1,D7
-000010AE  BE7C 004F                 69       CMP #79,D7
-000010B2  6600 FF7E                 70       BNE Loop_draw_blocks
-000010B6                            71  
-000010B6                            72  draw_player
-000010B6  103C 0050                 73       MOVE.B #80,D0
-000010BA  223C 0000FFFF             74       Move.L #YELLOW,D1                Draw player pen and fill color
-000010C0  4E4F                      75       TRAP   #15
-000010C2  103C 0051                 76       MOVE.B #81,D0
-000010C6  223C 0000FFFF             77       Move.L #YELLOW,D1
-000010CC  4E4F                      78       TRAP   #15
-000010CE  2A39 00002000             79       Move.L PACMAN_POSITION_X,D5      Player x position
-000010D4  2C39 00002004             80       Move.L PACMAN_POSITION_Y,D6      Player y position
-000010DA  103C 0058                 81       MOVE.B #88,D0
-000010DE  2205                      82       MOVE.L D5,D1        
-000010E0  2406                      83       MOVE.L D6,D2
-000010E2  0685 00000014             84       Add.L #20,D5
-000010E8  0686 00000014             85       Add.L #20,D6
-000010EE  2605                      86       MOVE.L D5,D3
-000010F0  2806                      87       MOVE.L D6,D4
-000010F2  4E4F                      88       TRAP   #15
-000010F4                            89  loop  
-000010F4  700A                      90       Move.L #10,D0                             DELAY TIME
-000010F6  6100 00BC                 91       BSR DELAY
-000010FA  4EB9 00001178             92       JSR clr_screen                             Clear screen
-00001100  103C 0013                 93       MOVE.B #19,D0     
-00001104  223C 41534457             94       MOVE.L #'A'<<24+'S'<<16+'D'<<8+'W',D1      Check for keypress (a,s,d,w)
-0000110A  4E4F                      95       TRAP   #15
-0000110C                            96       
-0000110C  0801 0018                 97       BTST.L #24,D1     ; test for 'a'
-00001110                            98       IF <NE> THEN      ; if 'a'
-00001114  2A39 00002000             99       Move.L PACMAN_POSITION_X,D5 
-0000111A  0485 00000020            100       SUB.L #DX,D5
-00001120  23C5 00002000            101       Move.L D5,PACMAN_POSITION_X
-00001126                           102       ENDI
-00001126                           103       
-00001126  0801 0000                104       BTST.L #0,D1     ; test for 'w'
-0000112A                           105       IF <NE> THEN      ; if 'w'
-0000112E  2C39 00002004            106       Move.L PACMAN_POSITION_Y,D6
-00001134  0486 00000020            107       SUB.L #DY,D6
-0000113A  23C6 00002004            108       Move.L D6,PACMAN_POSITION_Y
-00001140                           109       ENDI
-00001140                           110  
-00001140  0801 0008                111       BTST.L #8,D1     ; test for 'd'
-00001144                           112       IF <NE> THEN      ; if 'd'
-00001148  2A39 00002000            113       Move.L PACMAN_POSITION_X,D5 
-0000114E  0685 00000020            114       ADD.L #DX,D5
-00001154  23C5 00002000            115       Move.L D5,PACMAN_POSITION_X
-0000115A                           116       ENDI
-0000115A                           117       
-0000115A  0801 0010                118       BTST.L #16,D1     ; test for 's'
-0000115E                           119       IF <NE> THEN      ; if 's'
-00001162  2C39 00002004            120       Move.L PACMAN_POSITION_Y,D6
-00001168  0686 00000020            121       ADD.L #DY,D6
-0000116E  23C6 00002004            122       Move.L D6,PACMAN_POSITION_Y
-00001174                           123       ENDI
-00001174  6000 FE96                124       bra draw_blocks
-00001178                           125       
-00001178                           126  clr_screen    
-00001178  223C 00000000            127      move.l  #BLACK,d1   
-0000117E  103C 0050                128      move.b  #80,d0  set pen color
-00001182  4E4F                     129      trap #15     
-00001184                           130  
-00001184  223C 00000000            131      move.l  #BLACK,d1   
-0000118A  103C 0051                132      move.b  #81,d0  set fill color
-0000118E  4E4F                     133      trap #15
-00001190                           134      
-00001190  2239 00002000            135      move.L  PACMAN_POSITION_X,d1    
-00001196  2439 00002004            136      move.L  PACMAN_POSITION_Y,d2  
-0000119C  2601                     137      move.L  d1,d3  
-0000119E  2802                     138      move.L  d2,d4
-000011A0  0683 00000020            139      add.L  #DX,d3
-000011A6  0684 00000020            140      add.L  #DY,d4
-000011AC  103C 0057                141      move.b  #87,d0     draw black filled rectangle
-000011B0  4E4F                     142      trap #15
-000011B2  4E75                     143      RTS
-000011B4                           144      
-000011B4                           145  DELAY ; TIME = D0 SECOND
-000011B4  B03C 0000                146      CMP.B #0,D0
-000011B8  6700 0014                147      BEQ FIN
-000011BC  243C FFFFF000            148      MOVE.L #$FFFFF000,D2
-000011C2                           149  LOOP_DELAY
-000011C2  5282                     150      ADD.L #$01,D2
-000011C4  66FC                     151      BNE LOOP_DELAY
-000011C6  0680 FFFFFFFF            152      ADD.L #$FFFFFFFF,D0
-000011CC  66E6                     153      BNE DELAY
-000011CE                           154  FIN
-000011CE  4E75                     155      RTS
-000011D0                           156      
-000011D0                           157       
-000011D0                           158  
-000011D0  FFFF FFFF                159      SIMHALT             ; halt simulator
-000011D4                           160  * Put variables and constants here
-00002000                           161   ORG $2000
-00002000= 00000014                 162  PACMAN_POSITION_X DC.L 20
-00002004= 00000014                 163  PACMAN_POSITION_Y DC.L 20
-00002008  =00000020                164  DX EQU 32
-00002008  =00000020                165  DY EQU 32
-00002008                           166  
-00002008  =00000010                167  BX EQU 16
-00002008  =00000010                168  BY EQU 16
-00002008= 00 01 02 03 04 05 ...    169  BLOCK_BEGIN_X DC.B 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,0,0,0,0,0,0,0,0,0, 0, 0, 0, 0, 0, 0,3,4,5,6,7,8,3,4,5,6,7,8,3,4,5,6,7,8,3,4,5,6,7,8,3,4,5,6,7,8,3,4,5,6,7,8, 3, 4, 5, 6, 7, 8, 3, 4, 5, 6, 7, 8
-00002057= 00 00 00 00 00 00 ...    170  BLOCK_BEGIN_Y DC.B 0,0,0,0,0,0,0,0,0,0, 0, 0, 0, 0, 0, 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,3,3,3,3,3,3,4,4,4,4,4,4,5,5,5,5,5,5,6,6,6,6,6,6,7,7,7,7,7,7,8,8,8,8,8,8,11,11,11,11,11,11,12,12,12,12,12,12
-000020A6                           171  ;BLOCK_END_X
-000020A6                           172  ;BLOCK_END_Y
-000020A6                           173  
-000020A6  =00000000                174  BLACK equ $00000000  
-000020A6  =00008000                175  GREEN equ $00008000   
-000020A6  =00800080                176  PURPLE equ $00800080 
-000020A6  =00808000                177  TEAL equ $00808000 
-000020A6  =00808080                178  GRAY equ $00808080 
-000020A6  =000000FF                179  RED equ $000000FF 
-000020A6  =0000FF00                180  LIME equ $0000FF00 
-000020A6  =0000FFFF                181  YELLOW equ $0000FFFF 
-000020A6  =00FF0000                182  BLUE equ $00FF0000 
-000020A6  =00FFFFFF                183  WHITE equ $00FFFFFF 
-000020A6                           184      END    START        ; last line of source
+0000100C                            17  
+0000100C  7A00                      18       Move.L #$0,D5                  VERTICAL LOOP INDEX INIT
+0000100E  207C 00002008             19       Move.L #MAP,A0                 LOAD MAP POSITION IN MEMORY
+00001014                            20  Draw_map
+00001014  7C00                      21       Move.L #$0,D6                  HORIZONTAL LOOP INDEX INIT
+00001016                            22  Loop_draw_map
+00001016  2E05                      23       Move.L D5,D7                   Calculate New Memory Position
+00001018  CEFC 0013                 24       MULU.W #19,D7                  Calculate New Memory Position
+0000101C  DE86                      25       ADD.L D6,D7                    Calculate New Memory Position
+0000101E  1030 7000                 26       MOVE.B (A0,D7.w),D0
+00001022  B03C 0043                 27       CMP.B   #$43,D0
+00001026  6100 00D4                 28       BSR draw_block
+0000102A                            29  
+0000102A  5246                      30       ADDQ #1,D6
+0000102C  BC7C 0013                 31       CMP #19,D6
+00001030  66E4                      32       BNE Loop_draw_map
+00001032  5245                      33       ADDQ #1,D5
+00001034  BA7C 0015                 34       CMP #21,D5
+00001038  66DA                      35       BNE Draw_map
+0000103A                            36  
+0000103A                            37  draw_player
+0000103A  103C 0050                 38       MOVE.B #80,D0
+0000103E  223C 0000FFFF             39       Move.L #YELLOW,D1                Draw player pen and fill color
+00001044  4E4F                      40       TRAP   #15
+00001046  103C 0051                 41       MOVE.B #81,D0
+0000104A  223C 0000FFFF             42       Move.L #YELLOW,D1
+00001050  4E4F                      43       TRAP   #15
+00001052  2A39 00002000             44       Move.L PACMAN_POSITION_X,D5      Player x position
+00001058  2C39 00002004             45       Move.L PACMAN_POSITION_Y,D6      Player y position
+0000105E  103C 0058                 46       MOVE.B #88,D0                    draw player
+00001062  2205                      47       MOVE.L D5,D1                       
+00001064  2406                      48       MOVE.L D6,D2
+00001066  0685 00000014             49       Add.L #20,D5
+0000106C  0686 00000014             50       Add.L #20,D6
+00001072  2605                      51       MOVE.L D5,D3
+00001074  2806                      52       MOVE.L D6,D4
+00001076  4E4F                      53       TRAP   #15
+00001078                            54  loop  
+00001078  700A                      55       Move.L #10,D0                             DELAY TIME
+0000107A  6100 0108                 56       BSR DELAY
+0000107E  4EB9 00001148             57       JSR clr_screen                             Clear screen
+00001084  103C 0013                 58       MOVE.B #19,D0     
+00001088  223C 41534457             59       MOVE.L #'A'<<24+'S'<<16+'D'<<8+'W',D1      Check for keypress (a,s,d,w)
+0000108E  4E4F                      60       TRAP   #15
+00001090                            61       
+00001090  0801 0018                 62       BTST.L #24,D1     ; test for 'a'
+00001094                            63       IF <NE> THEN      ; if 'a'
+00001098  2A39 00002000             64       Move.L PACMAN_POSITION_X,D5 
+0000109E  0485 00000020             65       SUB.L #DX,D5
+000010A4  23C5 00002000             66       Move.L D5,PACMAN_POSITION_X
+000010AA                            67       ENDI
+000010AA                            68       
+000010AA  0801 0000                 69       BTST.L #0,D1     ; test for 'w'
+000010AE                            70       IF <NE> THEN      ; if 'w'
+000010B2  2C39 00002004             71       Move.L PACMAN_POSITION_Y,D6
+000010B8  0486 00000020             72       SUB.L #DY,D6
+000010BE  23C6 00002004             73       Move.L D6,PACMAN_POSITION_Y
+000010C4                            74       ENDI
+000010C4                            75  
+000010C4  0801 0008                 76       BTST.L #8,D1     ; test for 'd'
+000010C8                            77       IF <NE> THEN      ; if 'd'
+000010CC  2A39 00002000             78       Move.L PACMAN_POSITION_X,D5 
+000010D2  0685 00000020             79       ADD.L #DX,D5
+000010D8  23C5 00002000             80       Move.L D5,PACMAN_POSITION_X
+000010DE                            81       ENDI
+000010DE                            82       
+000010DE  0801 0010                 83       BTST.L #16,D1     ; test for 's'
+000010E2                            84       IF <NE> THEN      ; if 's'
+000010E6  2C39 00002004             85       Move.L PACMAN_POSITION_Y,D6
+000010EC  0686 00000020             86       ADD.L #DY,D6
+000010F2  23C6 00002004             87       Move.L D6,PACMAN_POSITION_Y
+000010F8                            88       ENDI
+000010F8  6000 FF40                 89       bra draw_player
+000010FC                            90       
+000010FC                            91       
+000010FC                            92       
+000010FC                            93  draw_block
+000010FC  103C 0050                 94       MOVE.B #80,D0
+00001100  223C 00FF0000             95       Move.L #BLUE,D1                Draw block pen and fill color
+00001106  4E4F                      96       TRAP   #15
+00001108  103C 0051                 97       MOVE.B #81,D0
+0000110C  223C 00FF0000             98       Move.L #BLUE,D1
+00001112  4E4F                      99       TRAP   #15
+00001114  103C 0057                100       MOVE.B #87,D0 
+00001118  2205                     101       MOVE.L D5,D1                   
+0000111A  2406                     102       MOVE.L D6,D2
+0000111C  0685 00000010            103       Add.L #BX,D5
+00001122  0686 00000010            104       Add.L #BY,D6
+00001128  2605                     105       MOVE.L D5,D3
+0000112A  2806                     106       MOVE.L D6,D4
+0000112C  4E4F                     107       TRAP   #15
+0000112E  4E75                     108       RTS
+00001130                           109  
+00001130                           110  
+00001130                           111  draw_coin     
+00001130  103C 0050                112       MOVE.B #80,D0
+00001134  223C 0000FFFF            113       Move.L #YELLOW,D1                Draw coin pen and fill color
+0000113A  4E4F                     114       TRAP   #15
+0000113C  103C 0051                115       MOVE.B #81,D0
+00001140  223C 0000FFFF            116       Move.L #YELLOW,D1
+00001146  4E4F                     117       TRAP   #15
+00001148                           118       
+00001148                           119  clr_screen    
+00001148  223C 00000000            120      move.l  #BLACK,d1   
+0000114E  103C 0050                121      move.b  #80,d0  set pen color
+00001152  4E4F                     122      trap #15     
+00001154                           123  
+00001154  223C 00000000            124      move.l  #BLACK,d1   
+0000115A  103C 0051                125      move.b  #81,d0  set fill color
+0000115E  4E4F                     126      trap #15
+00001160                           127      
+00001160  2239 00002000            128      move.L  PACMAN_POSITION_X,d1    
+00001166  2439 00002004            129      move.L  PACMAN_POSITION_Y,d2  
+0000116C  2601                     130      move.L  d1,d3  
+0000116E  2802                     131      move.L  d2,d4
+00001170  0683 00000020            132      add.L  #DX,d3
+00001176  0684 00000020            133      add.L  #DY,d4
+0000117C  103C 0057                134      move.b  #87,d0     draw black filled rectangle
+00001180  4E4F                     135      trap #15
+00001182  4E75                     136      RTS
+00001184                           137      
+00001184                           138  DELAY ; TIME = D0 SECOND
+00001184  B03C 0000                139      CMP.B #0,D0
+00001188  6700 0014                140      BEQ FIN
+0000118C  243C FFFFF000            141      MOVE.L #$FFFFF000,D2
+00001192                           142  LOOP_DELAY
+00001192  5282                     143      ADD.L #$01,D2
+00001194  66FC                     144      BNE LOOP_DELAY
+00001196  0680 FFFFFFFF            145      ADD.L #$FFFFFFFF,D0
+0000119C  66E6                     146      BNE DELAY
+0000119E                           147  FIN
+0000119E  4E75                     148      RTS
+000011A0                           149      
+000011A0                           150       
+000011A0                           151  
+000011A0  FFFF FFFF                152      SIMHALT             ; halt simulator
+000011A4                           153  * Put variables and constants here
+00002000                           154   ORG $2000
+00002000= 00000014                 155  PACMAN_POSITION_X DC.L 20
+00002004= 00000014                 156  PACMAN_POSITION_Y DC.L 20
+00002008  =00000020                157  DX EQU 32
+00002008  =00000020                158  DY EQU 32
+00002008                           159  
+00002008  =00000010                160  BX EQU 16
+00002008  =00000010                161  BY EQU 16
+00002008= 42 42 42 42 42 42 ...    162  MAP  DC.B 'BBBBBBBBBBBBBBBBBBBB'                01
+0000201C= 42 42 42 42 42 42 ...    163       DC.B 'BBBBBBBBBBBBBBBBBBBB'                02
+00002030= 42 42 42 42 42 42 ...    164       DC.B 'BBBBBBBBBBBBBBBBBBBB'                03
+00002044= 42 42 42 42 42 42 ...    165       DC.B 'BBBBBBBBBBBBBBBBBBBB'                04
+00002058= 42 42 42 42 42 42 ...    166       DC.B 'BBBBBBBBBBBBBBBBBBBB'                05
+0000206C= 42 42 42 42 42 42 ...    167       DC.B 'BBBBBBBBBBBBBBBBBBBB'                06
+00002080= 42 42 42 42 42 42 ...    168       DC.B 'BBBBBBBBBBBBBBBBBBBB'                07
+00002094= 42 42 42 42 42 42 ...    169       DC.B 'BBBBBBBBBBBBBBBBBBBB'                08
+000020A8= 42 42 42 42 42 42 ...    170       DC.B 'BBBBBBBBBBBBBBBBBBBB'                09
+000020BC= 42 42 42 42 42 42 ...    171       DC.B 'BBBBBBBBBBBBBBBBBBBB'                10
+000020D0= 42 42 42 42 42 42 ...    172       DC.B 'BBBBBBBBBBBBBBBBBBBB'                11
+000020E4= 42 42 42 42 42 42 ...    173       DC.B 'BBBBBBBBBBBBBBBBBBBB'                12
+000020F8= 42 42 42 42 42 42 ...    174       DC.B 'BBBBBBBBBBBBBBBBBBBB'                13
+0000210C= 42 42 42 42 42 42 ...    175       DC.B 'BBBBBBBBBBBBBBBBBBBB'                14
+00002120= 42 42 42 42 42 42 ...    176       DC.B 'BBBBBBBBBBBBBBBBBBBB'                15
+00002134= 42 42 42 42 42 42 ...    177       DC.B 'BBBBBBBBBBBBBBBBBBBB'                16
+00002148= 42 42 42 42 42 42 ...    178       DC.B 'BBBBBBBBBBBBBBBBBBBB'                17
+0000215C= 42 42 42 42 42 42 ...    179       DC.B 'BBBBBBBBBBBBBBBBBBBB'                18
+00002170= 42 42 42 42 42 42 ...    180       DC.B 'BBBBBBBBBBBBBBBBBBBB'                19
+00002184= 42 42 42 42 42 42 ...    181       DC.B 'BBBBBBBBBBBBBBBBBBBB'                20
+00002198= 42 42 42 42 42 42 ...    182       DC.B 'BBBBBBBBBBBBBBBBBBBB'                21
+000021AC                           183  
+000021AC                           184  
+000021AC  =00000000                185  BLACK equ $00000000  
+000021AC  =00008000                186  GREEN equ $00008000   
+000021AC  =00800080                187  PURPLE equ $00800080 
+000021AC  =00808000                188  TEAL equ $00808000 
+000021AC  =00808080                189  GRAY equ $00808080 
+000021AC  =000000FF                190  RED equ $000000FF 
+000021AC  =0000FF00                191  LIME equ $0000FF00 
+000021AC  =0000FFFF                192  YELLOW equ $0000FFFF 
+000021AC  =00FF0000                193  BLUE equ $00FF0000 
+000021AC  =00FFFFFF                194  WHITE equ $00FFFFFF 
+000021AC                           195      END    START        ; last line of source
 
 No errors detected
 No warnings generated
@@ -195,24 +206,25 @@ SYMBOL TABLE INFORMATION
 Symbol-name         Value
 -------------------------
 BLACK               0
-BLOCK_BEGIN_X       2008
-BLOCK_BEGIN_Y       2057
 BLUE                FF0000
 BX                  10
 BY                  10
-CLR_SCREEN          1178
-DELAY               11B4
-DRAW_BLOCKS         100C
-DRAW_PLAYER         10B6
+CLR_SCREEN          1148
+DELAY               1184
+DRAW_BLOCK          10FC
+DRAW_COIN           1130
+DRAW_MAP            1014
+DRAW_PLAYER         103A
 DX                  20
 DY                  20
-FIN                 11CE
+FIN                 119E
 GRAY                808080
 GREEN               8000
 LIME                FF00
-LOOP                10F4
-LOOP_DELAY          11C2
-LOOP_DRAW_BLOCKS    1032
+LOOP                1078
+LOOP_DELAY          1192
+LOOP_DRAW_MAP       1016
+MAP                 2008
 PACMAN_POSITION_X   2000
 PACMAN_POSITION_Y   2004
 PURPLE              800080
@@ -221,7 +233,7 @@ START               1000
 TEAL                808000
 WHITE               FFFFFF
 YELLOW              FFFF
-_00000000           1126
-_00000001           1140
-_00000002           115A
-_00000003           1174
+_00000000           10AA
+_00000001           10C4
+_00000002           10DE
+_00000003           10F8

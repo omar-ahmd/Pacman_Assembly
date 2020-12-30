@@ -14,75 +14,24 @@ START:                  ; first instruction of program
      MOVE.L #640*$10000+520,D1        Set screen to 512 x 512
      TRAP   #15
 
-draw_blocks
-     MOVE.B #80,D0
-     Move.L #BLUE,D1                Draw block pen and fill color
-     TRAP   #15
-     MOVE.B #81,D0
-     Move.L #BLUE,D1
-     TRAP   #15
-     Move.L #BLOCK_BEGIN_X,A0       Position first block X
-     Move.L #BLOCK_BEGIN_Y,A1       Position first block Y
-     Move.L #$0,D7                  Block draw loop index
-Loop_draw_blocks
-     Move.L #0,D5                   Reset D5
-     Move.L #0,D6                   Reset D6
-     Move.B (A0,D7.w),D5            New Block X position
-     Move.B (A1,D7.w),D6            New Block Y position
-     MULU.W #BX,D5                  Calculate X position on screen
-     MULU.W #BY,D6                  Calculate Y position on screen
-     MOVE.B #87,D0                  Draw left up block
-     MOVE.L D5,D1        
-     MOVE.L D6,D2
-     Add.L #BX,D5
-     Add.L #BY,D6
-     MOVE.L D5,D3
-     MOVE.L D6,D4
-     TRAP   #15
-     
-     Move.L D1,A2                   Save D1 value
 
-     
-     MOVE.B #87,D0                  Draw right up block
-     Sub.L #BY,D6
-     MOVE.L #512,D1
-     Sub.L D5,D1
-     MOVE.L D6,D2
-     MOVE.L D1,D5
-     MOVE.L D2,D6     
-     Add.L #BX,D5
-     Add.L #BY,D6
-     MOVE.L D5,D3
-     MOVE.L D6,D4
-     TRAP   #15
-        
-     MOVE.L #512,D2                 Draw right bottom block
-     MOVE.B #87,D0
-     ;Sub.L D5,D1
-     Sub.L D6,D2 
-     MOVE.L D1,D5
-     MOVE.L D2,D6     
-     Add.L #BX,D5
-     Add.L #BY,D6
-     MOVE.L D5,D3
-     MOVE.L D6,D4
-     TRAP   #15
-     
-     
-     MOVE.B #87,D0                  Draw left bottom block
-
-     MOVE.L A2,D1
-     MOVE.L D1,D5
-     MOVE.L D2,D6     
-     Add.L #BX,D5
-     Add.L #BY,D6
-     MOVE.L D5,D3
-     MOVE.L D6,D4
-     TRAP   #15         
- 
-     Add.L #$1,D7
-     CMP #79,D7
-     BNE Loop_draw_blocks
+     Move.L #$0,D5                  VERTICAL LOOP INDEX INIT
+     Move.L #MAP,A0                 LOAD MAP POSITION IN MEMORY
+Draw_map
+     Move.L #$0,D6                  HORIZONTAL LOOP INDEX INIT
+Loop_draw_map
+     Move.L D5,D7                   Calculate New Memory Position
+     MULU.W #19,D7                  Calculate New Memory Position
+     ADD.L D6,D7                    Calculate New Memory Position
+     MOVE.B (A0,D7.w),D0
+     CMP.B   #$43,D0
+     BSR draw_block
+     ADDQ #1,D6
+     CMP #19,D6
+     BNE Loop_draw_map
+     ADDQ #1,D5
+     CMP #21,D5
+     BNE Draw_map
 
 draw_player
      MOVE.B #80,D0
@@ -136,7 +85,35 @@ loop
      ADD.L #DY,D6
      Move.L D6,PACMAN_POSITION_Y
      ENDI
-     bra draw_blocks
+     bra draw_player
+     
+     
+     
+draw_block
+     MOVE.B #80,D0
+     Move.L #BLUE,D1                Draw block pen and fill color
+     TRAP   #15
+     MOVE.B #81,D0
+     Move.L #BLUE,D1
+     TRAP   #15
+     MOVE.B #87,D0 
+     MOVE.L D5,D1                   
+     MOVE.L D6,D2
+     Add.L #BX,D5
+     Add.L #BY,D6
+     MOVE.L D5,D3
+     MOVE.L D6,D4
+     TRAP   #15
+     RTS
+
+
+draw_coin     
+     MOVE.B #80,D0
+     Move.L #YELLOW,D1                Draw coin pen and fill color
+     TRAP   #15
+     MOVE.B #81,D0
+     Move.L #YELLOW,D1
+     TRAP   #15
      
 clr_screen    
     move.l  #BLACK,d1   
@@ -174,17 +151,35 @@ FIN
     SIMHALT             ; halt simulator
 * Put variables and constants here
  ORG $2000
-PACMAN_POSITION_X DC.L 20
-PACMAN_POSITION_Y DC.L 20
+PACMAN_POSITION_X DC.L 16
+PACMAN_POSITION_Y DC.L 16
 DX EQU 32
 DY EQU 32
 
 BX EQU 16
 BY EQU 16
-BLOCK_BEGIN_X DC.B 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,0,0,0,0,0,0,0,0,0, 0, 0, 0, 0, 0, 0,3,4,5,6,7,8,3,4,5,6,7,8,3,4,5,6,7,8,3,4,5,6,7,8,3,4,5,6,7,8,3,4,5,6,7,8, 3, 4, 5, 6, 7, 8, 3, 4, 5, 6, 7, 8
-BLOCK_BEGIN_Y DC.B 0,0,0,0,0,0,0,0,0,0, 0, 0, 0, 0, 0, 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,3,3,3,3,3,3,4,4,4,4,4,4,5,5,5,5,5,5,6,6,6,6,6,6,7,7,7,7,7,7,8,8,8,8,8,8,11,11,11,11,11,11,12,12,12,12,12,12
-;BLOCK_END_X
-;BLOCK_END_Y
+MAP  DC.B 'BBBBBBBBBBBBBBBBBBBB'                01
+     DC.B 'BBBBBBBBBBBBBBBBBBBB'                02
+     DC.B 'BBBBBBBBBBBBBBBBBBBB'                03
+     DC.B 'BBBBBBBBBBBBBBBBBBBB'                04
+     DC.B 'BBBBBBBBBBBBBBBBBBBB'                05
+     DC.B 'BBBBBBBBBBBBBBBBBBBB'                06
+     DC.B 'BBBBBBBBBBBBBBBBBBBB'                07
+     DC.B 'BBBBBBBBBBBBBBBBBBBB'                08
+     DC.B 'BBBBBBBBBBBBBBBBBBBB'                09
+     DC.B 'BBBBBBBBBBBBBBBBBBBB'                10
+     DC.B 'BBBBBBBBBBBBBBBBBBBB'                11
+     DC.B 'BBBBBBBBBBBBBBBBBBBB'                12
+     DC.B 'BBBBBBBBBBBBBBBBBBBB'                13
+     DC.B 'BBBBBBBBBBBBBBBBBBBB'                14
+     DC.B 'BBBBBBBBBBBBBBBBBBBB'                15
+     DC.B 'BBBBBBBBBBBBBBBBBBBB'                16
+     DC.B 'BBBBBBBBBBBBBBBBBBBB'                17
+     DC.B 'BBBBBBBBBBBBBBBBBBBB'                18
+     DC.B 'BBBBBBBBBBBBBBBBBBBB'                19
+     DC.B 'BBBBBBBBBBBBBBBBBBBB'                20
+     DC.B 'BBBBBBBBBBBBBBBBBBBB'                21
+
 
 BLACK equ $00000000  
 GREEN equ $00008000   
@@ -197,6 +192,7 @@ YELLOW equ $0000FFFF
 BLUE equ $00FF0000 
 WHITE equ $00FFFFFF 
     END    START        ; last line of source
+
 
 
 
