@@ -16,22 +16,22 @@ START:                  ; first instruction of program
 
 draw_blocks
      MOVE.B #80,D0
-     Move.L #BLUE,D1                Draw player pen and fill color
+     Move.L #BLUE,D1                Draw block pen and fill color
      TRAP   #15
      MOVE.B #81,D0
      Move.L #BLUE,D1
      TRAP   #15
-     Move.L #BLOCK_BEGIN_X,A0
-     Move.L #BLOCK_BEGIN_Y,A1
-     Move.L #$0,D7
+     Move.L #BLOCK_BEGIN_X,A0       Position first block X
+     Move.L #BLOCK_BEGIN_Y,A1       Position first block Y
+     Move.L #$0,D7                  Block draw loop index
 Loop_draw_blocks
-     Move.L #0,D5
-     Move.L #0,D6
-     Move.B (A0,D7.w),D5 
-     Move.B (A1,D7.w),D6    
-     MULU.W #BX,D5
-     MULU.W #BY,D6
-     MOVE.B #87,D0
+     Move.L #0,D5                   Reset D5
+     Move.L #0,D6                   Reset D6
+     Move.B (A0,D7.w),D5            New Block X position
+     Move.B (A1,D7.w),D6            New Block Y position
+     MULU.W #BX,D5                  Calculate X position on screen
+     MULU.W #BY,D6                  Calculate Y position on screen
+     MOVE.B #87,D0                  Draw left up block
      MOVE.L D5,D1        
      MOVE.L D6,D2
      Add.L #BX,D5
@@ -40,7 +40,10 @@ Loop_draw_blocks
      MOVE.L D6,D4
      TRAP   #15
      
-     MOVE.B #87,D0
+     Move.L D1,A2                   Save D1 value
+
+     
+     MOVE.B #87,D0                  Draw right up block
      Sub.L #BY,D6
      MOVE.L #512,D1
      Sub.L D5,D1
@@ -53,7 +56,7 @@ Loop_draw_blocks
      MOVE.L D6,D4
      TRAP   #15
         
-     MOVE.L #512,D2
+     MOVE.L #512,D2                 Draw right bottom block
      MOVE.B #87,D0
      ;Sub.L D5,D1
      Sub.L D6,D2 
@@ -65,6 +68,18 @@ Loop_draw_blocks
      MOVE.L D6,D4
      TRAP   #15
      
+     
+     MOVE.B #87,D0                  Draw left bottom block
+
+     MOVE.L A2,D1
+     MOVE.L D1,D5
+     MOVE.L D2,D6     
+     Add.L #BX,D5
+     Add.L #BY,D6
+     MOVE.L D5,D3
+     MOVE.L D6,D4
+     TRAP   #15         
+ 
      Add.L #$1,D7
      CMP #79,D7
      BNE Loop_draw_blocks
@@ -78,8 +93,8 @@ draw_player
      TRAP   #15
      Move.L PACMAN_POSITION_X,D5      Player x position
      Move.L PACMAN_POSITION_Y,D6      Player y position
-     MOVE.B #88,D0
-     MOVE.L D5,D1        
+     MOVE.B #88,D0                    draw player
+     MOVE.L D5,D1                       
      MOVE.L D6,D2
      Add.L #20,D5
      Add.L #20,D6
@@ -182,6 +197,7 @@ YELLOW equ $0000FFFF
 BLUE equ $00FF0000 
 WHITE equ $00FFFFFF 
     END    START        ; last line of source
+
 
 
 
