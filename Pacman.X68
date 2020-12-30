@@ -10,6 +10,7 @@ START:                  ; first instruction of program
 * Put program code here
 
 * Open Window
+    
      MOVE.B #33,D0
      MOVE.L #800*$10000+672,D1        Set screen to 512 x 512
      TRAP   #15
@@ -59,6 +60,38 @@ draw_player
      MOVE.L D5,D3
      MOVE.L D6,D4
      TRAP   #15
+     
+     
+     MOVE.B #80,D0
+     Move.L #Black,D1                Black pen and fill color
+     TRAP   #15
+     MOVE.B #81,D0
+     Move.L #Black,D1
+     TRAP   #15
+     
+     Move.B PACMAN_MOUTH,D0
+     BCHG #$0,PACMAN_MOUTH
+     BNE Eyes
+Mouth 
+     MOVE.B #88,D0                   draw pacman mouth
+     MOVE.L D5,D3                       
+     MOVE.L D6,D4   
+     add.L #2,D3                    
+     sub.L #5,D4 
+     sub.L #10,D5
+     sub.L #15,D6
+     MOVE.L D5,D1                      
+     MOVE.L D6,D2
+     TRAP   #15
+     
+Eyes MOVE.B #88,D0                   draw pacman eyes
+     MOVE.L D1,D3                       
+     MOVE.L D2,D4   
+     sub.L #3,D1                   
+     sub.L #3,D2 
+     TRAP   #15
+
+     
 loop  
      Move.L #10,D0                             DELAY TIME
      BSR DELAY
@@ -171,6 +204,7 @@ FIN
  ORG $2000
 PACMAN_POSITION_X DC.L 195
 PACMAN_POSITION_Y DC.L 38
+PACMAN_MOUTH dc.b 1
 
 DX EQU 32
 DY EQU 32
@@ -215,6 +249,7 @@ YELLOW equ $0000FFFF
 BLUE equ $00FF0000 
 WHITE equ $00FFFFFF 
     END    START        ; last line of source
+
 
 
 
