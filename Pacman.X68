@@ -16,11 +16,17 @@ START:                  ; first instruction of program
      MOVE.B #33,D0
      MOVE.L #800*$10000+672,D1        Set screen to 800 x 672
      TRAP   #15
+     BRA STARTG
     
 ;----------------------------------------------------------------Draw Map-------------------------------------------------------------------------------
+STARTG BSR DRAW_LEVEL
      Move.L #$0,D1                  RESET D1
      Move.L #$0,D5                  VERTICAL LOOP INDEX INIT
-     Move.L #MAP,A0                 LOAD MAP POSITION IN MEMORY
+     MOVE.L LEVEL,D0
+     SUB.L #1,D0
+     Move.L #MAP,A0
+     ADD.L D0,A0                 LOAD MAP POSITION IN MEMORY
+     BSR RESET_TIME
 Draw_map
      Move.L #$0,D6                  HORIZONTAL LOOP INDEX INIT
 Loop_draw_map
@@ -48,15 +54,17 @@ Ctn0 ADDQ #1,D6
      ADDQ #1,D5
      CMP #21,D5
      BNE Draw_map
-     
+     BRA draw_Pacman
+
+
 ;----------------------------------------------------------------Draw PACMAN---------------------------------------------------------------------------
     
 draw_Pacman
      MOVE.B #80,D0
-     Move.L #YELLOW,D1                Draw player pen and fill color
+     Move.L PacManColor,D1                Draw player pen and fill color
      TRAP   #15
      MOVE.B #81,D0
-     Move.L #YELLOW,D1
+     Move.L PacManColor ,D1
      TRAP   #15
      Move.L PACMAN_POSITION_X,D5      Player x position
      Move.L PACMAN_POSITION_Y,D6      Player y position
@@ -126,10 +134,11 @@ Draw_Pacman_Eyes
      Add.L (A1)+,D3                 
      Add.L (A1),D4
      TRAP   #15
+     BRA loop
     
     
 ;----------------------------------------------------------------Game Loop-----------------------------------------------------------------------------
-    BSR DRAW_LEVEL    
+    
 loop  
      BSR DRAW_SCORE
      Move.L #7,D0                             DELAY TIME
@@ -215,17 +224,25 @@ CHECK_COIN
 ;----------------------------------------------------------------CHECK G_Coin---------------------------------------------------------------------------
    
 CHECK_G_COIN
-    MOVE.L #83,D0
+    BSR Get_Time
+    SUB.L BEGIN_G_TIME,D1
+    CMP.B G_TIME,D1
+    BNE SK
+    MOVE.L #YELLOW,PacManColor
+    
+SK  MOVE.L #83,D0
     MOVE.L NPACMAN_POSITION_X,D1
     MOVE.L NPACMAN_POSITION_Y,D2
     ADD.L #12,D2
     ADD.L #12,D1
     TRAP #15
-    
     CMP.L #GRAY,D0
     BNE COIN
+    BSR Get_Time
+    MOVE.L D1,BEGIN_G_TIME 
     AddI.L #10,SCORE
     BSR DRAW_SCORE
+    MOVE.L #PURPLE,PacManColor
     BRA COIN
     
 ;----------------------------------------------------------------Draw Score---------------------------------------------------------------------------
@@ -241,19 +258,28 @@ DRAW_SCORE
     RTS 
 
 ;----------------------------------------------------------------Draw Time----------------------------------------------------------------------------
-
-Draw_Time
+Get_Time
     MOVE.L #31,D0
     TRAP #15
-	move.b #22,d0
+	move.L #22,d0
 	lsr.l d0,d1
-	move.l		D1,BEGIN_TIME
+    RTS
+    
+RESET_TIME
+     BSR Get_Time
+     Move.l D1,BEGIN_L_TIME
+     RTS
+
+Draw_Time
+    BSR Get_Time
+	SUB.l		BEGIN_L_TIME,D1
+	MOVE.L D1,CURRENT_TIME
     move.l		#11,d0			
 	move.l		#$0002,d1			
 	trap		#15
 	lea		    TimeDisplay,a1
 	move.l		#17,d0
-	move.l		BEGIN_TIME,d1
+	MOVE.L CURRENT_TIME,D1
 	trap		#15
     RTS 
     
@@ -358,7 +384,8 @@ LOOP_DELAY
     BNE DELAY
 FIN
     RTS
-    
+
+
  ;----------------------------------------------------------------CONSTANTS---------------------------------------------------------------------------
 
     SIMHALT             ; halt simulator
@@ -377,9 +404,11 @@ NPACMAN_POSITION_X DS.L 1
 NPACMAN_POSITION_Y DS.L 1
 SCORE DC.L 0
 LEVEL DC.L 1
-BEGIN_TIME DS.L 1
+BEGIN_L_TIME DS.L 1
 CURRENT_TIME DS.L 1
-
+BEGIN_G_TIME DS.L 1
+G_TIME DC.B 5
+PacManColor Dc.l YELLOW 
 ScoreDisplay	dc.b		'Current Score: ',0
 LevelDisplay	dc.b		'Level: ',0
 TimeDisplay	dc.b		'TIME: ',0
@@ -393,7 +422,7 @@ DPY EQU 25
 
 BX EQU 32
 BY EQU 32
-MAP  
+MAP 
      DC.B 'EEEEEBBBBBBBBBBBBBBBBBBBE'                01
      DC.B 'EEEEEBCCCCCCCCBCCCCCCCCBE'                02
      DC.B 'EEEEEBGBBCBBBCBCBBBCBBGBE'                03
@@ -428,6 +457,7 @@ YELLOW equ $0000FFFF
 BLUE equ $00FF0000 
 WHITE equ $00FFFFFF 
     END    START        ; last line of source
+
 
 
 
