@@ -9,16 +9,18 @@ START:                  ; first instruction of program
 
 * Put program code here
 
+
+;----------------------------------------------------------------Resize Screen---------------------------------------------------------------------------
 * Open Window
     
      MOVE.B #33,D0
      MOVE.L #800*$10000+672,D1        Set screen to 512 x 512
      TRAP   #15
     
+;----------------------------------------------------------------Draw Map-------------------------------------------------------------------------------
      Move.L #$0,D1                  RESET D1
      Move.L #$0,D5                  VERTICAL LOOP INDEX INIT
      Move.L #MAP,A0                 LOAD MAP POSITION IN MEMORY
-     
 Draw_map
      Move.L #$0,D6                  HORIZONTAL LOOP INDEX INIT
 Loop_draw_map
@@ -44,7 +46,7 @@ Ctn0 ADDQ #1,D6
      CMP #21,D5
      BNE Draw_map
      
-
+;----------------------------------------------------------------Draw PACMAN---------------------------------------------------------------------------
     
 draw_player
      MOVE.B #80,D0
@@ -72,36 +74,63 @@ draw_player
      Move.L #Black,D1
      TRAP   #15
      
-     Move.B PACMAN_MOUTH,D0
+     Move.B PACMAN_MOUTH,D0          
      BCHG #$0,PACMAN_MOUTH
-     BNE Eyes
-Mouth 
+     BNE Draw_Pacman_Eyes
+     Move.B PACMAN_DIRECTION,D0      CHECK PACMAN Direction
+CHECK_DIRECTION_D
+     CMP #$44,D0
+     BNE CHECK_DIRECTION_A
+     MOVE.L #RIGHT_MOUTH,A1
+     BRA Draw_Pacman_Mouth
+CHECK_DIRECTION_A
+     CMP #'A',D0
+     BNE CHECK_DIRECTION_W
+     MOVE.L #LEFT_MOUTH,A1
+     BRA Draw_Pacman_Mouth
+CHECK_DIRECTION_W
+     CMP #'W',D0
+     BNE CHECK_DIRECTION_S
+     MOVE.L #UP_MOUTH,A1
+     BRA Draw_Pacman_Mouth
+CHECK_DIRECTION_S
+     CMP #'S',D0
+     BNE Draw_Pacman_Mouth
+     MOVE.L #DOWN_MOUTH,A1
+     BRA Draw_Pacman_Mouth
+Draw_Pacman_Mouth
      MOVE.B #88,D0                   draw pacman mouth
-     MOVE.L D5,D3                       
-     MOVE.L D6,D4   
-     add.L #2,D3                    
-     sub.L #5,D4 
-     sub.L #10,D5
-     sub.L #15,D6
-     MOVE.L D5,D1                      
-     MOVE.L D6,D2
+     MOVE.L PACMAN_POSITION_X,D1                      
+     MOVE.L PACMAN_POSITION_Y,D2
+     MOVE.L PACMAN_POSITION_X,D3                       
+     MOVE.L PACMAN_POSITION_Y,D4 
+     Add.L (A1)+,D1                   
+     Add.L (A1)+,D2
+     Add.L (A1)+,D3                 
+     Add.L (A1),D4
      TRAP   #15
      
-Eyes MOVE.B #88,D0                   draw pacman eyes
-     MOVE.L D1,D3                       
-     MOVE.L D2,D4   
-     sub.L #3,D1                   
-     sub.L #3,D2 
+Draw_Pacman_Eyes
+     MOVE.B #88,D0                   draw pacman eyes
+     MOVE.L #EYES,A1
+     MOVE.L PACMAN_POSITION_X,D1                      
+     MOVE.L PACMAN_POSITION_Y,D2
+     MOVE.L PACMAN_POSITION_X,D3                       
+     MOVE.L PACMAN_POSITION_Y,D4 
+     Add.L (A1)+,D1                   
+     Add.L (A1)+,D2
+     Add.L (A1)+,D3                 
+     Add.L (A1),D4
      TRAP   #15
-     
-
-    BSR DRAW_SCORE
     
+    
+;----------------------------------------------------------------Game Loop-----------------------------------------------------------------------------
      
 loop  
+     BSR DRAW_SCORE
      Move.L #10,D0                             DELAY TIME
      BSR DELAY
-     JSR clr_screen                             Clear screen
+     JSR clr_pacman                            Clear Pacman
      
      MOVE.L PACMAN_POSITION_X,D1
      MOVE.L PACMAN_POSITION_Y,D2
@@ -118,6 +147,7 @@ loop
      Move.L PACMAN_POSITION_X,D5 
      SUB.L #DX,D5
      Move.L D5,NPACMAN_POSITION_X
+     Move.B #'A',PACMAN_DIRECTION
      ENDI
      
      BTST.L #0,D1     ; test for 'w'
@@ -125,6 +155,7 @@ loop
      Move.L PACMAN_POSITION_Y,D6
      SUB.L #DY,D6
      Move.L D6,NPACMAN_POSITION_Y
+     Move.B #'W',PACMAN_DIRECTION
      ENDI
 
      BTST.L #8,D1     ; test for 'd'
@@ -132,6 +163,7 @@ loop
      Move.L PACMAN_POSITION_X,D5 
      ADD.L #DX,D5
      Move.L D5,NPACMAN_POSITION_X
+     Move.B #'D',PACMAN_DIRECTION
      ENDI
      
      BTST.L #16,D1     ; test for 's'
@@ -139,11 +171,13 @@ loop
      Move.L PACMAN_POSITION_Y,D6
      ADD.L #DY,D6
      Move.L D6,NPACMAN_POSITION_Y
+     Move.B #'S',PACMAN_DIRECTION
      ENDI
      BRA CHECK_BLOCK
 COIN BRA CHECK_COIN
 SKIP bra draw_player
-     
+ 
+;----------------------------------------------------------------CHECK Block---------------------------------------------------------------------------
 
 CHECK_BLOCK
     MOVE.L #83,D0
@@ -156,6 +190,8 @@ CHECK_BLOCK
     MOVE.L D1,PACMAN_POSITION_X
     MOVE.L D2,PACMAN_POSITION_Y
     BRA COIN
+    
+;----------------------------------------------------------------CHECK Coin---------------------------------------------------------------------------
 
 CHECK_COIN
     MOVE.L #83,D0
@@ -171,12 +207,7 @@ CHECK_COIN
     BSR DRAW_SCORE
     BRA SKIP
     
-    
-    
-    
-    
-    
-    
+;----------------------------------------------------------------Draw Score---------------------------------------------------------------------------
     
 DRAW_SCORE
     move.l		#11,d0			
@@ -189,7 +220,7 @@ DRAW_SCORE
     RTS 
 
 
-
+;----------------------------------------------------------------Draw Blocks---------------------------------------------------------------------------
 
 draw_block
      MOVE.B #80,D0
@@ -206,6 +237,7 @@ draw_block
      TRAP   #15
      BRA Ctn0
 
+;----------------------------------------------------------------Draw Small Coin---------------------------------------------------------------------------
 
 draw_coin     
      MOVE.B #80,D0
@@ -225,8 +257,9 @@ draw_coin
      TRAP   #15
      BRA Ctn0
 
-     
-clr_screen    
+;----------------------------------------------------------------CLEAR PACMAN---------------------------------------------------------------------------
+
+clr_pacman    
     move.l  #BLACK,d1   
     move.b  #80,d0  set pen color
     trap #15     
@@ -244,15 +277,8 @@ clr_screen
     move.b  #87,d0     draw black filled rectangle
     trap #15
     RTS
-
-
     
-    
-
-
-
-
-
+;----------------------------------------------------------------DELAY---------------------------------------------------------------------------------
    
 DELAY ; TIME = D0 SECOND
     CMP.B #0,D0
@@ -266,7 +292,7 @@ LOOP_DELAY
 FIN
     RTS
     
-     
+ ;----------------------------------------------------------------CONSTANTS---------------------------------------------------------------------------
 
     SIMHALT             ; halt simulator
 * Put variables and constants here
@@ -274,6 +300,12 @@ FIN
 PACMAN_POSITION_X DC.L 195
 PACMAN_POSITION_Y DC.L 38
 PACMAN_MOUTH dc.b 1
+PACMAN_DIRECTION dc.b 'D',0
+LEFT_MOUTH dc.L -02,09,09,21      
+RIGHT_MOUTH dc.L 16,09,28,21    
+UP_MOUTH dc.L 09,-02,21,09
+DOWN_MOUTH dc.L 09,16,21,26
+EYES dc.L 11,10,15,14
 NPACMAN_POSITION_X DS.L 1
 NPACMAN_POSITION_Y DS.L 1
 SCORE DC.L 0
@@ -321,15 +353,6 @@ YELLOW equ $0000FFFF
 BLUE equ $00FF0000 
 WHITE equ $00FFFFFF 
     END    START        ; last line of source
-
-
-
-
-
-
-
-
-
 
 
 
