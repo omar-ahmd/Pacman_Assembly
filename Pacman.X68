@@ -18,6 +18,7 @@ START:                  ; first instruction of program
      Move.L #$0,D1                  RESET D1
      Move.L #$0,D5                  VERTICAL LOOP INDEX INIT
      Move.L #MAP,A0                 LOAD MAP POSITION IN MEMORY
+     
 Draw_map
      Move.L #$0,D6                  HORIZONTAL LOOP INDEX INIT
 Loop_draw_map
@@ -42,7 +43,9 @@ Ctn0 ADDQ #1,D6
      ADDQ #1,D5
      CMP #21,D5
      BNE Draw_map
+     
 
+    
 draw_player
      MOVE.B #80,D0
      Move.L #YELLOW,D1                Draw player pen and fill color
@@ -90,12 +93,22 @@ Eyes MOVE.B #88,D0                   draw pacman eyes
      sub.L #3,D1                   
      sub.L #3,D2 
      TRAP   #15
+     
 
+    BSR DRAW_SCORE
+    
      
 loop  
      Move.L #10,D0                             DELAY TIME
      BSR DELAY
      JSR clr_screen                             Clear screen
+     
+     MOVE.L PACMAN_POSITION_X,D1
+     MOVE.L PACMAN_POSITION_Y,D2
+     MOVE.L D1,NPACMAN_POSITION_X
+     MOVE.L D2,NPACMAN_POSITION_Y     
+     
+     
      MOVE.B #19,D0     
      MOVE.L #'A'<<24+'S'<<16+'D'<<8+'W',D1      Check for keypress (a,s,d,w)
      TRAP   #15
@@ -104,33 +117,80 @@ loop
      IF <NE> THEN      ; if 'a'
      Move.L PACMAN_POSITION_X,D5 
      SUB.L #DX,D5
-     Move.L D5,PACMAN_POSITION_X
+     Move.L D5,NPACMAN_POSITION_X
      ENDI
      
      BTST.L #0,D1     ; test for 'w'
      IF <NE> THEN      ; if 'w'
      Move.L PACMAN_POSITION_Y,D6
      SUB.L #DY,D6
-     Move.L D6,PACMAN_POSITION_Y
+     Move.L D6,NPACMAN_POSITION_Y
      ENDI
 
      BTST.L #8,D1     ; test for 'd'
      IF <NE> THEN      ; if 'd'
      Move.L PACMAN_POSITION_X,D5 
      ADD.L #DX,D5
-     Move.L D5,PACMAN_POSITION_X
+     Move.L D5,NPACMAN_POSITION_X
      ENDI
      
      BTST.L #16,D1     ; test for 's'
      IF <NE> THEN      ; if 's'
      Move.L PACMAN_POSITION_Y,D6
      ADD.L #DY,D6
-     Move.L D6,PACMAN_POSITION_Y
+     Move.L D6,NPACMAN_POSITION_Y
      ENDI
-     bra draw_player
+     BRA CHECK_BLOCK
+COIN BRA CHECK_COIN
+SKIP bra draw_player
      
-     
-     
+
+CHECK_BLOCK
+    MOVE.L #83,D0
+    MOVE.L NPACMAN_POSITION_X,D1
+    MOVE.L NPACMAN_POSITION_Y,D2
+    TRAP #15
+    
+    CMP.L #BLUE,D0
+    BEQ SKIP
+    MOVE.L D1,PACMAN_POSITION_X
+    MOVE.L D2,PACMAN_POSITION_Y
+    BRA COIN
+
+CHECK_COIN
+    MOVE.L #83,D0
+    MOVE.L NPACMAN_POSITION_X,D1
+    MOVE.L NPACMAN_POSITION_Y,D2
+    ADD.L #12,D2
+    ADD.L #12,D1
+    TRAP #15
+    
+    CMP.L #WHITE,D0
+    BNE SKIP
+    AddI.L #1,SCORE
+    BSR DRAW_SCORE
+    BRA SKIP
+    
+    
+    
+    
+    
+    
+    
+    
+DRAW_SCORE
+    move.l		#11,d0			
+	move.l		#0,d1			
+	trap		#15
+	lea		ScoreDisplay,a1
+	move.l		#17,d0
+	move.l		Score,d1
+	trap		#15
+    RTS 
+
+
+
+
 draw_block
      MOVE.B #80,D0
      Move.L #BLUE,D1                Draw block pen and fill color
@@ -184,7 +244,16 @@ clr_screen
     move.b  #87,d0     draw black filled rectangle
     trap #15
     RTS
+
+
     
+    
+
+
+
+
+
+   
 DELAY ; TIME = D0 SECOND
     CMP.B #0,D0
     BEQ FIN
@@ -205,7 +274,10 @@ FIN
 PACMAN_POSITION_X DC.L 195
 PACMAN_POSITION_Y DC.L 38
 PACMAN_MOUTH dc.b 1
-
+NPACMAN_POSITION_X DS.L 1
+NPACMAN_POSITION_Y DS.L 1
+SCORE DC.L 0
+ScoreDisplay	dc.b		'Current Score: ',0
 DX EQU 32
 DY EQU 32
 
@@ -249,6 +321,8 @@ YELLOW equ $0000FFFF
 BLUE equ $00FF0000 
 WHITE equ $00FFFFFF 
     END    START        ; last line of source
+
+
 
 
 
