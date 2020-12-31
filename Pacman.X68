@@ -40,13 +40,16 @@ Loop_draw_map
      MOVE.B (A0,D7.w),D0
      
      CMP.B   #'B',D0
-     BEQ draw_block
+     BNE COI
+     BSR draw_block     
      
-     CMP.B   #'C',D0
-     BEQ draw_coin
+COI  CMP.B   #'C',D0
+     BNE GCO
+     BSR draw_coin 
      
-     CMP.B   #'G',D0
-     BEQ draw_Gcoin
+GCO  CMP.B   #'G',D0
+     BNE Ctn0
+     BSR draw_Gcoin
      
 Ctn0 ADDQ #1,D6
      CMP #25,D6
@@ -186,9 +189,9 @@ loop
      Move.L D6,NPACMAN_POSITION_Y
      Move.B #'S',PACMAN_DIRECTION
      ENDI
-     BRA CHECK_BLOCK
-GCOIN BRA CHECK_G_COIN
-COIN BRA CHECK_COIN
+     BSR CHECK_BLOCK
+     BSR CHECK_G_COIN
+     BSR CHECK_COIN
 SKIP bra draw_Pacman
  
 ;----------------------------------------------------------------CHECK Block---------------------------------------------------------------------------
@@ -203,7 +206,7 @@ CHECK_BLOCK
     BEQ SKIP
     MOVE.L D1,PACMAN_POSITION_X
     MOVE.L D2,PACMAN_POSITION_Y
-    BRA GCOIN
+    RTS
     
 ;----------------------------------------------------------------CHECK Coin---------------------------------------------------------------------------
 
@@ -219,7 +222,8 @@ CHECK_COIN
     BNE SKIP
     AddI.L #1,SCORE
     BSR DRAW_SCORE
-    BRA SKIP
+    BSR Emptying_Ate_Coin
+    RTS
 
 ;----------------------------------------------------------------CHECK G_Coin---------------------------------------------------------------------------
    
@@ -241,9 +245,10 @@ SK  MOVE.L #83,D0
     BSR Get_Time
     MOVE.L D1,BEGIN_G_TIME 
     AddI.L #10,SCORE
+    BSR Emptying_Ate_Coin
     BSR DRAW_SCORE
     MOVE.L #PURPLE,PacManColor
-    BRA COIN
+COIN RTS
     
 ;----------------------------------------------------------------Draw Score---------------------------------------------------------------------------
     
@@ -309,7 +314,7 @@ draw_block
      Add.L #BX,D3
      Add.L #BY,D4
      TRAP   #15
-     BRA Ctn0
+     RTS
 
 ;----------------------------------------------------------------Draw Small Coin---------------------------------------------------------------------------
 
@@ -329,7 +334,7 @@ draw_coin
      ADD.L #13,D3
      ADD.L #13,D4
      TRAP   #15
-     BRA Ctn0
+     RTS
      
 ;----------------------------------------------------------------CLEAR G_COINS---------------------------------------------------------------------------
 
@@ -349,7 +354,7 @@ draw_Gcoin
      ADD.L #19,D3
      ADD.L #19,D4
      TRAP   #15
-     BRA Ctn0
+     RTS
 ;----------------------------------------------------------------CLEAR PACMAN---------------------------------------------------------------------------
 
 clr_pacman    
@@ -370,7 +375,7 @@ clr_pacman
     move.b  #87,d0     draw black filled rectangle
     trap #15
     RTS
-    
+            
 ;----------------------------------------------------------------DELAY---------------------------------------------------------------------------------
    
 DELAY ; TIME = D0 SECOND
@@ -384,8 +389,31 @@ LOOP_DELAY
     BNE DELAY
 FIN
     RTS
-
-
+    
+;----------------------------------------------------------------EMPTYING ATE COINS IN MEMORY----------------------------------------------------------
+    
+Get_Pacman_Coordinates
+   Move.L PACMAN_POSITION_X,D0
+   Move.L PACMAN_POSITION_Y,D1
+   SUB.L #3,D0
+   DIVU #32,D0
+   SUB.L #6,D1
+   DIVU #32,D1
+   RTS
+   
+Emptying_Ate_Coin
+    MOVE.L LEVEL,D0
+    SUB.L #1,D0
+    Move.L #MAP,A0
+    ADD.L D0,A0
+    BSR Get_Pacman_Coordinates
+    MULU #25,D1
+    ADD.L D0,D1
+    ADD.L D1,A0
+    MOVE.B #'E',(A0)
+    RTS
+    
+    
  ;----------------------------------------------------------------CONSTANTS---------------------------------------------------------------------------
 
     SIMHALT             ; halt simulator
@@ -424,7 +452,7 @@ BX EQU 32
 BY EQU 32
 MAP 
      DC.B 'EEEEEBBBBBBBBBBBBBBBBBBBE'                01
-     DC.B 'EEEEEBCCCCCCCCBCCCCCCCCBE'                02
+     DC.B 'EEEEEBECCCCCCCBCCCCCCCCBE'                02
      DC.B 'EEEEEBGBBCBBBCBCBBBCBBGBE'                03
      DC.B 'EEEEEBCCCCCCCCBCCCCCCCCBE'                04
      DC.B 'EEEEEBCBBCBCBBBBBCBCBBCBE'                05
@@ -457,6 +485,7 @@ YELLOW equ $0000FFFF
 BLUE equ $00FF0000 
 WHITE equ $00FFFFFF 
     END    START        ; last line of source
+
 
 
 
