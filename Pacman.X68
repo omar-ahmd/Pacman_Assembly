@@ -14,7 +14,7 @@ START:                  ; first instruction of program
 * Open Window
     
      MOVE.B #33,D0
-     MOVE.L #800*$10000+672,D1        Set screen to 512 x 512
+     MOVE.L #800*$10000+672,D1        Set screen to 800 x 672
      TRAP   #15
     
 ;----------------------------------------------------------------Draw Map-------------------------------------------------------------------------------
@@ -39,6 +39,9 @@ Loop_draw_map
      CMP.B   #'C',D0
      BEQ draw_coin
      
+     CMP.B   #'G',D0
+     BEQ draw_Gcoin
+     
 Ctn0 ADDQ #1,D6
      CMP #25,D6
      BNE Loop_draw_map
@@ -48,7 +51,7 @@ Ctn0 ADDQ #1,D6
      
 ;----------------------------------------------------------------Draw PACMAN---------------------------------------------------------------------------
     
-draw_player
+draw_Pacman
      MOVE.B #80,D0
      Move.L #YELLOW,D1                Draw player pen and fill color
      TRAP   #15
@@ -78,6 +81,7 @@ draw_player
      BCHG #$0,PACMAN_MOUTH
      BNE Draw_Pacman_Eyes
      Move.B PACMAN_DIRECTION,D0      CHECK PACMAN Direction
+     
 CHECK_DIRECTION_D
      CMP #$44,D0
      BNE CHECK_DIRECTION_A
@@ -125,13 +129,13 @@ Draw_Pacman_Eyes
     
     
 ;----------------------------------------------------------------Game Loop-----------------------------------------------------------------------------
-     
+    BSR DRAW_LEVEL    
 loop  
      BSR DRAW_SCORE
-     Move.L #10,D0                             DELAY TIME
+     Move.L #7,D0                             DELAY TIME
      BSR DELAY
      JSR clr_pacman                            Clear Pacman
-     
+     BSR Draw_Time     
      MOVE.L PACMAN_POSITION_X,D1
      MOVE.L PACMAN_POSITION_Y,D2
      MOVE.L D1,NPACMAN_POSITION_X
@@ -174,8 +178,9 @@ loop
      Move.B #'S',PACMAN_DIRECTION
      ENDI
      BRA CHECK_BLOCK
+GCOIN BRA CHECK_G_COIN
 COIN BRA CHECK_COIN
-SKIP bra draw_player
+SKIP bra draw_Pacman
  
 ;----------------------------------------------------------------CHECK Block---------------------------------------------------------------------------
 
@@ -189,7 +194,7 @@ CHECK_BLOCK
     BEQ SKIP
     MOVE.L D1,PACMAN_POSITION_X
     MOVE.L D2,PACMAN_POSITION_Y
-    BRA COIN
+    BRA GCOIN
     
 ;----------------------------------------------------------------CHECK Coin---------------------------------------------------------------------------
 
@@ -206,12 +211,28 @@ CHECK_COIN
     AddI.L #1,SCORE
     BSR DRAW_SCORE
     BRA SKIP
+
+;----------------------------------------------------------------CHECK G_Coin---------------------------------------------------------------------------
+   
+CHECK_G_COIN
+    MOVE.L #83,D0
+    MOVE.L NPACMAN_POSITION_X,D1
+    MOVE.L NPACMAN_POSITION_Y,D2
+    ADD.L #12,D2
+    ADD.L #12,D1
+    TRAP #15
+    
+    CMP.L #GRAY,D0
+    BNE COIN
+    AddI.L #10,SCORE
+    BSR DRAW_SCORE
+    BRA COIN
     
 ;----------------------------------------------------------------Draw Score---------------------------------------------------------------------------
     
 DRAW_SCORE
     move.l		#11,d0			
-	move.l		#0,d1			
+	move.l		#$0001,d1			
 	trap		#15
 	lea		ScoreDisplay,a1
 	move.l		#17,d0
@@ -219,7 +240,34 @@ DRAW_SCORE
 	trap		#15
     RTS 
 
+;----------------------------------------------------------------Draw Time----------------------------------------------------------------------------
 
+Draw_Time
+    MOVE.L #31,D0
+    TRAP #15
+	move.b #22,d0
+	lsr.l d0,d1
+	move.l		D1,BEGIN_TIME
+    move.l		#11,d0			
+	move.l		#$0002,d1			
+	trap		#15
+	lea		    TimeDisplay,a1
+	move.l		#17,d0
+	move.l		BEGIN_TIME,d1
+	trap		#15
+    RTS 
+    
+;----------------------------------------------------------------Draw Level---------------------------------------------------------------------------
+    
+DRAW_LEVEL
+    move.l		#11,d0			
+	move.l		#$0000,d1			
+	trap		#15
+	lea		    LevelDisplay,a1
+	move.l		#17,d0
+	move.l		LEVEL,d1
+	trap		#15
+    RTS 
 ;----------------------------------------------------------------Draw Blocks---------------------------------------------------------------------------
 
 draw_block
@@ -247,16 +295,35 @@ draw_coin
      Move.L #WHITE,D1
      TRAP   #15
      MOVE.B #88,D0
-     ADD.L #8,D3
-     ADD.L #8,D4
+     ADD.L #11,D3
+     ADD.L #11,D4
      Move.L D3,D1
      Move.L D4,D2
      
-     ADD.L #16,D3
-     ADD.L #16,D4
+     ADD.L #13,D3
+     ADD.L #13,D4
      TRAP   #15
      BRA Ctn0
+     
+;----------------------------------------------------------------CLEAR G_COINS---------------------------------------------------------------------------
 
+draw_Gcoin     
+     MOVE.B #80,D0
+     Move.L #GRAY,D1                Draw coin pen and fill color
+     TRAP   #15
+     MOVE.B #81,D0
+     Move.L #GRAY,D1
+     TRAP   #15
+     MOVE.B #88,D0
+     ADD.L #6,D3
+     ADD.L #6,D4
+     Move.L D3,D1
+     Move.L D4,D2
+     
+     ADD.L #19,D3
+     ADD.L #19,D4
+     TRAP   #15
+     BRA Ctn0
 ;----------------------------------------------------------------CLEAR PACMAN---------------------------------------------------------------------------
 
 clr_pacman    
@@ -304,12 +371,20 @@ PACMAN_DIRECTION dc.b 'D',0
 LEFT_MOUTH dc.L -02,09,09,21      
 RIGHT_MOUTH dc.L 16,09,28,21    
 UP_MOUTH dc.L 09,-02,21,09
-DOWN_MOUTH dc.L 09,16,21,26
+DOWN_MOUTH dc.L 09,15,21,25
 EYES dc.L 11,10,15,14
 NPACMAN_POSITION_X DS.L 1
 NPACMAN_POSITION_Y DS.L 1
 SCORE DC.L 0
+LEVEL DC.L 1
+BEGIN_TIME DS.L 1
+CURRENT_TIME DS.L 1
+
 ScoreDisplay	dc.b		'Current Score: ',0
+LevelDisplay	dc.b		'Level: ',0
+TimeDisplay	dc.b		'TIME: ',0
+
+
 DX EQU 32
 DY EQU 32
 
@@ -353,6 +428,8 @@ YELLOW equ $0000FFFF
 BLUE equ $00FF0000 
 WHITE equ $00FFFFFF 
     END    START        ; last line of source
+
+
 
 
 
