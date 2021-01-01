@@ -1,6 +1,6 @@
 00001000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.16.01
-Created On: 01-Jan-21 2:15:10 PM
+Created On: 01-Jan-21 2:30:24 PM
 
 00000000                             1  *-----------------------------------------------------------
 00000000                             2  * Title      :
@@ -27,9 +27,9 @@ Created On: 01-Jan-21 2:15:10 PM
 00001014  6100 05A2                 23  STARTG BSR DRAW_LEVEL
 00001018  7200                      24       Move.L #$0,D1                  RESET D1
 0000101A  7A00                      25       Move.L #$0,D5                  VERTICAL LOOP INDEX INIT
-0000101C  2039 00002C0C             26       MOVE.L LEVEL,D0
+0000101C  2039 0000207C             26       MOVE.L LEVEL,D0
 00001022  5380                      27       SUB.L #1,D0
-00001024  207C 00002C3C             28       Move.L #MAP,A0
+00001024  207C 000020AC             28       Move.L #MAP,A0
 0000102A  D1C0                      29       ADD.L D0,A0                 LOAD MAP POSITION IN MEMORY
 0000102C                            30  
 0000102C                            31  
@@ -259,14 +259,14 @@ Created On: 01-Jan-21 2:15:10 PM
 000012B8                           255  DRAW_GHOST
 000012B8  7053                     256      MOVE.L #83,D0
 000012BA  2239 00002070            257      MOVE.L NGHOST_POSITION_X,D1
-000012C0  2439 0000277C            258      MOVE.L NGHOST_POSITION_Y,D2
+000012C0  2439 00002074            258      MOVE.L NGHOST_POSITION_Y,D2
 000012C6  4E4F                     259      TRAP #15    
 000012C8  B0BC 00FF0000            260      CMP.L #BLUE,D0
 000012CE  6700 001E                261      BEQ FF 
 000012D2                           262      
 000012D2  6100 00A4                263      BSR CHECK_GO_COIN
 000012D6  2239 00002070            264      MOVE.L NGHOST_POSITION_X,D1
-000012DC  2439 0000277C            265      MOVE.L NGHOST_POSITION_Y,D2
+000012DC  2439 00002074            265      MOVE.L NGHOST_POSITION_Y,D2
 000012E2  23C1 00002068            266      MOVE.L D1,GHOST_POSITION_X
 000012E8  23C2 0000206C            267      MOVE.L D2,GHOST_POSITION_Y   
 000012EE  2479 00002068            268  FF  MOVE.L GHOST_POSITION_X,A2
@@ -436,7 +436,7 @@ Created On: 01-Jan-21 2:15:10 PM
 000014C8                           432      
 000014C8  B0BC 00FFFFFF            433      CMP.L #WHITE,D0
 000014CE  6600 0010                434      BNE eq
-000014D2  52B9 00002C08            435      AddI.L #1,SCORE
+000014D2  52B9 00002078            435      AddI.L #1,SCORE
 000014D8  6100 0074                436      BSR DRAW_SCORE
 000014DC  6100 021E                437      BSR Emptying_Ate_Coin
 000014E0  4E75                     438  eq  RTS
@@ -450,8 +450,8 @@ Created On: 01-Jan-21 2:15:10 PM
 000014E2                           446     
 000014E2                           447  CHECK_G_COIN
 000014E2  6100 009A                448      BSR Get_Time
-000014E6  92B9 00002C18            449      SUB.L BEGIN_G_TIME,D1
-000014EC  B239 00002C1C            450      CMP.B G_TIME,D1
+000014E6  92B9 00002088            449      SUB.L BEGIN_G_TIME,D1
+000014EC  B239 0000208C            450      CMP.B G_TIME,D1
 000014F2  6600 000C                451      BNE SK
 000014F6  23FC 0000FFFF 00002064   452      MOVE.L #YELLOW,PacManColor
 00001500                           453      
@@ -464,8 +464,8 @@ Created On: 01-Jan-21 2:15:10 PM
 0000151C  B0BC 00808080            460      CMP.L #GRAY,D0
 00001522  6600 0028                461      BNE COIN
 00001526  6100 0056                462      BSR Get_Time
-0000152A  23C1 00002C18            463      MOVE.L D1,BEGIN_G_TIME 
-00001530  06B9 0000000A 00002C08   464      AddI.L #10,SCORE
+0000152A  23C1 00002088            463      MOVE.L D1,BEGIN_G_TIME 
+00001530  06B9 0000000A 00002078   464      AddI.L #10,SCORE
 0000153A  6100 01C0                465      BSR Emptying_Ate_Coin
 0000153E  6100 000E                466      BSR DRAW_SCORE
 00001542  23FC 00800080 00002064   467      MOVE.L #PURPLE,PacManColor
@@ -483,9 +483,9 @@ Created On: 01-Jan-21 2:15:10 PM
 00001566  700B                     479      move.l      #11,d0          
 00001568  7201                     480      move.l      #$0001,d1           
 0000156A  4E4F                     481      trap        #15
-0000156C  43F9 00002C1D            482      lea     ScoreDisplay,a1
+0000156C  43F9 0000208D            482      lea     ScoreDisplay,a1
 00001572  7011                     483      move.l      #17,d0
-00001574  2239 00002C08            484      move.l      Score,d1
+00001574  2239 00002078            484      move.l      Score,d1
 0000157A  4E4F                     485      trap        #15
 0000157C  4E75                     486      RTS 
 0000157E                           487  
@@ -499,19 +499,19 @@ Created On: 01-Jan-21 2:15:10 PM
 00001588                           495      
 00001588                           496  RESET_TIME
 00001588  61F4                     497       BSR Get_Time
-0000158A  23C1 00002C10            498       Move.l D1,BEGIN_L_TIME
+0000158A  23C1 00002080            498       Move.l D1,BEGIN_L_TIME
 00001590  4E75                     499       RTS
 00001592                           500  
 00001592                           501  Draw_Time
 00001592  61EA                     502      BSR Get_Time
-00001594  92B9 00002C10            503      SUB.l       BEGIN_L_TIME,D1
-0000159A  23C1 00002C14            504      MOVE.L D1,CURRENT_TIME
+00001594  92B9 00002080            503      SUB.l       BEGIN_L_TIME,D1
+0000159A  23C1 00002084            504      MOVE.L D1,CURRENT_TIME
 000015A0  700B                     505      move.l      #11,d0          
 000015A2  7202                     506      move.l      #$0002,d1           
 000015A4  4E4F                     507      trap        #15
-000015A6  43F9 00002C35            508      lea         TimeDisplay,a1
+000015A6  43F9 000020A5            508      lea         TimeDisplay,a1
 000015AC  7011                     509      move.l      #17,d0
-000015AE  2239 00002C14            510      MOVE.L CURRENT_TIME,D1
+000015AE  2239 00002084            510      MOVE.L CURRENT_TIME,D1
 000015B4  4E4F                     511      trap        #15
 000015B6  4E75                     512      RTS 
 000015B8                           513      
@@ -521,9 +521,9 @@ Created On: 01-Jan-21 2:15:10 PM
 000015B8  700B                     517      move.l      #11,d0          
 000015BA  7200                     518      move.l      #$0000,d1           
 000015BC  4E4F                     519      trap        #15
-000015BE  43F9 00002C2D            520      lea         LevelDisplay,a1
+000015BE  43F9 0000209D            520      lea         LevelDisplay,a1
 000015C4  7011                     521      move.l      #17,d0
-000015C6  2239 00002C0C            522      move.l      LEVEL,d1
+000015C6  2239 0000207C            522      move.l      LEVEL,d1
 000015CC  4E4F                     523      trap        #15
 000015CE  4E75                     524      RTS 
 000015D0                           525  ;----------------------------------------------------------------Draw Blocks---------------------------------------------------------------------------
@@ -639,9 +639,9 @@ Created On: 01-Jan-21 2:15:10 PM
 000016FC                           635     
 000016FC                           636     
 000016FC                           637  Emptying_Ate_Coin
-000016FC  2039 00002C0C            638      MOVE.L LEVEL,D0
+000016FC  2039 0000207C            638      MOVE.L LEVEL,D0
 00001702  5380                     639      SUB.L #1,D0
-00001704  207C 00002C3C            640      Move.L #MAP,A0
+00001704  207C 000020AC            640      Move.L #MAP,A0
 0000170A  D1C0                     641      ADD.L D0,A0
 0000170C  61BA                     642      BSR Get_Pacman_Coordinates
 0000170E  C2FC 0019                643      MULU #25,D1
@@ -671,66 +671,66 @@ Created On: 01-Jan-21 2:15:10 PM
 00002068                           667  
 00002068= 000001C3                 668  GHOST_POSITION_X DC.L 451
 0000206C= 00000123                 669  GHOST_POSITION_Y DC.L 291
-00002070                           670  NGHOST_POSITION_X DS.L 451
-0000277C                           671  NGHOST_POSITION_Y DS.L 291
-00002C08                           672  
-00002C08                           673  
-00002C08                           674  
-00002C08= 00000000                 675  SCORE DC.L 0
-00002C0C= 00000001                 676  LEVEL DC.L 1
-00002C10                           677  BEGIN_L_TIME DS.L 1
-00002C14                           678  CURRENT_TIME DS.L 1
-00002C18                           679  BEGIN_G_TIME DS.L 1
-00002C1C= 05                       680  G_TIME DC.B 5
-00002C1D                           681  
-00002C1D= 43 75 72 72 65 6E ...    682  ScoreDisplay    dc.b        'Current Score: ',0
-00002C2D= 4C 65 76 65 6C 3A ...    683  LevelDisplay    dc.b        'Level: ',0
-00002C35= 54 49 4D 45 3A 20 00     684  TimeDisplay dc.b        'TIME: ',0
-00002C3C                           685  
-00002C3C                           686  
-00002C3C  =00000020                687  DX EQU 32
-00002C3C  =00000020                688  DY EQU 32
-00002C3C                           689  
-00002C3C  =00000019                690  DPX EQU 25
-00002C3C  =00000019                691  DPY EQU 25
-00002C3C                           692  
-00002C3C  =00000020                693  BX EQU 32
-00002C3C  =00000020                694  BY EQU 32
-00002C3C                           695  MAP 
-00002C3C= 45 45 45 45 45 42 ...    696       DC.B 'EEEEEBBBBBBBBBBBBBBBBBBBE'                01
-00002C55= 45 45 45 45 45 42 ...    697       DC.B 'EEEEEBECCCCCCCBCCCCCCCCBE'                02
-00002C6E= 45 45 45 45 45 42 ...    698       DC.B 'EEEEEBGBBCBBBCBCBBBCBBGBE'                03
-00002C87= 45 45 45 45 45 42 ...    699       DC.B 'EEEEEBCCCCCCCCBCCCCCCCCBE'                04
-00002CA0= 45 45 45 45 45 42 ...    700       DC.B 'EEEEEBCBBCBCBBBBBCBCBBCBE'                05
-00002CB9= 45 45 45 45 45 42 ...    701       DC.B 'EEEEEBCCCCBCCCBCCCBCCCCBE'                06
-00002CD2= 45 45 45 45 45 42 ...    702       DC.B 'EEEEEBBBBCBBBEBEBBBCBBBBE'                07
-00002CEB= 45 45 45 45 45 45 ...    703       DC.B 'EEEEEEEEBCBEEEEEEEBCBEEEE'                08
-00002D04= 45 45 45 45 42 42 ...    704       DC.B 'EEEEBBBBBCBEBBEBBEBCBBBBB'                09
-00002D1D= 45 45 45 45 45 45 ...    705       DC.B 'EEEEEEEEECEEBEEEBEECEEEEE'                10
-00002D36= 45 45 45 45 42 42 ...    706       DC.B 'EEEEBBBBBCBEBBBBBEBCBBBBB'                11
-00002D4F= 45 45 45 45 45 45 ...    707       DC.B 'EEEEEEEEBCBEEEEEEEBCBEEEE'                12
-00002D68= 45 45 45 45 45 42 ...    708       DC.B 'EEEEEBBBBCBEBBBBBEBCBBBBE'                13
-00002D81= 45 45 45 45 45 42 ...    709       DC.B 'EEEEEBCCCCCCCCBCCCCCCCCBE'                14
-00002D9A= 45 45 45 45 45 42 ...    710       DC.B 'EEEEEBCBBCBBBCBCBBBCBBCBE'                15
-00002DB3= 45 45 45 45 45 42 ...    711       DC.B 'EEEEEBGCBCCCCCECCCCCBCGBE'                16
-00002DCC= 45 45 45 45 45 42 ...    712       DC.B 'EEEEEBBCBCBCBBBBBCBCBCBBE'                17
-00002DE5= 45 45 45 45 45 42 ...    713       DC.B 'EEEEEBCCCCBCCCBCCCBCCCCBE'                18
-00002DFE= 45 45 45 45 45 42 ...    714       DC.B 'EEEEEBCBBBBBBCBCBBBBBBCBE'                19
-00002E17= 45 45 45 45 45 42 ...    715       DC.B 'EEEEEBCCCCCCCCCCCCCCCCCBE'                20
-00002E30= 45 45 45 45 45 42 ...    716       DC.B 'EEEEEBBBBBBBBBBBBBBBBBBBE'                21
-00002E49                           717  
-00002E49                           718  
-00002E49  =00000000                719  BLACK equ $00000000  
-00002E49  =00008000                720  GREEN equ $00008000   
-00002E49  =00800080                721  PURPLE equ $00800080 
-00002E49  =00808000                722  TEAL equ $00808000 
-00002E49  =00808080                723  GRAY equ $00808080 
-00002E49  =000000FF                724  RED equ $000000FF 
-00002E49  =0000FF00                725  LIME equ $0000FF00 
-00002E49  =0000FFFF                726  YELLOW equ $0000FFFF 
-00002E49  =00FF0000                727  BLUE equ $00FF0000 
-00002E49  =00FFFFFF                728  WHITE equ $00FFFFFF 
-00002E49                           729      END    START        ; last line of source
+00002070= 000001C3                 670  NGHOST_POSITION_X DC.L 451
+00002074= 00000123                 671  NGHOST_POSITION_Y DC.L 291
+00002078                           672  
+00002078                           673  
+00002078                           674  
+00002078= 00000000                 675  SCORE DC.L 0
+0000207C= 00000001                 676  LEVEL DC.L 1
+00002080                           677  BEGIN_L_TIME DS.L 1
+00002084                           678  CURRENT_TIME DS.L 1
+00002088                           679  BEGIN_G_TIME DS.L 1
+0000208C= 05                       680  G_TIME DC.B 5
+0000208D                           681  
+0000208D= 43 75 72 72 65 6E ...    682  ScoreDisplay    dc.b        'Current Score: ',0
+0000209D= 4C 65 76 65 6C 3A ...    683  LevelDisplay    dc.b        'Level: ',0
+000020A5= 54 49 4D 45 3A 20 00     684  TimeDisplay dc.b        'TIME: ',0
+000020AC                           685  
+000020AC                           686  
+000020AC  =00000020                687  DX EQU 32
+000020AC  =00000020                688  DY EQU 32
+000020AC                           689  
+000020AC  =00000019                690  DPX EQU 25
+000020AC  =00000019                691  DPY EQU 25
+000020AC                           692  
+000020AC  =00000020                693  BX EQU 32
+000020AC  =00000020                694  BY EQU 32
+000020AC                           695  MAP 
+000020AC= 45 45 45 45 45 42 ...    696       DC.B 'EEEEEBBBBBBBBBBBBBBBBBBBE'                01
+000020C5= 45 45 45 45 45 42 ...    697       DC.B 'EEEEEBECCCCCCCBCCCCCCCCBE'                02
+000020DE= 45 45 45 45 45 42 ...    698       DC.B 'EEEEEBGBBCBBBCBCBBBCBBGBE'                03
+000020F7= 45 45 45 45 45 42 ...    699       DC.B 'EEEEEBCCCCCCCCBCCCCCCCCBE'                04
+00002110= 45 45 45 45 45 42 ...    700       DC.B 'EEEEEBCBBCBCBBBBBCBCBBCBE'                05
+00002129= 45 45 45 45 45 42 ...    701       DC.B 'EEEEEBCCCCBCCCBCCCBCCCCBE'                06
+00002142= 45 45 45 45 45 42 ...    702       DC.B 'EEEEEBBBBCBBBEBEBBBCBBBBE'                07
+0000215B= 45 45 45 45 45 45 ...    703       DC.B 'EEEEEEEEBCBEEEEEEEBCBEEEE'                08
+00002174= 45 45 45 45 42 42 ...    704       DC.B 'EEEEBBBBBCBEBBEBBEBCBBBBB'                09
+0000218D= 45 45 45 45 45 45 ...    705       DC.B 'EEEEEEEEECEEBEEEBEECEEEEE'                10
+000021A6= 45 45 45 45 42 42 ...    706       DC.B 'EEEEBBBBBCBEBBBBBEBCBBBBB'                11
+000021BF= 45 45 45 45 45 45 ...    707       DC.B 'EEEEEEEEBCBEEEEEEEBCBEEEE'                12
+000021D8= 45 45 45 45 45 42 ...    708       DC.B 'EEEEEBBBBCBEBBBBBEBCBBBBE'                13
+000021F1= 45 45 45 45 45 42 ...    709       DC.B 'EEEEEBCCCCCCCCBCCCCCCCCBE'                14
+0000220A= 45 45 45 45 45 42 ...    710       DC.B 'EEEEEBCBBCBBBCBCBBBCBBCBE'                15
+00002223= 45 45 45 45 45 42 ...    711       DC.B 'EEEEEBGCBCCCCCECCCCCBCGBE'                16
+0000223C= 45 45 45 45 45 42 ...    712       DC.B 'EEEEEBBCBCBCBBBBBCBCBCBBE'                17
+00002255= 45 45 45 45 45 42 ...    713       DC.B 'EEEEEBCCCCBCCCBCCCBCCCCBE'                18
+0000226E= 45 45 45 45 45 42 ...    714       DC.B 'EEEEEBCBBBBBBCBCBBBBBBCBE'                19
+00002287= 45 45 45 45 45 42 ...    715       DC.B 'EEEEEBCCCCCCCCCCCCCCCCCBE'                20
+000022A0= 45 45 45 45 45 42 ...    716       DC.B 'EEEEEBBBBBBBBBBBBBBBBBBBE'                21
+000022B9                           717  
+000022B9                           718  
+000022B9  =00000000                719  BLACK equ $00000000  
+000022B9  =00008000                720  GREEN equ $00008000   
+000022B9  =00800080                721  PURPLE equ $00800080 
+000022B9  =00808000                722  TEAL equ $00808000 
+000022B9  =00808080                723  GRAY equ $00808080 
+000022B9  =000000FF                724  RED equ $000000FF 
+000022B9  =0000FF00                725  LIME equ $0000FF00 
+000022B9  =0000FFFF                726  YELLOW equ $0000FFFF 
+000022B9  =00FF0000                727  BLUE equ $00FF0000 
+000022B9  =00FFFFFF                728  WHITE equ $00FFFFFF 
+000022B9                           729      END    START        ; last line of source
 
 No errors detected
 No warnings generated
@@ -739,8 +739,8 @@ No warnings generated
 SYMBOL TABLE INFORMATION
 Symbol-name         Value
 -------------------------
-BEGIN_G_TIME        2C18
-BEGIN_L_TIME        2C10
+BEGIN_G_TIME        2088
+BEGIN_L_TIME        2080
 BLACK               0
 BLUE                FF0000
 BX                  20
@@ -760,7 +760,7 @@ CLR_PACMAN          1670
 COI                 1052
 COIN                154C
 CTN0                106A
-CURRENT_TIME        2C14
+CURRENT_TIME        2084
 DELAY               16AC
 DOWN_MOUTH          2044
 DPX                 19
@@ -799,19 +799,19 @@ GHOST_POSITION_Y    206C
 GR                  139C
 GRAY                808080
 GREEN               8000
-G_TIME              2C1C
+G_TIME              208C
 LC                  126A
 LEFT_MOUTH          2014
-LEVEL               2C0C
-LEVELDISPLAY        2C2D
+LEVEL               207C
+LEVELDISPLAY        209D
 LIME                FF00
 LOOP                1166
 LOOP_DELAY          16BA
 LOOP_DRAW_MAP       102E
-MAP                 2C3C
+MAP                 20AC
 NC                  13A8
 NGHOST_POSITION_X   2070
-NGHOST_POSITION_Y   277C
+NGHOST_POSITION_Y   2074
 NPACMAN_POSITION_X  2008
 NPACMAN_POSITION_Y  200C
 PACMANCOLOR         2064
@@ -823,14 +823,14 @@ PURPLE              800080
 RED                 FF
 RESET_TIME          1588
 RIGHT_MOUTH         2024
-SCORE               2C08
-SCOREDISPLAY        2C1D
+SCORE               2078
+SCOREDISPLAY        208D
 SK                  1500
 SKIP                1238
 START               1000
 STARTG              1014
 TEAL                808000
-TIMEDISPLAY         2C35
+TIMEDISPLAY         20A5
 UP_MOUTH            2034
 WHITE               FFFFFF
 YEL                 132E
