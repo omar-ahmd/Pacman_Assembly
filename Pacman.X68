@@ -1,4 +1,4 @@
-*-----------------------------------------------------------
+ *-----------------------------------------------------------
 * Title      :
 * Written by :
 * Date       :
@@ -127,14 +127,14 @@ Draw_Pacman_Mouth
      MOVE.L PACMAN_POSITION_Y,D2
      MOVE.L PACMAN_POSITION_X,D3                       
      MOVE.L PACMAN_POSITION_Y,D4
-     ;CMP.L #$20A0,A1
-     ;BGT  Draw_Pacman_Eyes
+     CMP.L #$20A0,A1
+     BGT  dd
      Add.L (A1)+,D1                   
      Add.L (A1)+,D2
      Add.L (A1)+,D3                 
      Add.L (A1),D4
      TRAP   #15
-     RTS
+dd   RTS
      
 Draw_Pacman_Eyes
      ;MOVE.B #88,D0                   draw pacman eyes
@@ -207,7 +207,7 @@ loop
      Move.B #'S',PACMAN_DIRECTION
 
      ENDI
-     
+     BSR CHECK_GHOST
 
      
      BSR CHECK_G_COIN
@@ -288,7 +288,7 @@ Check_Pacman
     ;Eat ghost and add score +50
 yel CMP.L #YELLOW,PacManColor
     BNE eqq
-    ;BSR LOSE THE GAME
+    
 eqq  RTS
 
 
@@ -300,14 +300,17 @@ CHECK_GHOST
     ADD.L #12,D2
     ADD.L #12,D1
     TRAP #15
-    
     CMP.L #RED,D0
     BNE eq
     CMP.L #PURPLE,PacManColor
     BNE EAG
     ;Eat ghost and add score +50
     BRA e
-EAG ;BSR LOSE THE GAME
+EAG MOVE.L #0,SCORE
+    MOVE.L PACMAN_POSITION_X,D1
+    MOVE.L PACMAN_POSITION_Y,D2
+    MOVE.L D1,NPACMAN_POSITION_X
+    MOVE.L D2,NPACMAN_POSITION_Y
 e   RTS
 
 
@@ -323,7 +326,7 @@ CHECK_GO_COIN
     BSR draw_coin
     
 GR  CMP.B #'G',(A0)
-    BEQ NC
+    BNE NC
     BSR draw_Gcoin
     
 NC  RTS
@@ -620,7 +623,7 @@ Get_Pacman_Coordinates
    Move.L NPACMAN_POSITION_Y,D1
    SUB.L #3,D0
    DIVU #32,D0
-   SUB.L #6,D1
+   SUB.L #5,D1
    DIVU #32,D1
    RTS
    
@@ -629,7 +632,7 @@ Get_Ghost_Coordinates
    Move.L GHOST_POSITION_Y,D1
    SUB.L #3,D0
    DIVU #32,D0
-   SUB.L #6,D1
+   SUB.L #3,D1
    DIVU #32,D1
    RTS
    
@@ -727,6 +730,8 @@ YELLOW equ $0000FFFF
 BLUE equ $00FF0000 
 WHITE equ $00FFFFFF 
     END    START        ; last line of source
+
+
 
 
 
