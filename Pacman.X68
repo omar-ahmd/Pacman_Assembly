@@ -19,6 +19,7 @@ START:                  ; first instruction of program
      BRA STARTG
     
 ;----------------------------------------------------------------Draw Map-------------------------------------------------------------------------------
+     BSR RESET_TIME
 STARTG BSR DRAW_LEVEL
      Move.L #$0,D1                  RESET D1
      Move.L #$0,D5                  VERTICAL LOOP INDEX INIT
@@ -26,7 +27,8 @@ STARTG BSR DRAW_LEVEL
      SUB.L #1,D0
      Move.L #MAP,A0
      ADD.L D0,A0                 LOAD MAP POSITION IN MEMORY
-     BSR RESET_TIME
+
+
 Draw_map
      Move.L #$0,D6                  HORIZONTAL LOOP INDEX INIT
 Loop_draw_map
@@ -57,18 +59,22 @@ Ctn0 ADDQ #1,D6
      ADDQ #1,D5
      CMP #21,D5
      BNE Draw_map
-     BRA draw_Pacman
+     BSR draw_Pacman
+     BSR loop
+
 
 
 ;----------------------------------------------------------------Draw PACMAN---------------------------------------------------------------------------
     
 draw_Pacman
+     
      MOVE.B #80,D0
      Move.L PacManColor,D1                Draw player pen and fill color
      TRAP   #15
      MOVE.B #81,D0
      Move.L PacManColor ,D1
      TRAP   #15
+     
      Move.L PACMAN_POSITION_X,D5      Player x position
      Move.L PACMAN_POSITION_Y,D6      Player y position
      MOVE.B #88,D0                    draw player
@@ -88,13 +94,15 @@ draw_Pacman
      Move.L #Black,D1
      TRAP   #15
      
-     Move.B PACMAN_MOUTH,D0          
-     BCHG #$0,PACMAN_MOUTH
+     Move.B PACMAN_MOUTH,D0
+     ror.b #1,d0
+     Move.B d0,PACMAN_MOUTH      
+     Btst #$0,d0
      BNE Draw_Pacman_Eyes
      Move.B PACMAN_DIRECTION,D0      CHECK PACMAN Direction
      
 CHECK_DIRECTION_D
-     CMP #$44,D0
+     CMP #'D',D0
      BNE CHECK_DIRECTION_A
      MOVE.L #RIGHT_MOUTH,A1
      BRA Draw_Pacman_Mouth
@@ -118,7 +126,9 @@ Draw_Pacman_Mouth
      MOVE.L PACMAN_POSITION_X,D1                      
      MOVE.L PACMAN_POSITION_Y,D2
      MOVE.L PACMAN_POSITION_X,D3                       
-     MOVE.L PACMAN_POSITION_Y,D4 
+     MOVE.L PACMAN_POSITION_Y,D4
+     CMP.L #$20A0,A1
+     BGT  Draw_Pacman_Eyes
      Add.L (A1)+,D1                   
      Add.L (A1)+,D2
      Add.L (A1)+,D3                 
@@ -137,7 +147,8 @@ Draw_Pacman_Eyes
      Add.L (A1)+,D3                 
      Add.L (A1),D4
      TRAP   #15
-     BRA loop
+     RTS
+
     
     
 ;----------------------------------------------------------------Game Loop-----------------------------------------------------------------------------
@@ -146,7 +157,7 @@ loop
      BSR DRAW_SCORE
      Move.L #7,D0                             DELAY TIME
      BSR DELAY
-     JSR clr_pacman                            Clear Pacman
+     ;Move Ghost 
      BSR Draw_Time     
      MOVE.L PACMAN_POSITION_X,D1
      MOVE.L PACMAN_POSITION_Y,D2
@@ -157,21 +168,25 @@ loop
      MOVE.B #19,D0     
      MOVE.L #'A'<<24+'S'<<16+'D'<<8+'W',D1      Check for keypress (a,s,d,w)
      TRAP   #15
-     
+     Move.l d1,d6
      BTST.L #24,D1     ; test for 'a'
      IF <NE> THEN      ; if 'a'
      Move.L PACMAN_POSITION_X,D5 
      SUB.L #DX,D5
      Move.L D5,NPACMAN_POSITION_X
      Move.B #'A',PACMAN_DIRECTION
+
+    
      ENDI
      
      BTST.L #0,D1     ; test for 'w'
      IF <NE> THEN      ; if 'w'
+
      Move.L PACMAN_POSITION_Y,D6
      SUB.L #DY,D6
      Move.L D6,NPACMAN_POSITION_Y
      Move.B #'W',PACMAN_DIRECTION
+
      ENDI
 
      BTST.L #8,D1     ; test for 'd'
@@ -180,6 +195,7 @@ loop
      ADD.L #DX,D5
      Move.L D5,NPACMAN_POSITION_X
      Move.B #'D',PACMAN_DIRECTION
+
      ENDI
      
      BTST.L #16,D1     ; test for 's'
@@ -188,25 +204,124 @@ loop
      ADD.L #DY,D6
      Move.L D6,NPACMAN_POSITION_Y
      Move.B #'S',PACMAN_DIRECTION
+
      ENDI
-     BSR CHECK_BLOCK
+     
+
+     
      BSR CHECK_G_COIN
      BSR CHECK_COIN
-SKIP bra draw_Pacman
+     JSR clr_pacman                            Clear Pacman
+     BSR CHECK_P_BLOCK
+     BSR CHECK_EXIT 
+
+SKIP jsr draw_Pacman
+     BRA loop
+
  
 ;----------------------------------------------------------------CHECK Block---------------------------------------------------------------------------
+CHECK_EXIT
+    CMP.L #800,PACMAN_POSITION_X
+    BLT LC
+    MOVE.L PACMAN_POSITION_X,D5
+    SUB.L #672,PACMAN_POSITION_X
+    MOVE.L PACMAN_POSITION_X,D5
+LC  CMP.L #128,PACMAN_POSITION_X
+    BGT DR
+    MOVE.L PACMAN_POSITION_X,D5
+    ADD.L #672,PACMAN_POSITION_X
+    MOVE.L PACMAN_POSITION_X,D5
+DR  RTS 
 
-CHECK_BLOCK
+CHECK_P_BLOCK
+
     MOVE.L #83,D0
     MOVE.L NPACMAN_POSITION_X,D1
     MOVE.L NPACMAN_POSITION_Y,D2
     TRAP #15
     
     CMP.L #BLUE,D0
-    BEQ SKIP
+    BEQ F
+    
     MOVE.L D1,PACMAN_POSITION_X
     MOVE.L D2,PACMAN_POSITION_Y
+F   RTS
+
+
+
+    
+DRAW_GHOST
+    MOVE.L #83,D0
+    MOVE.L NGHOST_POSITION_X,D1
+    MOVE.L NGHOST_POSITION_Y,D2
+    TRAP #15    
+    CMP.L #BLUE,D0
+    BEQ FF 
+    
+    BSR CHECK_GO_COIN
+    MOVE.L NGHOST_POSITION_X,D1
+    MOVE.L NGHOST_POSITION_Y,D2
+    MOVE.L D1,GHOST_POSITION_X
+    MOVE.L D2,GHOST_POSITION_Y   
+FF  ;DRAW GHOST HERE WITH GHOST POSITION
     RTS
+
+
+
+
+Check_Pacman
+    MOVE.L #83,D0
+    MOVE.L NPACMAN_POSITION_X,D1
+    MOVE.L NPACMAN_POSITION_Y,D2
+    ADD.L #12,D2
+    ADD.L #12,D1
+    TRAP #15
+    
+
+    CMP.L #PURPLE,PacManColor
+    BNE yel
+    ;Eat ghost and add score +50
+yel CMP.L #YELLOW,PacManColor
+    BNE eqq
+    ;BSR LOSE THE GAME
+eqq  RTS
+
+
+
+CHECK_GHOST
+    MOVE.L #83,D0
+    MOVE.L NPACMAN_POSITION_X,D1
+    MOVE.L NPACMAN_POSITION_Y,D2
+    ADD.L #12,D2
+    ADD.L #12,D1
+    TRAP #15
+    
+    CMP.L #RED,D0
+    BNE eq
+    CMP.L #PURPLE,PacManColor
+    BNE EAG
+    ;Eat ghost and add score +50
+    BRA e
+EAG ;BSR LOSE THE GAME
+e   RTS
+
+
+CHECK_GO_COIN
+    BSR Get_Ghost_Coordinates
+    MULU #25,D1
+    ADD.L D0,D1
+    ADD.L D1,A0
+    MOVE.L GHOST_POSITION_X,D3
+    MOVE.L GHOST_POSITION_Y,D4
+    CMP.B #'C',(A0)
+    BEQ GR
+    BSR draw_coin
+    
+GR  CMP.B #'G',(A0)
+    BEQ NC
+    BSR draw_Gcoin
+    
+NC  RTS
     
 ;----------------------------------------------------------------CHECK Coin---------------------------------------------------------------------------
 
@@ -219,12 +334,17 @@ CHECK_COIN
     TRAP #15
     
     CMP.L #WHITE,D0
-    BNE SKIP
+    BNE eq
     AddI.L #1,SCORE
     BSR DRAW_SCORE
     BSR Emptying_Ate_Coin
-    RTS
+eq  RTS
 
+
+
+
+
+  
 ;----------------------------------------------------------------CHECK G_Coin---------------------------------------------------------------------------
    
 CHECK_G_COIN
@@ -393,13 +513,23 @@ FIN
 ;----------------------------------------------------------------EMPTYING ATE COINS IN MEMORY----------------------------------------------------------
     
 Get_Pacman_Coordinates
-   Move.L PACMAN_POSITION_X,D0
-   Move.L PACMAN_POSITION_Y,D1
+   Move.L NPACMAN_POSITION_X,D0
+   Move.L NPACMAN_POSITION_Y,D1
    SUB.L #3,D0
    DIVU #32,D0
    SUB.L #6,D1
    DIVU #32,D1
    RTS
+   
+Get_Ghost_Coordinates
+   Move.L GHOST_POSITION_X,D0
+   Move.L GHOST_POSITION_Y,D1
+   SUB.L #3,D0
+   DIVU #32,D0
+   SUB.L #6,D1
+   DIVU #32,D1
+   RTS
+   
    
 Emptying_Ate_Coin
     MOVE.L LEVEL,D0
@@ -421,22 +551,31 @@ Emptying_Ate_Coin
  ORG $2000
 PACMAN_POSITION_X DC.L 195
 PACMAN_POSITION_Y DC.L 38
-PACMAN_MOUTH dc.b 1
+NPACMAN_POSITION_X DS.L 1
+NPACMAN_POSITION_Y DS.L 1
+PACMAN_MOUTH dc.b %11011011
 PACMAN_DIRECTION dc.b 'D',0
 LEFT_MOUTH dc.L -02,09,09,21      
 RIGHT_MOUTH dc.L 16,09,28,21    
 UP_MOUTH dc.L 09,-02,21,09
 DOWN_MOUTH dc.L 09,15,21,25
 EYES dc.L 11,10,15,14
-NPACMAN_POSITION_X DS.L 1
-NPACMAN_POSITION_Y DS.L 1
+PacManColor Dc.l YELLOW 
+
+GHOST_POSITION_X DC.L 195
+GHOST_POSITION_Y DC.L 38
+NGHOST_POSITION_X DS.L 1
+NGHOST_POSITION_Y DS.L 1
+
+
+
 SCORE DC.L 0
 LEVEL DC.L 1
 BEGIN_L_TIME DS.L 1
 CURRENT_TIME DS.L 1
 BEGIN_G_TIME DS.L 1
 G_TIME DC.B 5
-PacManColor Dc.l YELLOW 
+
 ScoreDisplay	dc.b		'Current Score: ',0
 LevelDisplay	dc.b		'Level: ',0
 TimeDisplay	dc.b		'TIME: ',0
@@ -485,6 +624,9 @@ YELLOW equ $0000FFFF
 BLUE equ $00FF0000 
 WHITE equ $00FFFFFF 
     END    START        ; last line of source
+
+
+
 
 
 
