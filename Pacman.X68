@@ -127,26 +127,27 @@ Draw_Pacman_Mouth
      MOVE.L PACMAN_POSITION_Y,D2
      MOVE.L PACMAN_POSITION_X,D3                       
      MOVE.L PACMAN_POSITION_Y,D4
-     CMP.L #$20A0,A1
-     BGT  Draw_Pacman_Eyes
+     ;CMP.L #$20A0,A1
+     ;BGT  Draw_Pacman_Eyes
      Add.L (A1)+,D1                   
      Add.L (A1)+,D2
      Add.L (A1)+,D3                 
      Add.L (A1),D4
      TRAP   #15
+     RTS
      
 Draw_Pacman_Eyes
-     MOVE.B #88,D0                   draw pacman eyes
-     MOVE.L #EYES,A1
-     MOVE.L PACMAN_POSITION_X,D1                      
-     MOVE.L PACMAN_POSITION_Y,D2
-     MOVE.L PACMAN_POSITION_X,D3                       
-     MOVE.L PACMAN_POSITION_Y,D4 
-     Add.L (A1)+,D1                   
-     Add.L (A1)+,D2
-     Add.L (A1)+,D3                 
-     Add.L (A1),D4
-     TRAP   #15
+     ;MOVE.B #88,D0                   draw pacman eyes
+     ;MOVE.L #EYES,A1
+     ;MOVE.L PACMAN_POSITION_X,D1                      
+     ;MOVE.L PACMAN_POSITION_Y,D2
+     ;MOVE.L PACMAN_POSITION_X,D3                       
+     ;MOVE.L PACMAN_POSITION_Y,D4 
+     ;Add.L (A1)+,D1                   
+     ;Add.L (A1)+,D2
+     ;Add.L (A1)+,D3                 
+     ;Add.L (A1),D4
+     ;TRAP   #15
      RTS
 
     
@@ -216,6 +217,7 @@ loop
      BSR CHECK_EXIT 
 
 SKIP jsr draw_Pacman
+     jsr Draw_Ghost
      BRA loop
 
  
@@ -225,12 +227,12 @@ CHECK_EXIT
     BLT LC
     MOVE.L PACMAN_POSITION_X,D5
     SUB.L #672,PACMAN_POSITION_X
-    MOVE.L PACMAN_POSITION_X,D5
+    MOVE.L PACMAN_POSITION_X,D5              ;??? BRA DR
 LC  CMP.L #128,PACMAN_POSITION_X
     BGT DR
     MOVE.L PACMAN_POSITION_X,D5
     ADD.L #672,PACMAN_POSITION_X
-    MOVE.L PACMAN_POSITION_X,D5
+    MOVE.L PACMAN_POSITION_X,D5              ;???
 DR  RTS 
 
 CHECK_P_BLOCK
@@ -263,7 +265,10 @@ DRAW_GHOST
     MOVE.L NGHOST_POSITION_Y,D2
     MOVE.L D1,GHOST_POSITION_X
     MOVE.L D2,GHOST_POSITION_Y   
-FF  ;DRAW GHOST HERE WITH GHOST POSITION
+FF  MOVE.L GHOST_POSITION_X,A2
+    MOVE.L GHOST_POSITION_Y,A3
+    BSR Draw_Ghost_On_Map
+    BSR Draw_GHOST_Destails
     RTS
 
 
@@ -314,7 +319,7 @@ CHECK_GO_COIN
     MOVE.L GHOST_POSITION_X,D3
     MOVE.L GHOST_POSITION_Y,D4
     CMP.B #'C',(A0)
-    BEQ GR
+    BNE GR
     BSR draw_coin
     
 GR  CMP.B #'G',(A0)
@@ -322,6 +327,98 @@ GR  CMP.B #'G',(A0)
     BSR draw_Gcoin
     
 NC  RTS
+
+;----------------------------------------------------------------DRAW GHOST---------------------------------------------------------------------------
+
+Draw_Ghost_On_Map
+     MOVE.B #80,D0
+     Move.L #Red,D1                Black pen and fill color
+     TRAP   #15
+     MOVE.B #81,D0
+     Move.L #Red,D1
+     TRAP   #15
+     Move.L A2,D5      ghost x position
+     Move.L A3,D6      ghost y position
+     MOVE.B #87,D0  
+     MOVE.L D5,D1                       
+     MOVE.L D6,D2
+     Add.L #25,D5
+     Add.L #25,D6
+     MOVE.L D5,D3
+     MOVE.L D6,D4
+     TRAP   #15 
+     RTS 
+     
+Draw_GHOST_Destails
+     MOVE.B #80,D0
+     Move.L #Black,D1                Black pen and fill color
+     TRAP   #15
+     MOVE.B #81,D0
+     Move.L #Black,D1
+     TRAP   #15
+
+     MOVE.B #88,D0                   draw ghost 1 details 1ST LEG
+     MOVE.L A2,D1                      
+     MOVE.L A3,D2
+     MOVE.L A2,D3                       
+     MOVE.L A3,D4 
+     Add.L #04,D1                   
+     Add.L #17,D2
+     Add.L #10,D3                 
+     Add.L #27,D4
+     TRAP   #15
+
+     MOVE.B #88,D0                   draw ghost 1 details 2nd leg
+     MOVE.L A2,D1                      
+     MOVE.L A2,D3                        
+     Add.L #15,D1                   
+     Add.L #21,D3                 
+     TRAP   #15
+     
+     MOVE.B #88,D0                   draw ghost 1 details 1st eye
+     MOVE.L A2,D1                      
+     MOVE.L A3,D2
+     MOVE.L A2,D3                       
+     MOVE.L A3,D4 
+     Add.L #2,D1                   
+     Add.L #3,D2
+     Add.L #10,D3                 
+     Add.L #12,D4
+     TRAP   #15
+     
+     MOVE.B #88,D0                   draw ghost 1 details 2nd eye
+     MOVE.L A2,D1                      
+     MOVE.L A2,D3                       
+     Add.L #15,D1                   
+     Add.L #23,D3                 
+     TRAP   #15
+     
+          MOVE.B #80,D0
+     Move.L #White,D1                Black pen and fill color
+     TRAP   #15
+     MOVE.B #81,D0
+     Move.L #White,D1
+     TRAP   #15
+     
+          MOVE.B #88,D0                   draw ghost 1 details 1st eye pupil
+     MOVE.L A2,D1                      
+     MOVE.L A3,D2
+     MOVE.L A2,D3                       
+     MOVE.L A3,D4 
+     Add.L #5,D1                   
+     Add.L #3,D2
+     Add.L #7,D3                 
+     Add.L #7,D4
+     TRAP   #15
+
+
+          MOVE.B #88,D0                   draw ghost 1 details 2nd eye pupil
+     MOVE.L A2,D1                      
+     MOVE.L A2,D3                        
+     Add.L #18,D1                   
+     Add.L #20,D3                 
+     TRAP   #15
+    RTS
     
 ;----------------------------------------------------------------CHECK Coin---------------------------------------------------------------------------
 
@@ -373,6 +470,12 @@ COIN RTS
 ;----------------------------------------------------------------Draw Score---------------------------------------------------------------------------
     
 DRAW_SCORE
+     MOVE.B #80,D0
+     Move.L Black,D1                Draw player pen and fill color
+     TRAP   #15
+     MOVE.B #81,D0
+     Move.L Black,D1
+     TRAP   #15
     move.l		#11,d0			
 	move.l		#$0001,d1			
 	trap		#15
@@ -550,22 +653,22 @@ Emptying_Ate_Coin
 * Put variables and constants here
  ORG $2000
 PACMAN_POSITION_X DC.L 195
-PACMAN_POSITION_Y DC.L 38
+PACMAN_POSITION_Y DC.L 37
 NPACMAN_POSITION_X DS.L 1
 NPACMAN_POSITION_Y DS.L 1
 PACMAN_MOUTH dc.b %11011011
 PACMAN_DIRECTION dc.b 'D',0
-LEFT_MOUTH dc.L -02,09,09,21      
+LEFT_MOUTH dc.L -02,10,09,21     
 RIGHT_MOUTH dc.L 16,09,28,21    
-UP_MOUTH dc.L 09,-02,21,09
-DOWN_MOUTH dc.L 09,15,21,25
+UP_MOUTH dc.L 07,-02,19,09
+DOWN_MOUTH dc.L 07,15,19,26
 EYES dc.L 11,10,15,14
 PacManColor Dc.l YELLOW 
 
-GHOST_POSITION_X DC.L 195
-GHOST_POSITION_Y DC.L 38
-NGHOST_POSITION_X DS.L 1
-NGHOST_POSITION_Y DS.L 1
+GHOST_POSITION_X DC.L 451
+GHOST_POSITION_Y DC.L 291
+NGHOST_POSITION_X DS.L 451
+NGHOST_POSITION_Y DS.L 291
 
 
 
@@ -624,6 +727,8 @@ YELLOW equ $0000FFFF
 BLUE equ $00FF0000 
 WHITE equ $00FFFFFF 
     END    START        ; last line of source
+
+
 
 
 
