@@ -253,6 +253,7 @@ F   RTS
 
     
 DRAW_GHOST
+    BSR Try_move
     MOVE.L #83,D0
     MOVE.L NGHOST_POSITION_X,D1
     MOVE.L NGHOST_POSITION_Y,D2
@@ -423,8 +424,91 @@ Draw_GHOST_Destails
      TRAP   #15
     RTS
     
-;----------------------------------------------------------------CHECK Coin---------------------------------------------------------------------------
+;----------------------------------------------------------------Move Ghost----------------------------------------------------------------------------
+ 
+Try_move
+    Move.B GHOST_DIRECTION,D0
+    CMP #'W',D0
+    BEQ Try_up
+    CMP #'A',D0
+    BEQ Try_left
+    CMP #'S',D0
+    BEQ Try_down
+    CMP #'D',D0
+    BEQ Try_right
 
+GET_RANDOM   
+    MOVE.L #31,D0
+    TRAP #15
+    ADD.L CURRENT_TIME,D1
+    Add.L PACMAN_POSITION_X,D1
+    Add.L PACMAN_POSITION_Y,D1
+    Add.L GHOST_POSITION_X,D1
+    ADD.L GHOST_POSITION_Y,D1
+    Add.L SCORE,D1
+    AND.L #$3,D1
+    CMP #0,D1
+    BEQ Try_up
+    CMP #1,D1
+    BEQ Try_Right
+    CMP #2,D1
+    BEQ Try_Down
+    CMP #3,D1
+    BEQ Try_left
+    
+Try_up
+     ;CHeck block
+    MOVE.L #83,D0
+     Move.L GHOST_POSITION_X,D1
+     Move.L GHOST_POSITION_Y,D2
+     Sub.L #DY,D2
+    TRAP #15
+    CMP.L #BLUE,D0
+    BEQ GET_RANDOM
+    MOVE.B #'W',GHOST_DIRECTION
+    BRA Move_ghost
+Try_right    
+     ;CHeck block
+    MOVE.L #83,D0
+      Move.L GHOST_POSITION_X,D1
+     Move.L GHOST_POSITION_Y,D2
+     Add.L #DX,D1
+    TRAP #15
+    CMP.L #BLUE,D0
+    BEQ GET_RANDOM
+    MOVE.B #'D',GHOST_DIRECTION
+    BRA Move_ghost
+    
+Try_Down   
+     ;CHeck block
+    MOVE.L #83,D0
+     Move.L GHOST_POSITION_X,D1
+     Move.L GHOST_POSITION_Y,D2
+    Add.L #DY,D2
+    TRAP #15
+    CMP.L #BLUE,D0
+    BEQ GET_RANDOM
+    MOVE.B #'S',GHOST_DIRECTION
+    BRA Move_ghost
+Try_left  
+     ;CHeck block
+    MOVE.L #83,D0
+     Move.L GHOST_POSITION_X,D1
+     Move.L GHOST_POSITION_Y,D2
+    Sub.L #DX,D1
+    TRAP #15
+    CMP.L #BLUE,D0
+    BEQ GET_RANDOM
+    MOVE.B #'A',GHOST_DIRECTION
+    BRA Move_ghost
+
+ 
+Move_ghost
+     Move.L D1,NGHOST_POSITION_X
+     Move.L D2,NGHOST_POSITION_Y
+     RTS
+
+;----------------------------------------------------------------CHECK Coin---------------------------------------------------------------------------
 CHECK_COIN
     MOVE.L #83,D0
     MOVE.L NPACMAN_POSITION_X,D1
@@ -672,7 +756,7 @@ GHOST_POSITION_X DC.L 451
 GHOST_POSITION_Y DC.L 291
 NGHOST_POSITION_X DC.L 451
 NGHOST_POSITION_Y DC.L 291
-
+GHOST_DIRECTION dc.b 'W',0
 
 
 SCORE DC.L 0
@@ -730,6 +814,7 @@ YELLOW equ $0000FFFF
 BLUE equ $00FF0000 
 WHITE equ $00FFFFFF 
     END    START        ; last line of source
+
 
 
 
