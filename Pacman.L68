@@ -1,6 +1,6 @@
 00001000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.16.01
-Created On: 02-Jan-21 9:56:28 PM
+Created On: 1/2/2021 10:01:48 PM
 
 00000000                             1   *-----------------------------------------------------------
 00000000                             2  * Title      :
@@ -1256,30 +1256,42 @@ Line 174 ERROR: Invalid syntax
 00002601= 45 45 45 45 45 42 ...   1251       DC.B 'EEEEEBBBBBBBBBBBBBBBBBBBE'                21
 0000261A                          1252  
 0000261A                          1253  MAP_LEVEL_2
-0000261A= 45 45 45 45 45 42 ...   1254       DC.B 'EEEEEBBBBBBBBBBBBBBBBBBBE'                01     DC.B 'EEEEEBECCCCCCCCCCCCCCCCBE'                02     DC.B 'EEEEEBCBBBBCBBBBCCBCCCCBE'                03     DC.B 'EEEEEBCBCCCCBEEBCCBCCCCBE'                04     DC.B 'EEEEEBCBBBCCBBBB
-Line 1255 ERROR: Invalid syntax
-00002633                          1255  E'                05     DC.B 'EEEEEBCBCCCCBCCBCCBCCCCBE'                06     DC.B 'EEEEEBCBCCCCBCCBCCBBBBCBE'                07     DC.B 'EEEEEBCCCCCCCCCCCCCCCCCBE'                08     DC.B 'EEEEEBCCCBBBBCCCBCCBCCCBB'                09     DC
-Line 1256 ERROR: Invalid syntax
-00002633                          1256  EBCCCBEEBCCCBCCBCCCBE'                10     DC.B 'EEEEEBCCCBEEBCCCBCCBCCCBE'                11     DC.B 'EEEEEBCCCBEEBCCCBCCBCCCBE'                12     DC.B 'EEEEEBCCCBBBBCCCBBBBCCCBB'                13     DC.B 'EEEEEBCCCCCCCCCCCCCCCCCBE'     
-Line 1257 ERROR: Illegal symbol
-00002633                          1257     14     DC.B 'EEEEEBCCBBBBCCCBCCCBCCCBE'                15     DC.B 'EEEEEBCCBEEBCCCBBCBBCCCBE'                16     DC.B 'EEEEEBCCBEEBCCCBCBCBCCCBE'                17     DC.B 'EEEEEBCCBEEBCCCBCCCBCCCBE'                18     DC.B 'EEEEEBCCBBB
-Line 1258 ERROR: Invalid syntax
-00002633                          1258  BCCCBE'                19     DC.B 'EEEEEBCCCCCCCCCCCCCCCCCBE'                20     DC.B 'EEEEEBBBBBBBBBBBBBBBBBBBE'                21  
-00002633                          1259  
-00002633                          1260  
-00002633  =00000000               1261  BLACK equ $00000000  
-00002633  =00008000               1262  GREEN equ $00008000   
-00002633  =00800080               1263  PURPLE equ $00800080 
-00002633  =00808000               1264  TEAL equ $00808000 
-00002633  =00808080               1265  GRAY equ $00808080 
-00002633  =000000FF               1266  RED equ $000000FF 
-00002633  =0000FF00               1267  LIME equ $0000FF00 
-00002633  =0000FFFF               1268  YELLOW equ $0000FFFF 
-00002633  =00FF0000               1269  BLUE equ $00FF0000 
-00002633  =00FFFFFF               1270  WHITE equ $00FFFFFF 
-00002633                          1271      END    START        ; last line of source
+0000261A= 45 45 45 45 45 42 ...   1254       DC.B 'EEEEEBBBBBBBBBBBBBBBBBBBE'                01
+00002633= 45 45 45 45 45 42 ...   1255       DC.B 'EEEEEBECCCCCCCCCCCCCCCCBE'                02
+0000264C= 45 45 45 45 45 42 ...   1256       DC.B 'EEEEEBCBBBBCBBBBCCBCCCCBE'                03
+00002665= 45 45 45 45 45 42 ...   1257       DC.B 'EEEEEBCBCCCCBEEBCCBCCCCBE'                04
+0000267E= 45 45 45 45 45 42 ...   1258       DC.B 'EEEEEBCBBBCCBBBBCCBCCCCBE'                05
+00002697= 45 45 45 45 45 42 ...   1259       DC.B 'EEEEEBCBCCCCBCCBCCBCCCCBE'                06
+000026B0= 45 45 45 45 45 42 ...   1260       DC.B 'EEEEEBCBCCCCBCCBCCBBBBCBE'                07
+000026C9= 45 45 45 45 45 42 ...   1261       DC.B 'EEEEEBCCCCCCCCCCCCCCCCCBE'                08
+000026E2= 45 45 45 45 45 42 ...   1262       DC.B 'EEEEEBCCCBBBBCCCBCCBCCCBB'                09
+000026FB= 45 45 45 45 45 42 ...   1263       DC.B 'EEEEEBCCCBEEBCCCBCCBCCCBE'                10
+00002714= 45 45 45 45 45 42 ...   1264       DC.B 'EEEEEBCCCBEEBCCCBCCBCCCBE'                11
+0000272D= 45 45 45 45 45 42 ...   1265       DC.B 'EEEEEBCCCBEEBCCCBCCBCCCBE'                12
+00002746= 45 45 45 45 45 42 ...   1266       DC.B 'EEEEEBCCCBBBBCCCBBBBCCCBB'                13
+0000275F= 45 45 45 45 45 42 ...   1267       DC.B 'EEEEEBCCCCCCCCCCCCCCCCCBE'                14
+00002778= 45 45 45 45 45 42 ...   1268       DC.B 'EEEEEBCCBBBBCCCBCCCBCCCBE'                15
+00002791= 45 45 45 45 45 42 ...   1269       DC.B 'EEEEEBCCBEEBCCCBBCBBCCCBE'                16
+000027AA= 45 45 45 45 45 42 ...   1270       DC.B 'EEEEEBCCBEEBCCCBCBCBCCCBE'                17
+000027C3= 45 45 45 45 45 42 ...   1271       DC.B 'EEEEEBCCBEEBCCCBCCCBCCCBE'                18
+000027DC= 45 45 45 45 45 42 ...   1272       DC.B 'EEEEEBCCBBBBCCCBCCCBCCCBE'                19
+000027F5= 45 45 45 45 45 42 ...   1273       DC.B 'EEEEEBCCCCCCCCCCCCCCCCCBE'                20
+0000280E= 45 45 45 45 45 42 ...   1274       DC.B 'EEEEEBBBBBBBBBBBBBBBBBBBE'                21 
+00002827                          1275  
+00002827                          1276  
+00002827  =00000000               1277  BLACK equ $00000000  
+00002827  =00008000               1278  GREEN equ $00008000   
+00002827  =00800080               1279  PURPLE equ $00800080 
+00002827  =00808000               1280  TEAL equ $00808000 
+00002827  =00808080               1281  GRAY equ $00808080 
+00002827  =000000FF               1282  RED equ $000000FF 
+00002827  =0000FF00               1283  LIME equ $0000FF00 
+00002827  =0000FFFF               1284  YELLOW equ $0000FFFF 
+00002827  =00FF0000               1285  BLUE equ $00FF0000 
+00002827  =00FFFFFF               1286  WHITE equ $00FFFFFF 
+00002827                          1287      END    START        ; last line of source
 
-5 errors detected
+1 error detected
 No warnings generated
 
 
