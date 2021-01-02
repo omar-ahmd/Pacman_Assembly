@@ -214,7 +214,8 @@ RESET_MAP
     Move.B (A0)+,(A1)+  
     CMP #$000023AF,A1
     BNE RESET_MAP
-
+    
+RES_MAP
      BSR DRAW_LEVEL
      Move.L #$0,D1                  RESET D1
      Move.L #$0,D5                  VERTICAL LOOP INDEX INIT
@@ -223,7 +224,10 @@ RESET_MAP
      Move.L #MAP,A0
      ADD.L D0,A0                 LOAD MAP POSITION IN MEMORY
 
-
+     
+     move.b  #11,D0
+     move.w  #$FF00,D1
+     trap    #15
 Draw_map
      Move.L #$0,D6                  HORIZONTAL LOOP INDEX INIT
 Loop_draw_map
@@ -484,15 +488,18 @@ F   RTS
 RESET_POSITION
     Move.L #10,D0
     bsr delay
-    BSR clr_pacman
-    BSR clr_ghost
     MOVE.L #195,PACMAN_POSITION_X
     MOVE.L #37,PACMAN_POSITION_Y
-    MOVE.L #451,GHOST_POSITION_X
+    MOVE.L #419,GHOST_POSITION_X
     MOVE.L #291,GHOST_POSITION_Y
     MOVE.L #483,GHOST2_POSITION_X
     MOVE.L #291,GHOST2_POSITION_Y
-    RTS
+    MOVE.L #419,NGHOST_POSITION_X
+    MOVE.L #291,NGHOST_POSITION_Y
+    MOVE.L #483,NGHOST2_POSITION_X
+    MOVE.L #291,NGHOST2_POSITION_Y
+    BRA RES_MAP
+
 
 RESET_GHOST_POSITION
     Move.L #10,D0
@@ -514,39 +521,20 @@ DRAW_GHOST
     CMP.L #YELLOW,D0
     BNE PUR
     SUB.L #1,LIFE
-    
     Move.L LIFE,D2
     CMP #0,D2
     BEQ END
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;A2-A3;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    ;Move.L GHOST_POSITION_X,A6
-    ;Move.L GHOST_POSITION_Y,D7
-    ;BSR RESET_POSITION
-    ;Move.L GHOST2_POSITION_X,A6
-    ;Move.L GHOST2_POSITION_Y,D7
-    BSR RESET_POSITION    
+    BRA RESET_POSITION    
     BRA FF
 PUR CMP.L #PURPLE,D0
     BEQ EAT_GHOST
-    
-
-
 FF
-    ;Move.L GHOST_POSITION_X,A6              Clear GHOST
-    ;Move.L GHOST_POSITION_Y,D7
-    ;JSR clr_Ghost  
-    ;Move.L GHOST2_POSITION_X,A6
-    ;Move.L GHOST2_POSITION_Y,D7
-    JSR clr_Ghost                            
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    JSR clr_Ghost  
     MOVE.L A4,D1
     MOVE.L A5,D2
     MOVE.L D1,A2
     MOVE.L D2,A3
-;FF
 FFF 
-    ;MOVE.L GHOST_POSITION_X,A2
-    ;MOVE.L GHOST_POSITION_Y,A3
     BSR Draw_Ghost_On_Map
     BSR Draw_GHOST_Destails
     RTS
@@ -1229,6 +1217,7 @@ YELLOW equ $0000FFFF
 BLUE equ $00FF0000 
 WHITE equ $00FFFFFF 
     END    START        ; last line of source
+
 
 
 
