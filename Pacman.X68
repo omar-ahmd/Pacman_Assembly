@@ -85,6 +85,12 @@ STARTG
      move    #pacman_beginning,d1 ; pacman_beginning sound cue
      move    #72,d0               ; play pacman_beginning sound
      trap    #15
+     Move.L #MAP_LEVEL_1,A0
+     Move.L #MAP,A1
+RESET_MAP
+    Move.B (A0)+,(A1)+  
+    CMP #$000023AF,A1
+    BNE RESET_MAP
 
 
      BSR DRAW_LEVEL
@@ -1000,6 +1006,29 @@ pacman_chomp  equ    1          sound cue
 pacman_death  equ    2          sound cue
 
 MAP 
+     DC.B 'EEEEEBBBBBBBBBBBBBBBBBBBE'                01
+     DC.B 'EEEEEBECCCCCCCBCCCCCCCCBE'                02
+     DC.B 'EEEEEBGBBCBBBCBCBBBCBBGBE'                03
+     DC.B 'EEEEEBCCCCCCCCBCCCCCCCCBE'                04
+     DC.B 'EEEEEBCBBCBCBBBBBCBCBBCBE'                05
+     DC.B 'EEEEEBCCCCBCCCBCCCBCCCCBE'                06
+     DC.B 'EEEEEBBBBCBBBEBEBBBCBBBBE'                07
+     DC.B 'EEEEEEEEBCBEEEEEEEBCBEEEE'                08
+     DC.B 'EEEEBBBBBCBEBEEEBEBCBBBBB'                09
+     DC.B 'EEEEEEEEECEEBEEEBEECEEEEE'                10
+     DC.B 'EEEEBBBBBCBEBBBBBEBCBBBBB'                11
+     DC.B 'EEEEEEEEBCBEEEEEEEBCBEEEE'                12
+     DC.B 'EEEEEBBBBCBEBBBBBEBCBBBBE'                13
+     DC.B 'EEEEEBCCCCCCCCBCCCCCCCCBE'                14
+     DC.B 'EEEEEBCBBCBBBCBCBBBCBBCBE'                15
+     DC.B 'EEEEEBGCBCCCCCECCCCCBCGBE'                16
+     DC.B 'EEEEEBBCBCBCBBBBBCBCBCBBE'                17
+     DC.B 'EEEEEBCCCCBCCCBCCCBCCCCBE'                18
+     DC.B 'EEEEEBCBBBBBBCBCBBBBBBCBE'                19
+     DC.B 'EEEEEBCCCCCCCCCCCCCCCCCBE'                20
+     DC.B 'EEEEEBBBBBBBBBBBBBBBBBBBE'                21
+
+MAP_LEVEL_1
      DC.B 'EEEEEBBBBBBBBBBBBBBBBBBBE'                01
      DC.B 'EEEEEBECCCCCCCBCCCCCCCCBE'                02
      DC.B 'EEEEEBGBBCBBBCBCBBBCBBGBE'                03
