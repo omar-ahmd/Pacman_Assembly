@@ -158,6 +158,7 @@ loop
      BSR DRAW_SCORE
      Move.L #7,D0                             DELAY TIME
      BSR DELAY
+     BSR DRAW_LIFES
      ;Move Ghost 
      BSR Draw_Time     
      MOVE.L PACMAN_POSITION_X,D1
@@ -207,14 +208,23 @@ loop
      Move.B #'S',PACMAN_DIRECTION
 
      ENDI
-     BSR CHECK_GHOST
+
 
      
      BSR CHECK_G_COIN
      BSR CHECK_COIN
      JSR clr_pacman                            Clear Pacman
-     BSR CHECK_P_BLOCK
-     BSR CHECK_EXIT 
+     
+     BSR CHECK_GHOST
+     Bne ewq
+     bsr RESET_POSITION
+     bra SKIP
+     
+ewq  BSR CHECK_P_BLOCK
+     
+     BSR CHECK_EXIT
+     
+      
 
 SKIP jsr draw_Pacman
      jsr Draw_Ghost
@@ -249,8 +259,16 @@ CHECK_P_BLOCK
     MOVE.L D2,PACMAN_POSITION_Y
 F   RTS
 
-
-
+RESET_POSITION
+    Move.L #10,D0
+    bsr delay
+    BSR clr_pacman
+    BSR clr_ghost
+    MOVE.L #195,PACMAN_POSITION_X
+    MOVE.L #37,PACMAN_POSITION_Y
+    MOVE.L #451,GHOST_POSITION_X
+    MOVE.L #291,GHOST_POSITION_Y
+    RTS
     
 DRAW_GHOST
     BSR Try_move
@@ -261,7 +279,26 @@ DRAW_GHOST
     CMP.L #BLUE,D0
     BEQ FF 
     
-    BSR CHECK_GO_COIN
+    MOVE.L #83,D0
+    MOVE.L NGHOST_POSITION_X,D1
+    MOVE.L NGHOST_POSITION_Y,D2
+    ADD.L #5,D1
+    ADD.L #5,D2
+    TRAP #15    
+    CMP.L #YELLOW,D0
+    BNE PUR
+    SUB.L #1,LIFE
+    
+    ;COMPARISION IF LIFE = 0
+ 
+    BSR RESET_POSITION
+    BRA FF
+PUR CMP.L #PURPLE,D0
+    BEQ FF
+     
+
+
+    JSR clr_Ghost                            Clear GHOST
     MOVE.L NGHOST_POSITION_X,D1
     MOVE.L NGHOST_POSITION_Y,D2
     MOVE.L D1,GHOST_POSITION_X
@@ -275,62 +312,22 @@ FF  MOVE.L GHOST_POSITION_X,A2
 
 
 
-Check_Pacman
-    MOVE.L #83,D0
-    MOVE.L NPACMAN_POSITION_X,D1
-    MOVE.L NPACMAN_POSITION_Y,D2
-    ADD.L #12,D2
-    ADD.L #12,D1
-    TRAP #15
-    
-
-    CMP.L #PURPLE,PacManColor
-    BNE yel
-    ;Eat ghost and add score +50
-yel CMP.L #YELLOW,PacManColor
-    BNE eqq
-    
-eqq  RTS
-
 
 
 CHECK_GHOST
     MOVE.L #83,D0
     MOVE.L NPACMAN_POSITION_X,D1
     MOVE.L NPACMAN_POSITION_Y,D2
-    ADD.L #12,D2
-    ADD.L #12,D1
     TRAP #15
+    
     CMP.L #RED,D0
-    BNE eq
-    CMP.L #PURPLE,PacManColor
-    BNE EAG
-    ;Eat ghost and add score +50
-    BRA e
-EAG MOVE.L #0,SCORE
-    MOVE.L PACMAN_POSITION_X,D1
-    MOVE.L PACMAN_POSITION_Y,D2
-    MOVE.L D1,NPACMAN_POSITION_X
-    MOVE.L D2,NPACMAN_POSITION_Y
+    
 e   RTS
 
 
-CHECK_GO_COIN
-    BSR Get_Ghost_Coordinates
-    MULU #25,D1
-    ADD.L D0,D1
-    ADD.L D1,A0
-    MOVE.L GHOST_POSITION_X,D3
-    MOVE.L GHOST_POSITION_Y,D4
-    CMP.B #'C',(A0)
-    BNE GR
-    BSR draw_coin
+
+
     
-GR  CMP.B #'G',(A0)
-    BNE NC
-    BSR draw_Gcoin
-    
-NC  RTS
 
 ;----------------------------------------------------------------DRAW GHOST---------------------------------------------------------------------------
 
@@ -415,7 +412,7 @@ Draw_GHOST_Destails
      Add.L #7,D4
      TRAP   #15
 
-
+    
           MOVE.B #88,D0                   draw ghost 1 details 2nd eye pupil
      MOVE.L A2,D1                      
      MOVE.L A2,D3                        
@@ -446,6 +443,7 @@ GET_RANDOM
     Add.L GHOST_POSITION_X,D1
     ADD.L GHOST_POSITION_Y,D1
     Add.L SCORE,D1
+
     AND.L #$3,D1
     CMP #0,D1
     BEQ Try_up
@@ -459,9 +457,9 @@ GET_RANDOM
 Try_up
      ;CHeck block
     MOVE.L #83,D0
-     Move.L GHOST_POSITION_X,D1
-     Move.L GHOST_POSITION_Y,D2
-     Sub.L #DY,D2
+    Move.L GHOST_POSITION_X,D1
+    Move.L GHOST_POSITION_Y,D2
+    Sub.L #DY,D2
     TRAP #15
     CMP.L #BLUE,D0
     BEQ GET_RANDOM
@@ -470,9 +468,9 @@ Try_up
 Try_right    
      ;CHeck block
     MOVE.L #83,D0
-      Move.L GHOST_POSITION_X,D1
-     Move.L GHOST_POSITION_Y,D2
-     Add.L #DX,D1
+    Move.L GHOST_POSITION_X,D1
+    Move.L GHOST_POSITION_Y,D2
+    Add.L #DX,D1
     TRAP #15
     CMP.L #BLUE,D0
     BEQ GET_RANDOM
@@ -482,8 +480,8 @@ Try_right
 Try_Down   
      ;CHeck block
     MOVE.L #83,D0
-     Move.L GHOST_POSITION_X,D1
-     Move.L GHOST_POSITION_Y,D2
+    Move.L GHOST_POSITION_X,D1
+    Move.L GHOST_POSITION_Y,D2
     Add.L #DY,D2
     TRAP #15
     CMP.L #BLUE,D0
@@ -646,6 +644,82 @@ draw_coin
      TRAP   #15
      RTS
      
+;----------------------------------------------------------------DRAW LIFES---------------------------------------------------------------------------
+ 
+DRAW_LIFES
+     move.l  #BLACK,d1   
+     move.b  #80,d0  set pen color
+     trap #15     
+
+     move.l  #BLACK,d1   
+     move.b  #81,d0  set fill color
+     trap #15
+    
+     move.L  #10,d1    
+     move.L  #600,d2  
+     move.L  d1,d3  
+     move.L  d2,d4
+     add.L  #90,d3
+     add.L  #32,d4
+     move.b  #87,d0     draw black filled rectangle
+     trap #15
+     MOVE.L #0,D7
+     
+REDR MOVE.B #80,D0
+     Move.L #YELLOW,D1                Draw player pen and fill color
+     TRAP   #15
+     MOVE.B #81,D0
+     Move.L #YELLOW ,D1
+     TRAP   #15
+     
+     Move.L #10,D5      Player x position
+     Move.L #600,D6      Player y position
+     move.l #32,d0
+     MULU   d7,d0
+     ADD.L D0,D5
+     
+     MOVE.B #88,D0                    draw player
+     MOVE.L D5,D1                       
+     MOVE.L D6,D2
+     Add.L #25,D5
+     Add.L #25,D6
+     MOVE.L D5,D3
+     MOVE.L D6,D4
+     TRAP   #15
+     
+     clr.l d0
+     MOVE.B #80,D0
+     Move.L #Black,D1                Black pen and fill color
+     TRAP   #15
+     MOVE.B #81,D0
+     Move.L #Black,D1
+     TRAP   #15
+     
+     MOVE.L #RIGHT_MOUTH,A1
+
+     MOVE.B #88,D0                   draw pacman mouth
+     MOVE.L #10,D1
+     
+     move.l #32,d6
+     MULU   d7,d6
+     ADD.L D6,D1
+                      
+     MOVE.L #600,D2
+     MOVE.L D1,D3                      
+     MOVE.L #600,D4
+     CMP.L #$20A0,A1
+     BGT  dd
+     Add.L (A1)+,D1                   
+     Add.L (A1)+,D2
+     Add.L (A1)+,D3                 
+     Add.L (A1),D4
+     TRAP   #15
+     ADD.L #1,D7
+     
+     CMP.L LIFE,D7
+     BEQ RT
+     BRA REDR
+RT   RTS     
 ;----------------------------------------------------------------CLEAR G_COINS---------------------------------------------------------------------------
 
 draw_Gcoin     
@@ -685,7 +759,47 @@ clr_pacman
     move.b  #87,d0     draw black filled rectangle
     trap #15
     RTS
-            
+    
+clr_ghost   
+    move.l  #BLACK,d1   
+    move.b  #80,d0  set pen color
+    trap #15     
+
+    move.l  #BLACK,d1   
+    move.b  #81,d0  set fill color
+    trap #15
+    
+    move.L  GHOST_POSITION_X,d1    
+    move.L  GHOST_POSITION_Y,d2  
+    move.L  d1,d3  
+    move.L  d2,d4
+    add.L  #DPX,d3
+    add.L  #DPX,d4
+    move.b  #87,d0     draw black filled rectangle
+    trap #15
+    
+    MOVE.L LEVEL,D0
+    SUB.L #1,D0
+    Move.L #MAP,A0
+    ADD.L D0,A0
+    BSR Get_Ghost_Coordinates
+    MULU #25,D1
+    ADD.L D0,D1
+    ADD.L D1,A0
+    move.L  GHOST_POSITION_X,d3   
+    move.L  GHOST_POSITION_Y,d4
+    SUB.L  #2,d3
+    SUB.L #5,D4
+    
+    CMP.B #'C',(A0)
+    BNE TG
+    BSR draw_coin
+TG  CMP.B #'G',(A0)
+    BNE KL 
+    BSR draw_Gcoin
+    
+ 
+KL  RTS            
 ;----------------------------------------------------------------DELAY---------------------------------------------------------------------------------
    
 DELAY ; TIME = D0 SECOND
@@ -758,7 +872,7 @@ NGHOST_POSITION_X DC.L 451
 NGHOST_POSITION_Y DC.L 291
 GHOST_DIRECTION dc.b 'W',0
 
-
+LIFE DC.L 3
 SCORE DC.L 0
 LEVEL DC.L 1
 BEGIN_L_TIME DS.L 1
@@ -779,6 +893,10 @@ DPY EQU 25
 
 BX EQU 32
 BY EQU 32
+
+
+
+
 MAP 
      DC.B 'EEEEEBBBBBBBBBBBBBBBBBBBE'                01
      DC.B 'EEEEEBECCCCCCCBCCCCCCCCBE'                02
@@ -788,7 +906,7 @@ MAP
      DC.B 'EEEEEBCCCCBCCCBCCCBCCCCBE'                06
      DC.B 'EEEEEBBBBCBBBEBEBBBCBBBBE'                07
      DC.B 'EEEEEEEEBCBEEEEEEEBCBEEEE'                08
-     DC.B 'EEEEBBBBBCBEBBEBBEBCBBBBB'                09
+     DC.B 'EEEEBBBBBCBEBEEEBEBCBBBBB'                09
      DC.B 'EEEEEEEEECEEBEEEBEECEEEEE'                10
      DC.B 'EEEEBBBBBCBEBBBBBEBCBBBBB'                11
      DC.B 'EEEEEEEEBCBEEEEEEEBCBEEEE'                12
@@ -814,6 +932,7 @@ YELLOW equ $0000FFFF
 BLUE equ $00FF0000 
 WHITE equ $00FFFFFF 
     END    START        ; last line of source
+
 
 
 
