@@ -32,6 +32,10 @@ START:                  ; first instruction of program
     move    #pacman_death,d1         sound cue
     move    #71,d0
     trap    #15
+    lea     pacman_eat_wav,a1  load pacman_beginning.wav
+    move    #pacman_eat,d1     sound cue
+    move    #71,d0
+    trap    #15
     
 MENU
     move.b  #11,D0
@@ -193,17 +197,19 @@ strt
 ;----------------------------------------------------------------Draw Map-------------------------------------------------------------------------------
      BSR RESET_TIME
 STARTG 
+     Move.L #0,Random
      Move.L #3,LIFE                     ;RESET variables
      Move.L #195,PACMAN_POSITION_X
      Move.L #37,PACMAN_POSITION_Y
-     Move.L #451,GHOST_POSITION_X
-     Move.L #291,GHOST_POSITION_Y
+     Move.L #707,GHOST_POSITION_X
+     Move.L #35,GHOST_POSITION_Y
      Move.L #483,GHOST2_POSITION_X
      Move.L #291,GHOST2_POSITION_Y
      Move.L #0,SCORE 
      Move.L #1,CURRENT_TIME
      Move.L #1,BEGIN_L_TIME
      Move.L #1,BEGIN_G_TIME
+     BSR RESET_TIME
      ;Move.L #0,Random
      move    #pacman_beginning,d1 ; pacman_beginning sound cue
      move    #72,d0               ; play pacman_beginning sound
@@ -212,10 +218,12 @@ STARTG
      Move.L #MAP,A1
 RESET_MAP
     Move.B (A0)+,(A1)+  
-    CMP #$000023AF,A1
+    CMP #$000023e5,A1
+    
     BNE RESET_MAP
     
 RES_MAP
+
      BSR DRAW_LEVEL
      Move.L #$0,D1                  RESET D1
      Move.L #$0,D5                  VERTICAL LOOP INDEX INIT
@@ -458,6 +466,17 @@ SKIP jsr draw_Pacman
      Move.L A4,NGHOST2_POSITION_X
      Move.L A5,NGHOST2_POSITION_Y
      Move.B D7,GHOST2_DIRECTION
+     Move.L GHOST3_POSITION_X,A2
+     Move.L GHOST3_POSITION_Y,A3
+     Move.L NGHOST3_POSITION_X,A4
+     Move.L NGHOST3_POSITION_Y,A5
+     Move.B GHOST3_DIRECTION,D7
+     jsr Draw_Ghost    
+     Move.L A2,GHOST3_POSITION_X
+     Move.L A3,GHOST3_POSITION_Y
+     Move.L A4,NGHOST3_POSITION_X
+     Move.L A5,NGHOST3_POSITION_Y
+     Move.B D7,GHOST3_DIRECTION
      BRA loop
 
  
@@ -490,14 +509,18 @@ RESET_POSITION
     bsr delay
     MOVE.L #195,PACMAN_POSITION_X
     MOVE.L #37,PACMAN_POSITION_Y
-    MOVE.L #419,GHOST_POSITION_X
-    MOVE.L #291,GHOST_POSITION_Y
+    MOVE.L #707,GHOST_POSITION_X
+    MOVE.L #35,GHOST_POSITION_Y
     MOVE.L #483,GHOST2_POSITION_X
     MOVE.L #291,GHOST2_POSITION_Y
-    MOVE.L #419,NGHOST_POSITION_X
-    MOVE.L #291,NGHOST_POSITION_Y
+    MOVE.L #707,NGHOST_POSITION_X
+    MOVE.L #35,NGHOST_POSITION_Y
     MOVE.L #483,NGHOST2_POSITION_X
     MOVE.L #291,NGHOST2_POSITION_Y
+    MOVE.L #195,GHOST3_POSITION_X
+    MOVE.L #611,GHOST3_POSITION_Y
+    MOVE.L #195,NGHOST3_POSITION_X
+    MOVE.L #611,NGHOST3_POSITION_Y
     BRA RES_MAP
 
 
@@ -510,7 +533,7 @@ RESET_GHOST_POSITION
     RTS
     
 DRAW_GHOST
-    Move.L #0,Random
+
     BSR Try_move
     MOVE.L #83,D0
     MOVE.L A4,D1
@@ -655,7 +678,7 @@ Draw_GHOST_Destails
 ;----------------------------------------------------------------Move Ghost----------------------------------------------------------------------------
  
 Try_move
-    Move.B GHOST_DIRECTION,D0
+    Move.B D7,D0
     CMP #'W',D0
     BEQ Try_up
     CMP #'A',D0
@@ -665,16 +688,16 @@ Try_move
     CMP #'D',D0
     BEQ Try_right
 
-GET_RANDOM   
+GET_RANDOM
+  
     AddI.L #1,Random
-    MOVE.L #31,D0
-    TRAP #15
-    ADD.L CURRENT_TIME,D1
-    Add.L PACMAN_POSITION_X,D1
-    Add.L PACMAN_POSITION_Y,D1
-    Add.L A2,D1
-    ADD.L A3,D1
-    Add.L SCORE,D1
+    move.b  #8,d0       Read timer, get 100ths of a second since midnight in D1.L
+    trap    #15
+    and.l   #$04FFFFFF,d1 
+    divu #1280,d1  
+    swap d1 
+
+
     Add.L Random,D1
 
     AND.L #$3,D1
@@ -696,6 +719,10 @@ Try_up
     TRAP #15
     CMP.L #BLUE,D0
     BEQ GET_RANDOM
+    MOVE.L #83,D0
+    TRAP #15
+    CMP.L #RED,D0
+    BEQ GET_RANDOM
     MOVE.B #'W',D7
     BRA Move_ghost
 Try_right    
@@ -706,6 +733,10 @@ Try_right
     Add.L #DX,D1
     TRAP #15
     CMP.L #BLUE,D0
+    BEQ GET_RANDOM
+    MOVE.L #83,D0
+    TRAP #15
+    CMP.L #RED,D0
     BEQ GET_RANDOM
     MOVE.B #'D',D7
     BRA Move_ghost
@@ -719,6 +750,10 @@ Try_Down
     TRAP #15
     CMP.L #BLUE,D0
     BEQ GET_RANDOM
+    MOVE.L #83,D0
+    TRAP #15
+    CMP.L #RED,D0
+    BEQ GET_RANDOM
     MOVE.B #'S',D7
     BRA Move_ghost
 Try_left  
@@ -729,6 +764,10 @@ Try_left
     Sub.L #DX,D1
     TRAP #15
     CMP.L #BLUE,D0
+    BEQ GET_RANDOM
+    MOVE.L #83,D0
+    TRAP #15
+    CMP.L #RED,D0
     BEQ GET_RANDOM
     MOVE.B #'A',D7
     BRA Move_ghost
@@ -1070,11 +1109,16 @@ Get_Ghost_Coordinates
    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
    
 Emptying_Ate_Coin
-    MOVE.L LEVEL,D0
-    SUB.L #1,D0
+
     Move.L #MAP,A0
-    ADD.L D0,A0
     BSR Get_Pacman_Coordinates
+    
+    SUB.b #1,CoinsNb
+    cmp.b #0,coinsnb
+    move    #pacman_eat,d1       ; pacman_eat sound cue
+    move    #72,d0               ; play pacman_eat sound
+    trap    #15
+    beq Menu
     MULU #25,D1
     ADD.L D0,D1
     ADD.L D1,A0
@@ -1091,7 +1135,7 @@ PACMAN_POSITION_X DC.L 195
 PACMAN_POSITION_Y DC.L 37
 NPACMAN_POSITION_X DS.L 1
 NPACMAN_POSITION_Y DS.L 1
-PACMAN_MOUTH dc.b %11011011
+PACMAN_MOUTH dc.b %01010101
 PACMAN_DIRECTION dc.b 'D',0
 LEFT_MOUTH dc.L -02,10,09,21     
 RIGHT_MOUTH dc.L 16,09,28,21    
@@ -1100,18 +1144,24 @@ DOWN_MOUTH dc.L 07,15,19,26
 EYES dc.L 11,10,15,14
 PacManColor Dc.l YELLOW 
 
-GHOST_POSITION_X DC.L 451
-GHOST_POSITION_Y DC.L 291
-NGHOST_POSITION_X DC.L 451
-NGHOST_POSITION_Y DC.L 291
+GHOST_POSITION_X DC.L 707
+GHOST_POSITION_Y DC.L 35
+NGHOST_POSITION_X DC.L 707
+NGHOST_POSITION_Y DC.L 35
 
 GHOST2_POSITION_X DC.L 483
 GHOST2_POSITION_Y DC.L 291
 NGHOST2_POSITION_X DC.L 483
 NGHOST2_POSITION_Y DC.L 291
 
+GHOST3_POSITION_X DC.L 195
+GHOST3_POSITION_Y DC.L 611
+NGHOST3_POSITION_X DC.L 195
+NGHOST3_POSITION_Y DC.L 611
+
 GHOST_DIRECTION dc.b 'W',0
 GHOST2_DIRECTION dc.b 'W',0
+GHOST3_DIRECTION dc.b 'S',0
 
 Random DC.L 0
 
@@ -1126,7 +1176,7 @@ G_TIME DC.B 5
 ScoreDisplay	dc.b		'Current Score: ',0
 LevelDisplay	dc.b		'Level: ',0
 TimeDisplay	dc.b		'TIME: ',0
-
+CoinsNb DC.B 148
 
 DX EQU 32
 DY EQU 32
@@ -1155,32 +1205,14 @@ INSTRUCTIONS
 pacman_beginning_wav  dc.b   'pacman_beginning.wav',0    sound file
 pacman_chomp_wav  dc.b   'pacman_chomp.wav',0            sound file
 pacman_death_wav  dc.b   'pacman_death.wav',0            sound file
+pacman_eat_wav  dc.b   'pacsound.wav',0            sound file
 pacman_beginning  equ    0      sound cue
 pacman_chomp  equ    1          sound cue
 pacman_death  equ    2          sound cue
+pacman_eat  equ    3          sound cue
 
-MAP 
-     DC.B 'EEEEEBBBBBBBBBBBBBBBBBBBE'                01
-     DC.B 'EEEEEBECCCCCCCBCCCCCCCCBE'                02
-     DC.B 'EEEEEBGBBCBBBCBCBBBCBBGBE'                03
-     DC.B 'EEEEEBCCCCCCCCBCCCCCCCCBE'                04
-     DC.B 'EEEEEBCBBCBCBBBBBCBCBBCBE'                05
-     DC.B 'EEEEEBCCCCBCCCBCCCBCCCCBE'                06
-     DC.B 'EEEEEBBBBCBBBEBEBBBCBBBBE'                07
-     DC.B 'EEEEEEEEBCBEEEEEEEBCBEEEE'                08
-     DC.B 'EEEEBBBBBCBEBEEEBEBCBBBBB'                09
-     DC.B 'EEEEEEEEECEEBEEEBEECEEEEE'                10
-     DC.B 'EEEEBBBBBCBEBBBBBEBCBBBBB'                11
-     DC.B 'EEEEEEEEBCBEEEEEEEBCBEEEE'                12
-     DC.B 'EEEEEBBBBCBEBBBBBEBCBBBBE'                13
-     DC.B 'EEEEEBCCCCCCCCBCCCCCCCCBE'                14
-     DC.B 'EEEEEBCBBCBBBCBCBBBCBBCBE'                15
-     DC.B 'EEEEEBGCBCCCCCECCCCCBCGBE'                16
-     DC.B 'EEEEEBBCBCBCBBBBBCBCBCBBE'                17
-     DC.B 'EEEEEBCCCCBCCCBCCCBCCCCBE'                18
-     DC.B 'EEEEEBCBBBBBBCBCBBBBBBCBE'                19
-     DC.B 'EEEEEBCCCCCCCCCCCCCCCCCBE'                20
-     DC.B 'EEEEEBBBBBBBBBBBBBBBBBBBE'                21
+MAP ds.b 525
+
 
 MAP_LEVEL_1
      DC.B 'EEEEEBBBBBBBBBBBBBBBBBBBE'                01
@@ -1217,6 +1249,8 @@ YELLOW equ $0000FFFF
 BLUE equ $00FF0000 
 WHITE equ $00FFFFFF 
     END    START        ; last line of source
+
+
 
 
 
