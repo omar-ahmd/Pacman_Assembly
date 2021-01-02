@@ -44,7 +44,7 @@ MENU
     move.l  #BLACK,d1   
     move.b  #80,d0  set pen color
     trap #15
-    move.l  #BLACK,d1   
+    move.l  #BLACK,d1
     move.b  #81,d0  set fill color
     trap #15
     
@@ -82,14 +82,10 @@ MENU
      TRAP   #15
      
      MOVE.B #88,D0                   draw ghost 1 details 1st eye
-     MOVE.L A2,D1                      
-     MOVE.L A3,D2
-     MOVE.L A2,D3                       
-     MOVE.L A3,D4 
-     Add.L #2,D1                   
-     Add.L #3,D2
-     Add.L #10,D3                 
-     Add.L #12,D4
+     MOVE.L #615,D1                      
+     MOVE.L #310,D2
+     MOVE.L #635,D3                       
+     MOVE.L #345,D4 
      TRAP   #15
      
      MOVE.B #88,D0                   draw ghost 1 details 2nd eye
@@ -173,13 +169,19 @@ MENU
     lea     INSTRUCTIONS,a1
     move.b  #14,d0              ; display string
     trap    #15
-WAIT_START
+WAIT_START  
      MOVE.B #19,D0 
-     MOVE.L #$d,D1      Check for keypress enter
+     MOVE.L #$20<<8+#$d,D1    Check for keypress enter or space
      TRAP   #15
      Move.l d1,d6
      BTST.L #0,D1     ; test for 'enter'
      IF <NE> THEN      ; if 'enter'
+     MOVE.B #1,CURRENT_LEVEL
+     bra strt
+     ENDI
+     BTST.L #0,D1     ; test for 'space' $20
+     IF <NE> THEN      ; if 'space'
+     MOVE.B #2,CURRENT_LEVEL
      bra strt
      ENDI
      bra WAIT_START
@@ -214,12 +216,19 @@ STARTG
      move    #pacman_beginning,d1 ; pacman_beginning sound cue
      move    #72,d0               ; play pacman_beginning sound
      trap    #15
+     CMP #1,CURRENT_LEVEL
+     BNE LVL2
      Move.L #MAP_LEVEL_1,A0
+     bra ctn1
+LVL2
+     Move.L #MAP_LEVEL_2,A0
+ctn1
      Move.L #MAP,A1
+     Move.L #MAP,A2
+     Add.L #525,A2
 RESET_MAP
-    Move.B (A0)+,(A1)+  
-    CMP #$000023e5,A1
-    
+    Move.B (A0)+,(A1)+ 
+    CMP A2,A1
     BNE RESET_MAP
     
 RES_MAP
@@ -1131,6 +1140,9 @@ Emptying_Ate_Coin
     SIMHALT             ; halt simulator
 * Put variables and constants here
  ORG $2000
+ 
+CURRENT_LEVEL dc.b 1
+
 PACMAN_POSITION_X DC.L 195
 PACMAN_POSITION_Y DC.L 37
 NPACMAN_POSITION_X DS.L 1
@@ -1200,7 +1212,8 @@ INSTRUCTIONS
         dc.b    '   a - LEFT ',CR,LF
         dc.b    '  ===============================',CR,LF
         dc.b    CR,LF,CR,LF
-        dc.b    '  Press ENTER to begin',CR,LF,0
+        dc.b    '  Press ENTER to play level 1',CR,LF
+        dc.b    '  Press SPACE to play level 2',CR,LF,0
     
 pacman_beginning_wav  dc.b   'pacman_beginning.wav',0    sound file
 pacman_chomp_wav  dc.b   'pacman_chomp.wav',0            sound file
@@ -1237,6 +1250,9 @@ MAP_LEVEL_1
      DC.B 'EEEEEBCCCCCCCCCCCCCCCCCBE'                20
      DC.B 'EEEEEBBBBBBBBBBBBBBBBBBBE'                21
 
+MAP_LEVEL_2
+     DC.B 'EEEEEBBBBBBBBBBBBBBBBBBBE'                01     DC.B 'EEEEEBECCCCCCCCCCCCCCCCBE'                02     DC.B 'EEEEEBCBBBBCBBBBCCBCCCCBE'                03     DC.B 'EEEEEBCBCCCCBEEBCCBCCCCBE'                04     DC.B 'EEEEEBCBBBCCBBBBCCBCCCCBE'                05     DC.B 'EEEEEBCBCCCCBCCBCCBCCCCBE'                06     DC.B 'EEEEEBCBCCCCBCCBCCBBBBCBE'                07     DC.B 'EEEEEBCCCCCCCCCCCCCCCCCBE'                08     DC.B 'EEEEEBCCCBBBBCCCBCCBCCCBB'                09     DC.B 'EEEEEBCCCBEEBCCCBCCBCCCBE'                10     DC.B 'EEEEEBCCCBEEBCCCBCCBCCCBE'                11     DC.B 'EEEEEBCCCBEEBCCCBCCBCCCBE'                12     DC.B 'EEEEEBCCCBBBBCCCBBBBCCCBB'                13     DC.B 'EEEEEBCCCCCCCCCCCCCCCCCBE'                14     DC.B 'EEEEEBCCBBBBCCCBCCCBCCCBE'                15     DC.B 'EEEEEBCCBEEBCCCBBCBBCCCBE'                16     DC.B 'EEEEEBCCBEEBCCCBCBCBCCCBE'                17     DC.B 'EEEEEBCCBEEBCCCBCCCBCCCBE'                18     DC.B 'EEEEEBCCBBBBCCCBCCCBCCCBE'                19     DC.B 'EEEEEBCCCCCCCCCCCCCCCCCBE'                20     DC.B 'EEEEEBBBBBBBBBBBBBBBBBBBE'                21  
+
 
 BLACK equ $00000000  
 GREEN equ $00008000   
@@ -1249,6 +1265,7 @@ YELLOW equ $0000FFFF
 BLUE equ $00FF0000 
 WHITE equ $00FFFFFF 
     END    START        ; last line of source
+
 
 
 
