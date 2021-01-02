@@ -16,11 +16,62 @@ START:                  ; first instruction of program
      MOVE.B #33,D0
      MOVE.L #800*$10000+672,D1        Set screen to 800 x 672
      TRAP   #15
-     BRA STARTG
+     ;BRA STARTG
     
+;----------------------------------------------------------------Initialize Game---------------------------------------------------------------------------
+
+MENU
+    move.b  #11,D0
+    move.w  #$FF00,D1
+    trap    #15                 ; clear screen
+    
+* Display instructions
+    move.l		#11,d0			
+	move.l		#$05000500,d1			
+	trap		#15
+    move.l  #YELLOW,d1
+    move.l  #MENU_FONT,d2
+    move.b  #21,d0              ; set font
+    trap    #15
+    lea     INSTRUCTIONS,a1
+    move.b  #14,d0              ; display string
+    trap    #15
+WAIT_START
+     MOVE.B #19,D0 
+     MOVE.L #$d,D1      Check for keypress enter
+     TRAP   #15
+     Move.l d1,d6
+     BTST.L #0,D1     ; test for 'enter'
+     IF <NE> THEN      ; if 'enter'
+     bra strt
+     ENDI
+     bra WAIT_START
+strt
+    move.b  #11,D0
+    move.w  #$FF00,D1
+    trap    #15                 ; clear screen
+    move.l  #White,d1
+    move.l  #$01090000,d2
+    move.b  #21,d0              ; set font
+    trap    #15
+
+
+
 ;----------------------------------------------------------------Draw Map-------------------------------------------------------------------------------
      BSR RESET_TIME
-STARTG BSR DRAW_LEVEL
+STARTG 
+     Move.L #3,LIFE                     ;RESET variables
+     Move.L #195,PACMAN_POSITION_X
+     Move.L #37,PACMAN_POSITION_Y
+     Move.L #451,GHOST_POSITION_X
+     Move.L #291,GHOST_POSITION_Y
+     Move.L #0,SCORE 
+     Move.L #1,CURRENT_TIME
+     Move.L #1,BEGIN_L_TIME
+     Move.L #1,BEGIN_G_TIME
+
+
+     BSR DRAW_LEVEL
      Move.L #$0,D1                  RESET D1
      Move.L #$0,D5                  VERTICAL LOOP INDEX INIT
      MOVE.L LEVEL,D0
@@ -156,7 +207,7 @@ Draw_Pacman_Eyes
     
 loop  
      BSR DRAW_SCORE
-     Move.L #7,D0                             DELAY TIME
+     Move.L #10,D0                             DELAY TIME
      BSR DELAY
      BSR DRAW_LIFES
      ;Move Ghost 
@@ -214,15 +265,24 @@ loop
      BSR CHECK_G_COIN
      BSR CHECK_COIN
      JSR clr_pacman                            Clear Pacman
-     
-     BSR CHECK_GHOST
-     Bne ewq
-     bsr RESET_POSITION
-     bra SKIP
-     
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;MOHAMAD;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+     ;BSR CHECK_GHOST                          ; fi marten check ??? 
+     ;Bne ewq
+     ;CMP #PURPLE,PacManColor
+     ;BEQ RESET_GHOST_POSITION
+     ;bsr RESET_POSITION
+     ;bra SKIP
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ewq  BSR CHECK_P_BLOCK
-     
+     Move.L PACMAN_POSITION_X,D5
      BSR CHECK_EXIT
+     MOVE.L D5,PACMAN_POSITION_X
+     Move.L GHOST_POSITION_X,D5
+     BSR CHECK_EXIT
+     MOVE.L D5,GHOST_POSITION_X
      
       
 
@@ -233,16 +293,12 @@ SKIP jsr draw_Pacman
  
 ;----------------------------------------------------------------CHECK Block---------------------------------------------------------------------------
 CHECK_EXIT
-    CMP.L #800,PACMAN_POSITION_X
+    CMP.L #800,D5
     BLT LC
-    MOVE.L PACMAN_POSITION_X,D5
-    SUB.L #672,PACMAN_POSITION_X
-    MOVE.L PACMAN_POSITION_X,D5              ;??? BRA DR
-LC  CMP.L #128,PACMAN_POSITION_X
+    SUB.L #672,D5
+LC  CMP.L #128,D5
     BGT DR
-    MOVE.L PACMAN_POSITION_X,D5
-    ADD.L #672,PACMAN_POSITION_X
-    MOVE.L PACMAN_POSITION_X,D5              ;???
+    ADD.L #672,D5
 DR  RTS 
 
 CHECK_P_BLOCK
@@ -260,7 +316,7 @@ CHECK_P_BLOCK
 F   RTS
 
 RESET_POSITION
-    Move.L #10,D0
+    Move.L #12,D0
     bsr delay
     BSR clr_pacman
     BSR clr_ghost
@@ -269,16 +325,17 @@ RESET_POSITION
     MOVE.L #451,GHOST_POSITION_X
     MOVE.L #291,GHOST_POSITION_Y
     RTS
+
+RESET_GHOST_POSITION
+    Move.L #10,D0
+    bsr delay
+    BSR clr_ghost
+    MOVE.L #451,GHOST_POSITION_X
+    MOVE.L #291,GHOST_POSITION_Y
+    RTS
     
 DRAW_GHOST
     BSR Try_move
-    MOVE.L #83,D0
-    MOVE.L NGHOST_POSITION_X,D1
-    MOVE.L NGHOST_POSITION_Y,D2
-    TRAP #15    
-    CMP.L #BLUE,D0
-    BEQ FF 
-    
     MOVE.L #83,D0
     MOVE.L NGHOST_POSITION_X,D1
     MOVE.L NGHOST_POSITION_Y,D2
@@ -289,30 +346,35 @@ DRAW_GHOST
     BNE PUR
     SUB.L #1,LIFE
     
-    ;COMPARISION IF LIFE = 0
+    Move.L LIFE,D2
+    CMP #0,D2
+    BEQ MENU
  
     BSR RESET_POSITION
     BRA FF
 PUR CMP.L #PURPLE,D0
-    BEQ FF
-     
+    BEQ EAT_GHOST
+    
 
 
+FF
     JSR clr_Ghost                            Clear GHOST
     MOVE.L NGHOST_POSITION_X,D1
     MOVE.L NGHOST_POSITION_Y,D2
     MOVE.L D1,GHOST_POSITION_X
     MOVE.L D2,GHOST_POSITION_Y   
-FF  MOVE.L GHOST_POSITION_X,A2
+;FF
+FFF 
+    MOVE.L GHOST_POSITION_X,A2
     MOVE.L GHOST_POSITION_Y,A3
     BSR Draw_Ghost_On_Map
     BSR Draw_GHOST_Destails
     RTS
 
-
-
-
-
+EAT_GHOST
+    BSR RESET_GHOST_POSITION
+    Add.L #50,SCORE
+    BRA FFF
 
 CHECK_GHOST
     MOVE.L #83,D0
@@ -325,9 +387,6 @@ CHECK_GHOST
 e   RTS
 
 
-
-
-    
 
 ;----------------------------------------------------------------DRAW GHOST---------------------------------------------------------------------------
 
@@ -894,7 +953,20 @@ DPY EQU 25
 BX EQU 32
 BY EQU 32
 
-
+MENU_FONT   equ $04120001
+CR      equ    $d
+LF      equ    $a
+INSTRUCTIONS    
+        dc.b    CR,LF,CR,LF,CR,LF
+        dc.b    '               PACMAN',CR,LF,CR,LF
+        dc.b    '  ======= Pacman movement =======',CR,LF
+        dc.b    '   w - UP ',CR,LF
+        dc.b    '   d - RIGHT ',CR,LF
+        dc.b    '   s - DOWN ',CR,LF
+        dc.b    '   a - LEFT ',CR,LF
+        dc.b    '  ===============================',CR,LF
+        dc.b    CR,LF,CR,LF
+        dc.b    '  Press ENTER to begin',CR,LF,0
 
 
 MAP 
@@ -932,6 +1004,7 @@ YELLOW equ $0000FFFF
 BLUE equ $00FF0000 
 WHITE equ $00FFFFFF 
     END    START        ; last line of source
+
 
 
 
