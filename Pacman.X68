@@ -37,6 +37,126 @@ MENU
     move.b  #11,D0
     move.w  #$FF00,D1
     trap    #15                 ; clear screen
+    move.l  #BLACK,d1   
+    move.b  #80,d0  set pen color
+    trap #15
+    move.l  #BLACK,d1   
+    move.b  #81,d0  set fill color
+    trap #15
+    
+* draw ghost
+     MOVE.B #80,D0
+     Move.L #Red,D1                Black pen and fill color
+     TRAP   #15
+     MOVE.B #81,D0
+     Move.L #Red,D1
+     TRAP   #15
+     MOVE.B #87,D0  
+     MOVE.L #600,D1                       
+     MOVE.L #300,D2
+     MOVE.L #700,D3
+     MOVE.L #400,D4
+     TRAP   #15 
+
+     MOVE.B #80,D0
+     Move.L #Black,D1                Black pen and fill color
+     TRAP   #15
+     MOVE.B #81,D0
+     Move.L #Black,D1
+     TRAP   #15
+
+     MOVE.B #88,D0                   draw ghost 1 details 1ST LEG
+     MOVE.L #615,D1                      
+     MOVE.L #360,D2
+     MOVE.L #645,D3                       
+     MOVE.L #450,D4                  
+     TRAP   #15
+
+     MOVE.B #88,D0                   draw ghost 1 details 2nd leg
+     MOVE.L #660,D1                      
+     MOVE.L #685,D3                                                        
+     TRAP   #15
+     
+     MOVE.B #88,D0                   draw ghost 1 details 1st eye
+     MOVE.L A2,D1                      
+     MOVE.L A3,D2
+     MOVE.L A2,D3                       
+     MOVE.L A3,D4 
+     Add.L #2,D1                   
+     Add.L #3,D2
+     Add.L #10,D3                 
+     Add.L #12,D4
+     TRAP   #15
+     
+     MOVE.B #88,D0                   draw ghost 1 details 2nd eye
+     MOVE.L A2,D1                      
+     MOVE.L A2,D3                       
+     Add.L #15,D1                   
+     Add.L #23,D3                 
+     TRAP   #15
+     
+          MOVE.B #80,D0
+     Move.L #White,D1                Black pen and fill color
+     TRAP   #15
+     MOVE.B #81,D0
+     Move.L #White,D1
+     TRAP   #15
+     
+          MOVE.B #88,D0                   draw ghost 1 details 1st eye pupil
+     MOVE.L A2,D1                      
+     MOVE.L A3,D2
+     MOVE.L A2,D3                       
+     MOVE.L A3,D4 
+     Add.L #5,D1                   
+     Add.L #3,D2
+     Add.L #7,D3                 
+     Add.L #7,D4
+     TRAP   #15
+
+    
+          MOVE.B #88,D0                   draw ghost 1 details 2nd eye pupil
+     MOVE.L A2,D1                      
+     MOVE.L A2,D3                        
+     Add.L #18,D1                   
+     Add.L #20,D3                 
+     TRAP   #15
+
+
+* draw pacman
+     MOVE.B #80,D0
+     Move.L #YELLOW,D1                Draw player pen and fill color
+     TRAP   #15
+     MOVE.B #81,D0
+     Move.L #YELLOW ,D1
+     TRAP   #15
+     Move.L #600,D5      Player x position
+     Move.L #100,D6      Player y position
+     MOVE.B #88,D0                    draw player
+     MOVE.L D5,D1                       
+     MOVE.L D6,D2
+     Add.L #100,D5
+     Add.L #100,D6
+     MOVE.L D5,D3
+     MOVE.L D6,D4
+     TRAP   #15
+     clr.l d0
+     MOVE.B #80,D0
+     Move.L #Black,D1                Black pen and fill color
+     TRAP   #15
+     MOVE.B #81,D0
+     Move.L #Black,D1
+     TRAP   #15
+     MOVE.B #88,D0                   draw pacman mouth
+     MOVE.L #600,D1                   
+     MOVE.L #100,D2
+     MOVE.L D1,D3
+     Move.L D2,D4                      
+     Add.L #70,D1                   
+     Add.L #30,D2
+     Add.L #120,D3                 
+     Add.L #85,D4
+     TRAP   #15
+   
     
 * Display instructions
     move.l		#11,d0			
@@ -78,10 +198,13 @@ STARTG
      Move.L #37,PACMAN_POSITION_Y
      Move.L #451,GHOST_POSITION_X
      Move.L #291,GHOST_POSITION_Y
+     Move.L #483,GHOST2_POSITION_X
+     Move.L #291,GHOST2_POSITION_Y
      Move.L #0,SCORE 
      Move.L #1,CURRENT_TIME
      Move.L #1,BEGIN_L_TIME
      Move.L #1,BEGIN_G_TIME
+     ;Move.L #0,Random
      move    #pacman_beginning,d1 ; pacman_beginning sound cue
      move    #72,d0               ; play pacman_beginning sound
      trap    #15
@@ -91,7 +214,6 @@ RESET_MAP
     Move.B (A0)+,(A1)+  
     CMP #$000023AF,A1
     BNE RESET_MAP
-
 
      BSR DRAW_LEVEL
      Move.L #$0,D1                  RESET D1
@@ -229,7 +351,7 @@ Draw_Pacman_Eyes
     
 loop  
      BSR DRAW_SCORE
-     Move.L #10,D0                             DELAY TIME
+     Move.L #12,D0                             DELAY TIME
      BSR DELAY
      BSR DRAW_LIFES
      ;Move Ghost 
@@ -305,11 +427,33 @@ ewq  BSR CHECK_P_BLOCK
      Move.L GHOST_POSITION_X,D5
      BSR CHECK_EXIT
      MOVE.L D5,GHOST_POSITION_X
-     
-      
+     Move.L GHOST2_POSITION_X,D5
+     BSR CHECK_EXIT
+     MOVE.L D5,GHOST2_POSITION_X
 
 SKIP jsr draw_Pacman
+     Move.L GHOST_POSITION_X,A2
+     Move.L GHOST_POSITION_Y,A3
+     Move.L NGHOST_POSITION_X,A4
+     Move.L NGHOST_POSITION_Y,A5
+     Move.B GHOST_DIRECTION,D7        
      jsr Draw_Ghost
+     Move.L A2,GHOST_POSITION_X
+     Move.L A3,GHOST_POSITION_Y
+     Move.L A4,NGHOST_POSITION_X
+     Move.L A5,NGHOST_POSITION_Y
+     Move.B D7,GHOST_DIRECTION
+     Move.L GHOST2_POSITION_X,A2
+     Move.L GHOST2_POSITION_Y,A3
+     Move.L NGHOST2_POSITION_X,A4
+     Move.L NGHOST2_POSITION_Y,A5
+     Move.B GHOST2_DIRECTION,D7
+     jsr Draw_Ghost    
+     Move.L A2,GHOST2_POSITION_X
+     Move.L A3,GHOST2_POSITION_Y
+     Move.L A4,NGHOST2_POSITION_X
+     Move.L A5,NGHOST2_POSITION_Y
+     Move.B D7,GHOST2_DIRECTION
      BRA loop
 
  
@@ -338,7 +482,7 @@ CHECK_P_BLOCK
 F   RTS
 
 RESET_POSITION
-    Move.L #12,D0
+    Move.L #10,D0
     bsr delay
     BSR clr_pacman
     BSR clr_ghost
@@ -346,21 +490,24 @@ RESET_POSITION
     MOVE.L #37,PACMAN_POSITION_Y
     MOVE.L #451,GHOST_POSITION_X
     MOVE.L #291,GHOST_POSITION_Y
+    MOVE.L #483,GHOST2_POSITION_X
+    MOVE.L #291,GHOST2_POSITION_Y
     RTS
 
 RESET_GHOST_POSITION
     Move.L #10,D0
     bsr delay
     BSR clr_ghost
-    MOVE.L #451,GHOST_POSITION_X
-    MOVE.L #291,GHOST_POSITION_Y
+    MOVE.L #451,A2
+    MOVE.L #291,A3
     RTS
     
 DRAW_GHOST
+    Move.L #0,Random
     BSR Try_move
     MOVE.L #83,D0
-    MOVE.L NGHOST_POSITION_X,D1
-    MOVE.L NGHOST_POSITION_Y,D2
+    MOVE.L A4,D1
+    MOVE.L A5,D2
     ADD.L #5,D1
     ADD.L #5,D2
     TRAP #15    
@@ -371,8 +518,13 @@ DRAW_GHOST
     Move.L LIFE,D2
     CMP #0,D2
     BEQ END
- 
-    BSR RESET_POSITION
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;A2-A3;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;Move.L GHOST_POSITION_X,A6
+    ;Move.L GHOST_POSITION_Y,D7
+    ;BSR RESET_POSITION
+    ;Move.L GHOST2_POSITION_X,A6
+    ;Move.L GHOST2_POSITION_Y,D7
+    BSR RESET_POSITION    
     BRA FF
 PUR CMP.L #PURPLE,D0
     BEQ EAT_GHOST
@@ -380,15 +532,21 @@ PUR CMP.L #PURPLE,D0
 
 
 FF
-    JSR clr_Ghost                            Clear GHOST
-    MOVE.L NGHOST_POSITION_X,D1
-    MOVE.L NGHOST_POSITION_Y,D2
-    MOVE.L D1,GHOST_POSITION_X
-    MOVE.L D2,GHOST_POSITION_Y   
+    ;Move.L GHOST_POSITION_X,A6              Clear GHOST
+    ;Move.L GHOST_POSITION_Y,D7
+    ;JSR clr_Ghost  
+    ;Move.L GHOST2_POSITION_X,A6
+    ;Move.L GHOST2_POSITION_Y,D7
+    JSR clr_Ghost                            
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    MOVE.L A4,D1
+    MOVE.L A5,D2
+    MOVE.L D1,A2
+    MOVE.L D2,A3
 ;FF
 FFF 
-    MOVE.L GHOST_POSITION_X,A2
-    MOVE.L GHOST_POSITION_Y,A3
+    ;MOVE.L GHOST_POSITION_X,A2
+    ;MOVE.L GHOST_POSITION_Y,A3
     BSR Draw_Ghost_On_Map
     BSR Draw_GHOST_Destails
     RTS
@@ -520,14 +678,16 @@ Try_move
     BEQ Try_right
 
 GET_RANDOM   
+    AddI.L #1,Random
     MOVE.L #31,D0
     TRAP #15
     ADD.L CURRENT_TIME,D1
     Add.L PACMAN_POSITION_X,D1
     Add.L PACMAN_POSITION_Y,D1
-    Add.L GHOST_POSITION_X,D1
-    ADD.L GHOST_POSITION_Y,D1
+    Add.L A2,D1
+    ADD.L A3,D1
     Add.L SCORE,D1
+    Add.L Random,D1
 
     AND.L #$3,D1
     CMP #0,D1
@@ -542,53 +702,53 @@ GET_RANDOM
 Try_up
      ;CHeck block
     MOVE.L #83,D0
-    Move.L GHOST_POSITION_X,D1
-    Move.L GHOST_POSITION_Y,D2
+    Move.L A2,D1
+    Move.L A3,D2
     Sub.L #DY,D2
     TRAP #15
     CMP.L #BLUE,D0
     BEQ GET_RANDOM
-    MOVE.B #'W',GHOST_DIRECTION
+    MOVE.B #'W',D7
     BRA Move_ghost
 Try_right    
      ;CHeck block
     MOVE.L #83,D0
-    Move.L GHOST_POSITION_X,D1
-    Move.L GHOST_POSITION_Y,D2
+    Move.L A2,D1
+    Move.L A3,D2
     Add.L #DX,D1
     TRAP #15
     CMP.L #BLUE,D0
     BEQ GET_RANDOM
-    MOVE.B #'D',GHOST_DIRECTION
+    MOVE.B #'D',D7
     BRA Move_ghost
     
 Try_Down   
      ;CHeck block
     MOVE.L #83,D0
-    Move.L GHOST_POSITION_X,D1
-    Move.L GHOST_POSITION_Y,D2
+    Move.L A2,D1
+    Move.L A3,D2
     Add.L #DY,D2
     TRAP #15
     CMP.L #BLUE,D0
     BEQ GET_RANDOM
-    MOVE.B #'S',GHOST_DIRECTION
+    MOVE.B #'S',D7
     BRA Move_ghost
 Try_left  
      ;CHeck block
     MOVE.L #83,D0
-     Move.L GHOST_POSITION_X,D1
-     Move.L GHOST_POSITION_Y,D2
+     Move.L A2,D1
+     Move.L A3,D2
     Sub.L #DX,D1
     TRAP #15
     CMP.L #BLUE,D0
     BEQ GET_RANDOM
-    MOVE.B #'A',GHOST_DIRECTION
+    MOVE.B #'A',D7
     BRA Move_ghost
 
  
 Move_ghost
-     Move.L D1,NGHOST_POSITION_X
-     Move.L D2,NGHOST_POSITION_Y
+     Move.L D1,A4
+     Move.L D2,A5
      RTS
 
 ;----------------------------------------------------------------CHECK Coin---------------------------------------------------------------------------
@@ -606,10 +766,6 @@ CHECK_COIN
     BSR DRAW_SCORE
     BSR Emptying_Ate_Coin
 eq  RTS
-
-
-
-
 
   
 ;----------------------------------------------------------------CHECK G_Coin---------------------------------------------------------------------------
@@ -857,9 +1013,10 @@ clr_ghost
     move.l  #BLACK,d1   
     move.b  #81,d0  set fill color
     trap #15
-    
-    move.L  GHOST_POSITION_X,d1    
-    move.L  GHOST_POSITION_Y,d2  
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;A2-A3;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    move.L  A2,d1    
+    move.L  A3,d2  
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     move.L  d1,d3  
     move.L  d2,d4
     add.L  #DPX,d3
@@ -875,8 +1032,8 @@ clr_ghost
     MULU #25,D1
     ADD.L D0,D1
     ADD.L D1,A0
-    move.L  GHOST_POSITION_X,d3   
-    move.L  GHOST_POSITION_Y,d4
+    move.L  A2,d3   
+    move.L  A3,d4
     SUB.L  #2,d3
     SUB.L #5,D4
     
@@ -913,16 +1070,16 @@ Get_Pacman_Coordinates
    SUB.L #5,D1
    DIVU #32,D1
    RTS
-   
+   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;A2-A3;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Get_Ghost_Coordinates
-   Move.L GHOST_POSITION_X,D0
-   Move.L GHOST_POSITION_Y,D1
+   Move.L A2,D0
+   Move.L A3,D1
    SUB.L #3,D0
    DIVU #32,D0
    SUB.L #3,D1
    DIVU #32,D1
    RTS
-   
+   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
    
 Emptying_Ate_Coin
     MOVE.L LEVEL,D0
@@ -959,7 +1116,16 @@ GHOST_POSITION_X DC.L 451
 GHOST_POSITION_Y DC.L 291
 NGHOST_POSITION_X DC.L 451
 NGHOST_POSITION_Y DC.L 291
+
+GHOST2_POSITION_X DC.L 483
+GHOST2_POSITION_Y DC.L 291
+NGHOST2_POSITION_X DC.L 483
+NGHOST2_POSITION_Y DC.L 291
+
 GHOST_DIRECTION dc.b 'W',0
+GHOST2_DIRECTION dc.b 'W',0
+
+Random DC.L 0
 
 LIFE DC.L 3
 SCORE DC.L 0
