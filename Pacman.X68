@@ -19,7 +19,20 @@ START:                  ; first instruction of program
      ;BRA STARTG
     
 ;----------------------------------------------------------------Initialize Game---------------------------------------------------------------------------
-
+    ;init sounds
+    lea     pacman_beginning_wav,a1  load pacman_beginning.wav
+    move    #pacman_beginning,d1     sound cue
+    move    #71,d0
+    trap    #15
+    lea     pacman_chomp_wav,a1      load pacman_chomp.wav
+    move    #pacman_chomp,d1         sound cue
+    move    #71,d0
+    trap    #15
+    lea     pacman_death_wav,a1      load pacman_death.wav
+    move    #pacman_death,d1         sound cue
+    move    #71,d0
+    trap    #15
+    
 MENU
     move.b  #11,D0
     move.w  #$FF00,D1
@@ -69,6 +82,9 @@ STARTG
      Move.L #1,CURRENT_TIME
      Move.L #1,BEGIN_L_TIME
      Move.L #1,BEGIN_G_TIME
+     move    #pacman_beginning,d1 ; pacman_beginning sound cue
+     move    #72,d0               ; play pacman_beginning sound
+     trap    #15
 
 
      BSR DRAW_LEVEL
@@ -348,7 +364,7 @@ DRAW_GHOST
     
     Move.L LIFE,D2
     CMP #0,D2
-    BEQ MENU
+    BEQ END
  
     BSR RESET_POSITION
     BRA FF
@@ -386,7 +402,11 @@ CHECK_GHOST
     
 e   RTS
 
-
+END
+     move    #pacman_death,d1     ; pacman_death sound cue
+     move    #72,d0               ; play pacman_death sound
+     trap    #15
+     bra menu
 
 ;----------------------------------------------------------------DRAW GHOST---------------------------------------------------------------------------
 
@@ -609,6 +629,10 @@ SK  MOVE.L #83,D0
     BSR Emptying_Ate_Coin
     BSR DRAW_SCORE
     MOVE.L #PURPLE,PacManColor
+    move    #pacman_chomp,d1     ; pacman_chomp sound cue
+    move    #72,d0               ; play pacman_chomp sound
+    trap    #15
+
 COIN RTS
     
 ;----------------------------------------------------------------Draw Score---------------------------------------------------------------------------
@@ -967,7 +991,13 @@ INSTRUCTIONS
         dc.b    '  ===============================',CR,LF
         dc.b    CR,LF,CR,LF
         dc.b    '  Press ENTER to begin',CR,LF,0
-
+    
+pacman_beginning_wav  dc.b   'pacman_beginning.wav',0    sound file
+pacman_chomp_wav  dc.b   'pacman_chomp.wav',0            sound file
+pacman_death_wav  dc.b   'pacman_death.wav',0            sound file
+pacman_beginning  equ    0      sound cue
+pacman_chomp  equ    1          sound cue
+pacman_death  equ    2          sound cue
 
 MAP 
      DC.B 'EEEEEBBBBBBBBBBBBBBBBBBBE'                01
