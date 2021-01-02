@@ -170,17 +170,18 @@ MENU
     move.b  #14,d0              ; display string
     trap    #15
 WAIT_START  
-     MOVE.B #19,D0 
-     MOVE.L #$20<<8+#$d,D1    Check for keypress enter or space
-     TRAP   #15
-     Move.l d1,d6
-     BTST.L #0,D1     ; test for 'enter'
-     IF <NE> THEN      ; if 'enter'
+     ;MOVE.B #19,D0 
+     ;MOVE.L #$20,D1
+     ;lsl.L #8,D1
+     ;Move.B $d,D1    Check for keypress enter or space
+     ;TRAP   #15
+     move.b    #5,d0               ; read key
+     trap      #15
+     if.b d1 <eq> #'1' then.s 
      MOVE.B #1,CURRENT_LEVEL
      bra strt
      ENDI
-     BTST.L #0,D1     ; test for 'space' $20
-     IF <NE> THEN      ; if 'space'
+     if.b d1 <eq> #'2' then.s 
      MOVE.B #2,CURRENT_LEVEL
      bra strt
      ENDI
@@ -216,7 +217,7 @@ STARTG
      move    #pacman_beginning,d1 ; pacman_beginning sound cue
      move    #72,d0               ; play pacman_beginning sound
      trap    #15
-     CMP #1,CURRENT_LEVEL
+     CMP.B #1,CURRENT_LEVEL
      BNE LVL2
      Move.L #MAP_LEVEL_1,A0
      bra ctn1
@@ -1212,8 +1213,8 @@ INSTRUCTIONS
         dc.b    '   a - LEFT ',CR,LF
         dc.b    '  ===============================',CR,LF
         dc.b    CR,LF,CR,LF
-        dc.b    '  Press ENTER to play level 1',CR,LF
-        dc.b    '  Press SPACE to play level 2',CR,LF,0
+        dc.b    '  Press 1 to play level 1',CR,LF
+        dc.b    '  Press 2 to play level 2',CR,LF,0
     
 pacman_beginning_wav  dc.b   'pacman_beginning.wav',0    sound file
 pacman_chomp_wav  dc.b   'pacman_chomp.wav',0            sound file
@@ -1269,7 +1270,7 @@ MAP_LEVEL_2
      DC.B 'EEEEEBCCBEEBCCCBBCBBCCCBE'                16
      DC.B 'EEEEEBCCBEEBCCCBCBCBCCCBE'                17
      DC.B 'EEEEEBCCBEEBCCCBCCCBCCCBE'                18
-     DC.B 'EEEEEBCCBBBBCCCBCCCBCCCBE'                19
+     DC.B 'EEEEEBCCBBBBCBCBCCCBCCCBE'                19
      DC.B 'EEEEEBCCCCCCCCCCCCCCCCCBE'                20
      DC.B 'EEEEEBBBBBBBBBBBBBBBBBBBE'                21 
 
@@ -1285,6 +1286,7 @@ YELLOW equ $0000FFFF
 BLUE equ $00FF0000 
 WHITE equ $00FFFFFF 
     END    START        ; last line of source
+
 
 
 
