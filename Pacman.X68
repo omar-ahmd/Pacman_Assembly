@@ -242,7 +242,7 @@ RESET_MAP
     
 RES_MAP
 
-     BSR DRAW_LEVEL
+     
      Move.L #$0,D1                  RESET D1
      Move.L #$0,D5                  VERTICAL LOOP INDEX INIT
      MOVE.L LEVEL,D0
@@ -255,6 +255,8 @@ RES_MAP
      move.w  #$FF00,D1
      trap    #15
 Draw_map
+     
+     
      Move.L #$0,D6                  HORIZONTAL LOOP INDEX INIT
 Loop_draw_map
      Move.L D5,D7                   Calculate New Memory Position
@@ -383,6 +385,7 @@ Draw_Pacman_Eyes
 ;----------------------------------------------------------------Game Loop-----------------------------------------------------------------------------
     
 loop  
+     BSR DRAW_LEVEL
      BSR DRAW_SCORE
      Move.L #12,D0                             DELAY TIME
      BSR DELAY
@@ -703,6 +706,7 @@ Draw_GHOST_Destails
 ;----------------------------------------------------------------Move Ghost----------------------------------------------------------------------------
  
 Try_move
+    move.b #0,DontMove
     Move.B D7,D0
     CMP #'W',D0
     BEQ Try_up
@@ -714,7 +718,8 @@ Try_move
     BEQ Try_right
 
 GET_RANDOM
-  
+    cmp.b #$F,DontMove
+    BEQ WT
     AddI.L #1,Random
     move.b  #8,d0       Read timer, get 100ths of a second since midnight in D1.L
     trap    #15
@@ -736,6 +741,7 @@ GET_RANDOM
     BEQ Try_left
     
 Try_up
+    or.b #1,DontMove
      ;CHeck block
     MOVE.L #83,D0
     Move.L A2,D1
@@ -750,7 +756,8 @@ Try_up
     BEQ GET_RANDOM
     MOVE.B #'W',D7
     BRA Move_ghost
-Try_right    
+Try_right
+    or.b #2,DontMove    
      ;CHeck block
     MOVE.L #83,D0
     Move.L A2,D1
@@ -766,7 +773,8 @@ Try_right
     MOVE.B #'D',D7
     BRA Move_ghost
     
-Try_Down   
+Try_Down 
+    or.b #4,DontMove  
      ;CHeck block
     MOVE.L #83,D0
     Move.L A2,D1
@@ -781,7 +789,8 @@ Try_Down
     BEQ GET_RANDOM
     MOVE.B #'S',D7
     BRA Move_ghost
-Try_left  
+Try_left 
+    or.b #8,DontMove 
      ;CHeck block
     MOVE.L #83,D0
      Move.L A2,D1
@@ -801,7 +810,7 @@ Try_left
 Move_ghost
      Move.L D1,A4
      Move.L D2,A5
-     RTS
+WT   RTS
 
 ;----------------------------------------------------------------CHECK Coin---------------------------------------------------------------------------
 CHECK_COIN
@@ -896,6 +905,12 @@ Draw_Time
 ;----------------------------------------------------------------Draw Level---------------------------------------------------------------------------
     
 DRAW_LEVEL
+     MOVE.B #80,D0
+     Move.L Black,D1                Draw player pen and fill color
+     TRAP   #15
+     MOVE.B #81,D0
+     Move.L Black,D1
+     TRAP   #15
     move.l		#11,d0			
 	move.l		#$0000,d1			
 	trap		#15
@@ -1271,6 +1286,8 @@ CoinsNb DS.B 1
 CoinsNb_Level1 DC.B 148
 CoinsNb_Level2 DC.B 222
 
+DontMove DC.B 0
+
 DX EQU 32
 DY EQU 32
 
@@ -1375,6 +1392,7 @@ YELLOW equ $0000FFFF
 BLUE equ $00FF0000 
 WHITE equ $00FFFFFF 
     END    START        ; last line of source
+
 
 
 
