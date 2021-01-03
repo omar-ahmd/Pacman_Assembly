@@ -210,10 +210,14 @@ STARTG
      Move.L #35,GHOST_POSITION_Y
      Move.L #483,GHOST2_POSITION_X
      Move.L #291,GHOST2_POSITION_Y
+     Move.L #195,GHOST3_POSITION_X
+     Move.L #611,GHOST3_POSITION_Y
+
      Move.L #0,SCORE 
      Move.L #1,CURRENT_TIME
      Move.L #1,BEGIN_L_TIME
      Move.L #1,BEGIN_G_TIME
+     
      BSR RESET_TIME
      ;Move.L #0,Random
      move    #pacman_beginning,d1 ; pacman_beginning sound cue
@@ -222,9 +226,11 @@ STARTG
      CMP.B #1,CURRENT_LEVEL
      BNE LVL2
      Move.L #MAP_LEVEL_1,A0
+     Move.B CoinsNb_Level1,CoinsNb
      bra ctn1
 LVL2
      Move.L #MAP_LEVEL_2,A0
+     Move.B CoinsNb_Level2,CoinsNb
 ctn1
      Move.L #MAP,A1
      Move.L #MAP,A2
@@ -1261,7 +1267,9 @@ G_TIME DC.B 5
 ScoreDisplay	dc.b		'Current Score: ',0
 LevelDisplay	dc.b		'Level: ',0
 TimeDisplay	dc.b		'TIME: ',0
-CoinsNb DC.B 148
+CoinsNb DS.B 1
+CoinsNb_Level1 DC.B 148
+CoinsNb_Level2 DC.B 222
 
 DX EQU 32
 DY EQU 32

@@ -1,6 +1,6 @@
 00001000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.16.01
-Created On: 03-Jan-21 2:58:41 PM
+Created On: 03-Jan-21 3:34:33 PM
 
 00000000                             1   *-----------------------------------------------------------
 00000000                             2  * Title      : PACMAN GAME
@@ -24,19 +24,19 @@ Created On: 03-Jan-21 2:58:41 PM
 0000100C                            20      
 0000100C                            21  ;----------------------------------------------------------------Initialize Game---------------------------------------------------------------------------
 0000100C                            22      ;init sounds
-0000100C  43F9 00002238             23      lea     pacman_beginning_wav,a1  load pacman_beginning.wav
+0000100C  43F9 0000223A             23      lea     pacman_beginning_wav,a1  load pacman_beginning.wav
 00001012  323C 0000                 24      move    #pacman_beginning,d1     sound cue
 00001016  303C 0047                 25      move    #71,d0
 0000101A  4E4F                      26      trap    #15
-0000101C  43F9 0000224D             27      lea     pacman_chomp_wav,a1      load pacman_chomp.wav
+0000101C  43F9 0000224F             27      lea     pacman_chomp_wav,a1      load pacman_chomp.wav
 00001022  323C 0001                 28      move    #pacman_chomp,d1         sound cue
 00001026  303C 0047                 29      move    #71,d0
 0000102A  4E4F                      30      trap    #15
-0000102C  43F9 0000225E             31      lea     pacman_death_wav,a1      load pacman_death.wav
+0000102C  43F9 00002260             31      lea     pacman_death_wav,a1      load pacman_death.wav
 00001032  323C 0002                 32      move    #pacman_death,d1         sound cue
 00001036  303C 0047                 33      move    #71,d0
 0000103A  4E4F                      34      trap    #15
-0000103C  43F9 0000226F             35      lea     pacman_eat_wav,a1  load pacman_beginning.wav
+0000103C  43F9 00002271             35      lea     pacman_eat_wav,a1  load pacman_beginning.wav
 00001042  323C 0003                 36      move    #pacman_eat,d1     sound cue
 00001046  303C 0047                 37      move    #71,d0
 0000104A  4E4F                      38      trap    #15
@@ -162,12 +162,12 @@ Created On: 03-Jan-21 2:58:41 PM
 000011F2  243C 04120001            158      move.l  #MENU_FONT,d2
 000011F8  103C 0015                159      move.b  #21,d0              ; set font
 000011FC  4E4F                     160      trap    #15
-000011FE  43F9 000020E1            161      lea     INSTRUCTIONS,a1
+000011FE  43F9 000020E3            161      lea     INSTRUCTIONS,a1
 00001204  700E                     162      move.L  #14,d0              ; display string
 00001206  4E4F                     163      trap    #15
 00001208                           164      
-00001208  6100 0BDC                165      BSR READ_FILE
-0000120C  6100 0C10                166      BSR Draw_HighScore
+00001208  6100 0C04                165      BSR READ_FILE
+0000120C  6100 0C38                166      BSR Draw_HighScore
 00001210                           167  
 00001210  700B                     168      move.l      #11,d0          
 00001212  223C 00009999            169      move.l      #$9999,d1           
@@ -204,7 +204,7 @@ Created On: 03-Jan-21 2:58:41 PM
 00001264                           200  
 00001264                           201  
 00001264                           202  ;----------------------------------------------------------------Draw Map-------------------------------------------------------------------------------
-00001264  6100 088E                203       BSR RESET_TIME
+00001264  6100 08B6                203       BSR RESET_TIME
 00001268                           204  STARTG 
 00001268  23FC 00000000 000020A0   205       Move.L #0,Random
 00001272  23FC 00000003 000020A4   206       Move.L #3,LIFE                     ;RESET variables
@@ -214,1163 +214,1171 @@ Created On: 03-Jan-21 2:58:41 PM
 0000129A  23FC 00000023 0000206E   210       Move.L #35,GHOST_POSITION_Y
 000012A4  23FC 000001E3 0000207A   211       Move.L #483,GHOST2_POSITION_X
 000012AE  23FC 00000123 0000207E   212       Move.L #291,GHOST2_POSITION_Y
-000012B8  23FC 00000000 000020A8   213       Move.L #0,SCORE 
-000012C2  23FC 00000001 000020B8   214       Move.L #1,CURRENT_TIME
-000012CC  23FC 00000001 000020B4   215       Move.L #1,BEGIN_L_TIME
-000012D6  23FC 00000001 000020BC   216       Move.L #1,BEGIN_G_TIME
-000012E0  6100 0812                217       BSR RESET_TIME
-000012E4                           218       ;Move.L #0,Random
-000012E4  323C 0000                219       move    #pacman_beginning,d1 ; pacman_beginning sound cue
-000012E8  303C 0048                220       move    #72,d0               ; play pacman_beginning sound
-000012EC  4E4F                     221       trap    #15
-000012EE  0C39 0001 00002000       222       CMP.B #1,CURRENT_LEVEL
-000012F6  6600 000C                223       BNE LVL2
-000012FA  207C 00002494            224       Move.L #MAP_LEVEL_1,A0
-00001300  6000 0008                225       bra ctn1
-00001304                           226  LVL2
-00001304  207C 000026A1            227       Move.L #MAP_LEVEL_2,A0
-0000130A                           228  ctn1
-0000130A  227C 00002287            229       Move.L #MAP,A1
-00001310  247C 00002287            230       Move.L #MAP,A2
-00001316  D5FC 0000020D            231       Add.L #525,A2
-0000131C                           232  RESET_MAP
-0000131C  12D8                     233      Move.B (A0)+,(A1)+ 
-0000131E  B2CA                     234      CMP A2,A1
-00001320  66FA                     235      BNE RESET_MAP
-00001322                           236      
-00001322                           237  RES_MAP
-00001322                           238  
-00001322  6100 0800                239       BSR DRAW_LEVEL
-00001326  7200                     240       Move.L #$0,D1                  RESET D1
-00001328  7A00                     241       Move.L #$0,D5                  VERTICAL LOOP INDEX INIT
-0000132A  2039 000020B0            242       MOVE.L LEVEL,D0
-00001330  5380                     243       SUB.L #1,D0
-00001332  207C 00002287            244       Move.L #MAP,A0
-00001338  D1C0                     245       ADD.L D0,A0                 LOAD MAP POSITION IN MEMORY
-0000133A                           246  
-0000133A                           247       
-0000133A  103C 000B                248       move.b  #11,D0
-0000133E  323C FF00                249       move.w  #$FF00,D1
-00001342  4E4F                     250       trap    #15
-00001344                           251  Draw_map
-00001344  7C00                     252       Move.L #$0,D6                  HORIZONTAL LOOP INDEX INIT
-00001346                           253  Loop_draw_map
-00001346  2E05                     254       Move.L D5,D7                   Calculate New Memory Position
-00001348  CEFC 0019                255       MULU.W #25,D7                  Calculate New Memory Position
-0000134C  DE86                     256       ADD.L D6,D7                    Calculate New Memory Position
-0000134E  2606                     257       Move.L D6,D3
-00001350  C6FC 0020                258       MULU.W #DX,D3                  PUT NEW X POSITION IN D3
-00001354  2805                     259       Move.L D5,D4
-00001356  C8FC 0020                260       MULU.W #DY,D4                  PUT NEW Y POSITION IN D4
-0000135A  1030 7000                261       MOVE.B (A0,D7.w),D0
-0000135E                           262       
-0000135E  B03C 0042                263       CMP.B   #'B',D0
-00001362  6600 0006                264       BNE COI
-00001366  6100 07D4                265       BSR draw_block     
-0000136A                           266       
-0000136A  B03C 0043                267  COI  CMP.B   #'C',D0
-0000136E  6600 0006                268       BNE GCO
-00001372  6100 07F8                269       BSR draw_coin 
-00001376                           270       
-00001376  B03C 0047                271  GCO  CMP.B   #'G',D0
-0000137A  6600 0006                272       BNE Ctn0
-0000137E  6100 0900                273       BSR draw_Gcoin
-00001382                           274       
-00001382  5246                     275  Ctn0 ADDQ #1,D6
-00001384  BC7C 0019                276       CMP #25,D6
-00001388  66BC                     277       BNE Loop_draw_map
-0000138A  5245                     278       ADDQ #1,D5
-0000138C  BA7C 0015                279       CMP #21,D5
-00001390  66B2                     280       BNE Draw_map
-00001392  6100 000E                281       BSR draw_Pacman
-00001396  6100 00F8                282       BSR loop
-0000139A                           283  
-0000139A                           284  
-0000139A                           285  
-0000139A                           286  ;----------------------------------------------------------------Draw PACMAN---------------------------------------------------------------------------
-0000139A  123C 0011                287          move.b  #17,D1
-0000139E  705C                     288      move.l  #92,D0
-000013A0  4E4F                     289      trap    #15
-000013A2                           290      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;buffer;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-000013A2                           291  draw_Pacman
-000013A2                           292       
-000013A2  103C 0050                293       MOVE.B #80,D0
-000013A6  2239 00002066            294       Move.L PacManColor,D1                Draw player pen and fill color
-000013AC  4E4F                     295       TRAP   #15
-000013AE  103C 0051                296       MOVE.B #81,D0
-000013B2  2239 00002066            297       Move.L PacManColor ,D1
-000013B8  4E4F                     298       TRAP   #15
-000013BA                           299       
-000013BA  2A39 00002002            300       Move.L PACMAN_POSITION_X,D5      Player x position
-000013C0  2C39 00002006            301       Move.L PACMAN_POSITION_Y,D6      Player y position
-000013C6  103C 0058                302       MOVE.B #88,D0                    draw player
-000013CA  2205                     303       MOVE.L D5,D1                       
-000013CC  2406                     304       MOVE.L D6,D2
-000013CE  0685 00000019            305       Add.L #25,D5
-000013D4  0686 00000019            306       Add.L #25,D6
-000013DA  2605                     307       MOVE.L D5,D3
-000013DC  2806                     308       MOVE.L D6,D4
-000013DE  4E4F                     309       TRAP   #15
-000013E0                           310       
-000013E0                           311       
-000013E0  103C 0050                312       MOVE.B #80,D0
-000013E4  223C 00000000            313       Move.L #Black,D1                Black pen and fill color
-000013EA  4E4F                     314       TRAP   #15
-000013EC  103C 0051                315       MOVE.B #81,D0
-000013F0  223C 00000000            316       Move.L #Black,D1
-000013F6  4E4F                     317       TRAP   #15
-000013F8                           318       
-000013F8  1039 00002012            319       Move.B PACMAN_MOUTH,D0
-000013FE  E218                     320       ror.b #1,d0
-00001400  13C0 00002012            321       Move.B d0,PACMAN_MOUTH      
-00001406  0800 0000                322       Btst #$0,d0
-0000140A  6600 0082                323       BNE Draw_Pacman_Eyes
-0000140E  1039 00002013            324       Move.B PACMAN_DIRECTION,D0      CHECK PACMAN Direction
-00001414                           325       
-00001414                           326  CHECK_DIRECTION_D
-00001414  B07C 0044                327       CMP #'D',D0
-00001418  6600 000C                328       BNE CHECK_DIRECTION_A
-0000141C  227C 00002026            329       MOVE.L #RIGHT_MOUTH,A1
-00001422  6000 0038                330       BRA Draw_Pacman_Mouth
-00001426                           331  CHECK_DIRECTION_A
-00001426  B07C 0041                332       CMP #'A',D0
-0000142A  6600 000C                333       BNE CHECK_DIRECTION_W
-0000142E  227C 00002016            334       MOVE.L #LEFT_MOUTH,A1
-00001434  6000 0026                335       BRA Draw_Pacman_Mouth
-00001438                           336  CHECK_DIRECTION_W
-00001438  B07C 0057                337       CMP #'W',D0
-0000143C  6600 000C                338       BNE CHECK_DIRECTION_S
-00001440  227C 00002036            339       MOVE.L #UP_MOUTH,A1
-00001446  6000 0014                340       BRA Draw_Pacman_Mouth
-0000144A                           341  CHECK_DIRECTION_S
-0000144A  B07C 0053                342       CMP #'S',D0
-0000144E  6600 000C                343       BNE Draw_Pacman_Mouth
-00001452  227C 00002046            344       MOVE.L #DOWN_MOUTH,A1
-00001458  6000 0002                345       BRA Draw_Pacman_Mouth
-0000145C                           346  Draw_Pacman_Mouth
-0000145C  103C 0058                347       MOVE.B #88,D0                   draw pacman mouth
-00001460  2239 00002002            348       MOVE.L PACMAN_POSITION_X,D1                      
-00001466  2439 00002006            349       MOVE.L PACMAN_POSITION_Y,D2
-0000146C  2639 00002002            350       MOVE.L PACMAN_POSITION_X,D3                       
-00001472  2839 00002006            351       MOVE.L PACMAN_POSITION_Y,D4
-00001478  B3FC 000020A0            352       CMP.L #$20A0,A1
-0000147E  6E00 000C                353       BGT  dd
-00001482  D299                     354       Add.L (A1)+,D1                   
-00001484  D499                     355       Add.L (A1)+,D2
-00001486  D699                     356       Add.L (A1)+,D3                 
-00001488  D891                     357       Add.L (A1),D4
-0000148A  4E4F                     358       TRAP   #15
-0000148C  4E75                     359  dd   RTS
-0000148E                           360       
-0000148E                           361  Draw_Pacman_Eyes
-0000148E                           362       ;MOVE.B #88,D0                   draw pacman eyes
-0000148E                           363       ;MOVE.L #EYES,A1
-0000148E                           364       ;MOVE.L PACMAN_POSITION_X,D1                      
-0000148E                           365       ;MOVE.L PACMAN_POSITION_Y,D2
-0000148E                           366       ;MOVE.L PACMAN_POSITION_X,D3                       
-0000148E                           367       ;MOVE.L PACMAN_POSITION_Y,D4 
-0000148E                           368       ;Add.L (A1)+,D1                   
-0000148E                           369       ;Add.L (A1)+,D2
-0000148E                           370       ;Add.L (A1)+,D3                 
-0000148E                           371       ;Add.L (A1),D4
-0000148E                           372       ;TRAP   #15
-0000148E  4E75                     373       RTS
-00001490                           374  
-00001490                           375      
-00001490                           376      
-00001490                           377  ;----------------------------------------------------------------Game Loop-----------------------------------------------------------------------------
-00001490                           378      
-00001490                           379  loop  
-00001490  6100 0628                380       BSR DRAW_SCORE
-00001494  700C                     381       Move.L #12,D0                             DELAY TIME
-00001496  6100 08C8                382       BSR DELAY
-0000149A  6100 070C                383       BSR DRAW_LIFES
-0000149E                           384       ;Move Ghost 
-0000149E  6100 065E                385       BSR Draw_Time     
-000014A2  2239 00002002            386       MOVE.L PACMAN_POSITION_X,D1
-000014A8  2439 00002006            387       MOVE.L PACMAN_POSITION_Y,D2
-000014AE  23C1 0000200A            388       MOVE.L D1,NPACMAN_POSITION_X
-000014B4  23C2 0000200E            389       MOVE.L D2,NPACMAN_POSITION_Y     
-000014BA                           390       
-000014BA                           391       
-000014BA  103C 0013                392       MOVE.B #19,D0     
-000014BE  223C 41534457            393       MOVE.L #'A'<<24+'S'<<16+'D'<<8+'W',D1      Check for keypress (a,s,d,w)
-000014C4  4E4F                     394       TRAP   #15
-000014C6  2C01                     395       Move.l d1,d6
-000014C8  0801 0018                396       BTST.L #24,D1     ; test for 'a'
-000014CC                           397       IF <NE> THEN      ; if 'a'
-000014D0  2A39 00002002            398       Move.L PACMAN_POSITION_X,D5 
-000014D6  0485 00000020            399       SUB.L #DX,D5
-000014DC  23C5 0000200A            400       Move.L D5,NPACMAN_POSITION_X
-000014E2  13FC 0041 00002013       401       Move.B #'A',PACMAN_DIRECTION
-000014EA                           402  
-000014EA                           403      
-000014EA                           404       ENDI
-000014EA                           405       
-000014EA  0801 0000                406       BTST.L #0,D1     ; test for 'w'
-000014EE                           407       IF <NE> THEN      ; if 'w'
-000014F2                           408  
-000014F2  2C39 00002006            409       Move.L PACMAN_POSITION_Y,D6
-000014F8  0486 00000020            410       SUB.L #DY,D6
-000014FE  23C6 0000200E            411       Move.L D6,NPACMAN_POSITION_Y
-00001504  13FC 0057 00002013       412       Move.B #'W',PACMAN_DIRECTION
-0000150C                           413  
-0000150C                           414       ENDI
-0000150C                           415  
-0000150C  0801 0008                416       BTST.L #8,D1     ; test for 'd'
-00001510                           417       IF <NE> THEN      ; if 'd'
-00001514  2A39 00002002            418       Move.L PACMAN_POSITION_X,D5 
-0000151A  0685 00000020            419       ADD.L #DX,D5
-00001520  23C5 0000200A            420       Move.L D5,NPACMAN_POSITION_X
-00001526  13FC 0044 00002013       421       Move.B #'D',PACMAN_DIRECTION
-0000152E                           422  
-0000152E                           423       ENDI
-0000152E                           424       
-0000152E  0801 0010                425       BTST.L #16,D1     ; test for 's'
-00001532                           426       IF <NE> THEN      ; if 's'
-00001536  2C39 00002006            427       Move.L PACMAN_POSITION_Y,D6
-0000153C  0686 00000020            428       ADD.L #DY,D6
-00001542  23C6 0000200E            429       Move.L D6,NPACMAN_POSITION_Y
-00001548  13FC 0053 00002013       430       Move.B #'S',PACMAN_DIRECTION
-00001550                           431  
-00001550                           432       ENDI
-00001550                           433  
-00001550                           434  
-00001550                           435       
-00001550  6100 04F2                436       BSR CHECK_G_COIN
-00001554  6100 04B8                437       BSR CHECK_COIN
-00001558  4EB9 00001CB4            438       JSR clr_pacman                            Clear Pacman
-0000155E                           439  
-0000155E                           440  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;MOHAMAD;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-0000155E                           441  
-0000155E                           442       ;BSR CHECK_GHOST                          ; fi marten check ??? 
-0000155E                           443       ;Bne ewq
-0000155E                           444       ;CMP #PURPLE,PacManColor
-0000155E                           445       ;BEQ RESET_GHOST_POSITION
-0000155E                           446       ;bsr RESET_POSITION
-0000155E                           447       ;bra SKIP
-0000155E                           448  
-0000155E                           449  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-0000155E  6100 0122                450  ewq  BSR CHECK_P_BLOCK
-00001562  2A39 00002002            451       Move.L PACMAN_POSITION_X,D5
-00001568  6100 00F6                452       BSR CHECK_EXIT
-0000156C  23C5 00002002            453       MOVE.L D5,PACMAN_POSITION_X
-00001572  2A39 0000206A            454       Move.L GHOST_POSITION_X,D5
-00001578  6100 00E6                455       BSR CHECK_EXIT
-0000157C  23C5 0000206A            456       MOVE.L D5,GHOST_POSITION_X
-00001582  2A39 0000207A            457       Move.L GHOST2_POSITION_X,D5
-00001588  6100 00D6                458       BSR CHECK_EXIT
-0000158C  23C5 0000207A            459       MOVE.L D5,GHOST2_POSITION_X
-00001592                           460  
-00001592  4EB8 13A2                461  SKIP jsr draw_Pacman
-00001596  2479 0000206A            462       Move.L GHOST_POSITION_X,A2
-0000159C  2679 0000206E            463       Move.L GHOST_POSITION_Y,A3
-000015A2  2879 00002072            464       Move.L NGHOST_POSITION_X,A4
-000015A8  2A79 00002076            465       Move.L NGHOST_POSITION_Y,A5
-000015AE  1E39 0000209A            466       Move.B GHOST_DIRECTION,D7        
-000015B4  4EB9 00001758            467       jsr Draw_Ghost
-000015BA  23CA 0000206A            468       Move.L A2,GHOST_POSITION_X
-000015C0  23CB 0000206E            469       Move.L A3,GHOST_POSITION_Y
-000015C6  23CC 00002072            470       Move.L A4,NGHOST_POSITION_X
-000015CC  23CD 00002076            471       Move.L A5,NGHOST_POSITION_Y
-000015D2  13C7 0000209A            472       Move.B D7,GHOST_DIRECTION
-000015D8  2479 0000207A            473       Move.L GHOST2_POSITION_X,A2
-000015DE  2679 0000207E            474       Move.L GHOST2_POSITION_Y,A3
-000015E4  2879 00002082            475       Move.L NGHOST2_POSITION_X,A4
-000015EA  2A79 00002086            476       Move.L NGHOST2_POSITION_Y,A5
-000015F0  1E39 0000209C            477       Move.B GHOST2_DIRECTION,D7
-000015F6  4EB9 00001758            478       jsr Draw_Ghost    
-000015FC  23CA 0000207A            479       Move.L A2,GHOST2_POSITION_X
-00001602  23CB 0000207E            480       Move.L A3,GHOST2_POSITION_Y
-00001608  23CC 00002082            481       Move.L A4,NGHOST2_POSITION_X
-0000160E  23CD 00002086            482       Move.L A5,NGHOST2_POSITION_Y
-00001614  13C7 0000209C            483       Move.B D7,GHOST2_DIRECTION
-0000161A  2479 0000208A            484       Move.L GHOST3_POSITION_X,A2
-00001620  2679 0000208E            485       Move.L GHOST3_POSITION_Y,A3
-00001626  2879 00002092            486       Move.L NGHOST3_POSITION_X,A4
-0000162C  2A79 00002096            487       Move.L NGHOST3_POSITION_Y,A5
-00001632  1E39 0000209E            488       Move.B GHOST3_DIRECTION,D7
-00001638  4EB9 00001758            489       jsr Draw_Ghost    
-0000163E  23CA 0000208A            490       Move.L A2,GHOST3_POSITION_X
-00001644  23CB 0000208E            491       Move.L A3,GHOST3_POSITION_Y
-0000164A  23CC 00002092            492       Move.L A4,NGHOST3_POSITION_X
-00001650  23CD 00002096            493       Move.L A5,NGHOST3_POSITION_Y
-00001656  13C7 0000209E            494       Move.B D7,GHOST3_DIRECTION
-0000165C  6000 FE32                495       BRA loop
-00001660                           496  
-00001660                           497   
-00001660                           498  ;----------------------------------------------------------------CHECK Block---------------------------------------------------------------------------
-00001660                           499  CHECK_EXIT
-00001660  BABC 00000320            500      CMP.L #800,D5
-00001666  6D00 0008                501      BLT LC
-0000166A  0485 000002A0            502      SUB.L #672,D5
-00001670  BABC 00000080            503  LC  CMP.L #128,D5
-00001676  6E00 0008                504      BGT DR
-0000167A  0685 000002A0            505      ADD.L #672,D5
-00001680  4E75                     506  DR  RTS 
-00001682                           507  
-00001682                           508  CHECK_P_BLOCK
-00001682                           509  
-00001682  7053                     510      MOVE.L #83,D0
-00001684  2239 0000200A            511      MOVE.L NPACMAN_POSITION_X,D1
-0000168A  2439 0000200E            512      MOVE.L NPACMAN_POSITION_Y,D2
-00001690  4E4F                     513      TRAP #15
-00001692                           514      
-00001692  B0BC 00FF0000            515      CMP.L #BLUE,D0
-00001698  6700 000E                516      BEQ F
-0000169C                           517      
-0000169C  23C1 00002002            518      MOVE.L D1,PACMAN_POSITION_X
-000016A2  23C2 00002006            519      MOVE.L D2,PACMAN_POSITION_Y
-000016A8  4E75                     520  F   RTS
-000016AA                           521  
-000016AA                           522  RESET_POSITION
-000016AA  700A                     523      Move.L #10,D0
-000016AC  6100 06B2                524      bsr delay
-000016B0  23FC 000000C3 00002002   525      MOVE.L #195,PACMAN_POSITION_X
-000016BA  23FC 00000025 00002006   526      MOVE.L #37,PACMAN_POSITION_Y
-000016C4  23FC 000002C3 0000206A   527      MOVE.L #707,GHOST_POSITION_X
-000016CE  23FC 00000023 0000206E   528      MOVE.L #35,GHOST_POSITION_Y
-000016D8  23FC 000001E3 0000207A   529      MOVE.L #483,GHOST2_POSITION_X
-000016E2  23FC 00000123 0000207E   530      MOVE.L #291,GHOST2_POSITION_Y
-000016EC  23FC 000002C3 00002072   531      MOVE.L #707,NGHOST_POSITION_X
-000016F6  23FC 00000023 00002076   532      MOVE.L #35,NGHOST_POSITION_Y
-00001700  23FC 000001E3 00002082   533      MOVE.L #483,NGHOST2_POSITION_X
-0000170A  23FC 00000123 00002086   534      MOVE.L #291,NGHOST2_POSITION_Y
-00001714  23FC 000000C3 0000208A   535      MOVE.L #195,GHOST3_POSITION_X
-0000171E  23FC 00000263 0000208E   536      MOVE.L #611,GHOST3_POSITION_Y
-00001728  23FC 000000C3 00002092   537      MOVE.L #195,NGHOST3_POSITION_X
-00001732  23FC 00000263 00002096   538      MOVE.L #611,NGHOST3_POSITION_Y
-0000173C  6000 FBE4                539      BRA RES_MAP
-00001740                           540  
-00001740                           541  
-00001740                           542  RESET_GHOST_POSITION
-00001740  700A                     543      Move.L #10,D0
-00001742  6100 061C                544      bsr delay
-00001746  6100 05A8                545      BSR clr_ghost
-0000174A  247C 000001C3            546      MOVE.L #451,A2
-00001750  267C 00000123            547      MOVE.L #291,A3
-00001756  4E75                     548      RTS
-00001758                           549      
-00001758                           550  DRAW_GHOST
-00001758                           551  
-00001758  6100 0194                552      BSR Try_move
-0000175C  7053                     553      MOVE.L #83,D0
-0000175E  220C                     554      MOVE.L A4,D1
-00001760  240D                     555      MOVE.L A5,D2
-00001762  5A81                     556      ADD.L #5,D1
-00001764  5A82                     557      ADD.L #5,D2
-00001766  4E4F                     558      TRAP #15    
-00001768  B0BC 0000FFFF            559      CMP.L #YELLOW,D0
-0000176E  6600 001E                560      BNE PUR
-00001772  53B9 000020A4            561      SUB.L #1,LIFE
-00001778  2439 000020A4            562      Move.L LIFE,D2
-0000177E  B47C 0000                563      CMP #0,D2
-00001782  6700 0052                564      BEQ END
-00001786  6000 FF22                565      BRA RESET_POSITION    
-0000178A  6000 000C                566      BRA FF
-0000178E  B0BC 00800080            567  PUR CMP.L #PURPLE,D0
-00001794  6700 001A                568      BEQ EAT_GHOST
-00001798                           569  FF
-00001798  4EB9 00001CF0            570      JSR clr_Ghost  
-0000179E  220C                     571      MOVE.L A4,D1
-000017A0  240D                     572      MOVE.L A5,D2
-000017A2  2441                     573      MOVE.L D1,A2
-000017A4  2642                     574      MOVE.L D2,A3
-000017A6                           575  FFF 
-000017A6  6100 0044                576      BSR Draw_Ghost_On_Map
-000017AA  6100 0078                577      BSR Draw_GHOST_Destails
-000017AE  4E75                     578      RTS
-000017B0                           579  
-000017B0                           580  EAT_GHOST
-000017B0  618E                     581      BSR RESET_GHOST_POSITION
-000017B2  06B9 00000032 000020A8   582      Add.L #50,SCORE
-000017BC  60E8                     583      BRA FFF
-000017BE                           584  
-000017BE                           585  CHECK_GHOST
-000017BE  7053                     586      MOVE.L #83,D0
-000017C0  2239 0000200A            587      MOVE.L NPACMAN_POSITION_X,D1
-000017C6  2439 0000200E            588      MOVE.L NPACMAN_POSITION_Y,D2
-000017CC  4E4F                     589      TRAP #15
-000017CE                           590      
-000017CE  B0BC 000000FF            591      CMP.L #RED,D0
-000017D4                           592      
-000017D4  4E75                     593  e   RTS
-000017D6                           594  
-000017D6                           595  END
-000017D6                           596  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-000017D6  6100 060E                597      BSR READ_FILE                   read score
-000017DA  6100 062E                598      BSR Compare_score_highscore     compare and update score
-000017DE                           599      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-000017DE  323C 0002                600       move    #pacman_death,d1     ; pacman_death sound cue
-000017E2  303C 0048                601       move    #72,d0               ; play pacman_death sound
-000017E6  4E4F                     602       trap    #15
-000017E8  6000 F862                603       bra menu
-000017EC                           604  
-000017EC                           605  ;----------------------------------------------------------------DRAW GHOST---------------------------------------------------------------------------
-000017EC                           606  
-000017EC                           607  Draw_Ghost_On_Map
-000017EC  103C 0050                608       MOVE.B #80,D0
-000017F0  223C 000000FF            609       Move.L #Red,D1                Black pen and fill color
-000017F6  4E4F                     610       TRAP   #15
-000017F8  103C 0051                611       MOVE.B #81,D0
-000017FC  223C 000000FF            612       Move.L #Red,D1
-00001802  4E4F                     613       TRAP   #15
-00001804  2A0A                     614       Move.L A2,D5      ghost x position
-00001806  2C0B                     615       Move.L A3,D6      ghost y position
-00001808  103C 0057                616       MOVE.B #87,D0  
-0000180C  2205                     617       MOVE.L D5,D1                       
-0000180E  2406                     618       MOVE.L D6,D2
-00001810  0685 00000019            619       Add.L #25,D5
-00001816  0686 00000019            620       Add.L #25,D6
-0000181C  2605                     621       MOVE.L D5,D3
-0000181E  2806                     622       MOVE.L D6,D4
-00001820  4E4F                     623       TRAP   #15 
-00001822  4E75                     624       RTS 
-00001824                           625       
-00001824                           626  Draw_GHOST_Destails
-00001824  103C 0050                627       MOVE.B #80,D0
-00001828  223C 00000000            628       Move.L #Black,D1                Black pen and fill color
-0000182E  4E4F                     629       TRAP   #15
-00001830  103C 0051                630       MOVE.B #81,D0
-00001834  223C 00000000            631       Move.L #Black,D1
-0000183A  4E4F                     632       TRAP   #15
-0000183C                           633  
-0000183C  103C 0058                634       MOVE.B #88,D0                   draw ghost 1 details 1ST LEG
-00001840  220A                     635       MOVE.L A2,D1                      
-00001842  240B                     636       MOVE.L A3,D2
-00001844  260A                     637       MOVE.L A2,D3                       
-00001846  280B                     638       MOVE.L A3,D4 
-00001848  5881                     639       Add.L #04,D1                   
-0000184A  0682 00000011            640       Add.L #17,D2
-00001850  0683 0000000A            641       Add.L #10,D3                 
-00001856  0684 0000001B            642       Add.L #27,D4
-0000185C  4E4F                     643       TRAP   #15
-0000185E                           644  
-0000185E  103C 0058                645       MOVE.B #88,D0                   draw ghost 1 details 2nd leg
-00001862  220A                     646       MOVE.L A2,D1                      
-00001864  260A                     647       MOVE.L A2,D3                        
-00001866  0681 0000000F            648       Add.L #15,D1                   
-0000186C  0683 00000015            649       Add.L #21,D3                 
-00001872  4E4F                     650       TRAP   #15
-00001874                           651       
-00001874  103C 0058                652       MOVE.B #88,D0                   draw ghost 1 details 1st eye
-00001878  220A                     653       MOVE.L A2,D1                      
-0000187A  240B                     654       MOVE.L A3,D2
-0000187C  260A                     655       MOVE.L A2,D3                       
-0000187E  280B                     656       MOVE.L A3,D4 
-00001880  5481                     657       Add.L #2,D1                   
-00001882  5682                     658       Add.L #3,D2
-00001884  0683 0000000A            659       Add.L #10,D3                 
-0000188A  0684 0000000C            660       Add.L #12,D4
-00001890  4E4F                     661       TRAP   #15
-00001892                           662       
-00001892  103C 0058                663       MOVE.B #88,D0                   draw ghost 1 details 2nd eye
-00001896  220A                     664       MOVE.L A2,D1                      
-00001898  260A                     665       MOVE.L A2,D3                       
-0000189A  0681 0000000F            666       Add.L #15,D1                   
-000018A0  0683 00000017            667       Add.L #23,D3                 
-000018A6  4E4F                     668       TRAP   #15
-000018A8                           669       
-000018A8  103C 0050                670            MOVE.B #80,D0
-000018AC  223C 00FFFFFF            671       Move.L #White,D1                Black pen and fill color
-000018B2  4E4F                     672       TRAP   #15
-000018B4  103C 0051                673       MOVE.B #81,D0
-000018B8  223C 00FFFFFF            674       Move.L #White,D1
-000018BE  4E4F                     675       TRAP   #15
-000018C0                           676       
-000018C0  103C 0058                677            MOVE.B #88,D0                   draw ghost 1 details 1st eye pupil
-000018C4  220A                     678       MOVE.L A2,D1                      
-000018C6  240B                     679       MOVE.L A3,D2
-000018C8  260A                     680       MOVE.L A2,D3                       
-000018CA  280B                     681       MOVE.L A3,D4 
-000018CC  5A81                     682       Add.L #5,D1                   
-000018CE  5682                     683       Add.L #3,D2
-000018D0  5E83                     684       Add.L #7,D3                 
-000018D2  5E84                     685       Add.L #7,D4
-000018D4  4E4F                     686       TRAP   #15
-000018D6                           687  
-000018D6                           688      
-000018D6  103C 0058                689            MOVE.B #88,D0                   draw ghost 1 details 2nd eye pupil
-000018DA  220A                     690       MOVE.L A2,D1                      
-000018DC  260A                     691       MOVE.L A2,D3                        
-000018DE  0681 00000012            692       Add.L #18,D1                   
-000018E4  0683 00000014            693       Add.L #20,D3                 
-000018EA  4E4F                     694       TRAP   #15
-000018EC  4E75                     695      RTS
-000018EE                           696      
-000018EE                           697  ;----------------------------------------------------------------Move Ghost----------------------------------------------------------------------------
-000018EE                           698   
-000018EE                           699  Try_move
-000018EE  1007                     700      Move.B D7,D0
-000018F0  B07C 0057                701      CMP #'W',D0
-000018F4  6700 005E                702      BEQ Try_up
-000018F8  B07C 0041                703      CMP #'A',D0
-000018FC  6700 00DC                704      BEQ Try_left
-00001900  B07C 0053                705      CMP #'S',D0
-00001904  6700 00A6                706      BEQ Try_down
-00001908  B07C 0044                707      CMP #'D',D0
-0000190C  6700 0070                708      BEQ Try_right
-00001910                           709  
-00001910                           710  GET_RANDOM
-00001910                           711    
-00001910  52B9 000020A0            712      AddI.L #1,Random
-00001916  103C 0008                713      move.b  #8,d0       Read timer, get 100ths of a second since midnight in D1.L
-0000191A  4E4F                     714      trap    #15
-0000191C  C2BC 04FFFFFF            715      and.l   #$04FFFFFF,d1 
-00001922  82FC 0500                716      divu #1280,d1  
-00001926  4841                     717      swap d1 
-00001928                           718  
-00001928                           719  
-00001928  D2B9 000020A0            720      Add.L Random,D1
-0000192E                           721  
-0000192E  C2BC 00000003            722      AND.L #$3,D1
-00001934  B27C 0000                723      CMP #0,D1
-00001938  6700 001A                724      BEQ Try_up
-0000193C  B27C 0001                725      CMP #1,D1
-00001940  6700 003C                726      BEQ Try_Right
-00001944  B27C 0002                727      CMP #2,D1
-00001948  6700 0062                728      BEQ Try_Down
-0000194C  B27C 0003                729      CMP #3,D1
-00001950  6700 0088                730      BEQ Try_left
-00001954                           731      
-00001954                           732  Try_up
-00001954                           733       ;CHeck block
-00001954  7053                     734      MOVE.L #83,D0
-00001956  220A                     735      Move.L A2,D1
-00001958  240B                     736      Move.L A3,D2
-0000195A  0482 00000020            737      Sub.L #DY,D2
-00001960  4E4F                     738      TRAP #15
-00001962  B0BC 00FF0000            739      CMP.L #BLUE,D0
-00001968  67A6                     740      BEQ GET_RANDOM
-0000196A  7053                     741      MOVE.L #83,D0
-0000196C  4E4F                     742      TRAP #15
-0000196E  B0BC 000000FF            743      CMP.L #RED,D0
-00001974  679A                     744      BEQ GET_RANDOM
-00001976  1E3C 0057                745      MOVE.B #'W',D7
-0000197A  6000 008C                746      BRA Move_ghost
-0000197E                           747  Try_right    
-0000197E                           748       ;CHeck block
-0000197E  7053                     749      MOVE.L #83,D0
-00001980  220A                     750      Move.L A2,D1
-00001982  240B                     751      Move.L A3,D2
-00001984  0681 00000020            752      Add.L #DX,D1
-0000198A  4E4F                     753      TRAP #15
-0000198C  B0BC 00FF0000            754      CMP.L #BLUE,D0
-00001992  6700 FF7C                755      BEQ GET_RANDOM
-00001996  7053                     756      MOVE.L #83,D0
-00001998  4E4F                     757      TRAP #15
-0000199A  B0BC 000000FF            758      CMP.L #RED,D0
-000019A0  6700 FF6E                759      BEQ GET_RANDOM
-000019A4  1E3C 0044                760      MOVE.B #'D',D7
-000019A8  6000 005E                761      BRA Move_ghost
-000019AC                           762      
-000019AC                           763  Try_Down   
-000019AC                           764       ;CHeck block
-000019AC  7053                     765      MOVE.L #83,D0
-000019AE  220A                     766      Move.L A2,D1
-000019B0  240B                     767      Move.L A3,D2
-000019B2  0682 00000020            768      Add.L #DY,D2
-000019B8  4E4F                     769      TRAP #15
-000019BA  B0BC 00FF0000            770      CMP.L #BLUE,D0
-000019C0  6700 FF4E                771      BEQ GET_RANDOM
-000019C4  7053                     772      MOVE.L #83,D0
-000019C6  4E4F                     773      TRAP #15
-000019C8  B0BC 000000FF            774      CMP.L #RED,D0
-000019CE  6700 FF40                775      BEQ GET_RANDOM
-000019D2  1E3C 0053                776      MOVE.B #'S',D7
-000019D6  6000 0030                777      BRA Move_ghost
-000019DA                           778  Try_left  
-000019DA                           779       ;CHeck block
-000019DA  7053                     780      MOVE.L #83,D0
-000019DC  220A                     781       Move.L A2,D1
-000019DE  240B                     782       Move.L A3,D2
-000019E0  0481 00000020            783      Sub.L #DX,D1
-000019E6  4E4F                     784      TRAP #15
-000019E8  B0BC 00FF0000            785      CMP.L #BLUE,D0
-000019EE  6700 FF20                786      BEQ GET_RANDOM
-000019F2  7053                     787      MOVE.L #83,D0
-000019F4  4E4F                     788      TRAP #15
-000019F6  B0BC 000000FF            789      CMP.L #RED,D0
-000019FC  6700 FF12                790      BEQ GET_RANDOM
-00001A00  1E3C 0041                791      MOVE.B #'A',D7
-00001A04  6000 0002                792      BRA Move_ghost
-00001A08                           793  
-00001A08                           794   
-00001A08                           795  Move_ghost
-00001A08  2841                     796       Move.L D1,A4
-00001A0A  2A42                     797       Move.L D2,A5
-00001A0C  4E75                     798       RTS
-00001A0E                           799  
-00001A0E                           800  ;----------------------------------------------------------------CHECK Coin---------------------------------------------------------------------------
-00001A0E                           801  CHECK_COIN
-00001A0E  7053                     802      MOVE.L #83,D0
-00001A10  2239 0000200A            803      MOVE.L NPACMAN_POSITION_X,D1
-00001A16  2439 0000200E            804      MOVE.L NPACMAN_POSITION_Y,D2
-00001A1C  0682 0000000C            805      ADD.L #12,D2
-00001A22  0681 0000000C            806      ADD.L #12,D1
-00001A28  4E4F                     807      TRAP #15
-00001A2A                           808      
-00001A2A  B0BC 00FFFFFF            809      CMP.L #WHITE,D0
-00001A30  6600 0010                810      BNE eq
-00001A34  52B9 000020A8            811      AddI.L #1,SCORE
-00001A3A  6100 007E                812      BSR DRAW_SCORE
-00001A3E  6100 0368                813      BSR Emptying_Ate_Coin
-00001A42  4E75                     814  eq  RTS
-00001A44                           815  
-00001A44                           816    
-00001A44                           817  ;----------------------------------------------------------------CHECK G_Coin---------------------------------------------------------------------------
-00001A44                           818     
-00001A44                           819  CHECK_G_COIN
-00001A44  6100 00A4                820      BSR Get_Time
-00001A48  92B9 000020BC            821      SUB.L BEGIN_G_TIME,D1
-00001A4E  B239 000020C0            822      CMP.B G_TIME,D1
-00001A54  6600 000C                823      BNE SK
-00001A58  23FC 0000FFFF 00002066   824      MOVE.L #YELLOW,PacManColor
-00001A62                           825      
-00001A62  7053                     826  SK  MOVE.L #83,D0
-00001A64  2239 0000200A            827      MOVE.L NPACMAN_POSITION_X,D1
-00001A6A  2439 0000200E            828      MOVE.L NPACMAN_POSITION_Y,D2
-00001A70  0682 0000000C            829      ADD.L #12,D2
-00001A76  0681 0000000C            830      ADD.L #12,D1
-00001A7C  4E4F                     831      TRAP #15
-00001A7E  B0BC 00808080            832      CMP.L #GRAY,D0
-00001A84  6600 0032                833      BNE COIN
-00001A88  6100 0060                834      BSR Get_Time
-00001A8C  23C1 000020BC            835      MOVE.L D1,BEGIN_G_TIME 
-00001A92  06B9 0000000A 000020A8   836      AddI.L #10,SCORE
-00001A9C  6100 030A                837      BSR Emptying_Ate_Coin
-00001AA0  6100 0018                838      BSR DRAW_SCORE
-00001AA4  23FC 00800080 00002066   839      MOVE.L #PURPLE,PacManColor
-00001AAE  323C 0001                840      move    #pacman_chomp,d1     ; pacman_chomp sound cue
-00001AB2  303C 0048                841      move    #72,d0               ; play pacman_chomp sound
-00001AB6  4E4F                     842      trap    #15
-00001AB8                           843  
-00001AB8  4E75                     844  COIN RTS
-00001ABA                           845      
-00001ABA                           846  ;----------------------------------------------------------------Draw Score---------------------------------------------------------------------------
-00001ABA                           847      
-00001ABA                           848  DRAW_SCORE
-00001ABA  103C 0050                849       MOVE.B #80,D0
-00001ABE  2239 00000000            850       Move.L Black,D1                Draw player pen and fill color
-00001AC4  4E4F                     851       TRAP   #15
-00001AC6  103C 0051                852       MOVE.B #81,D0
-00001ACA  2239 00000000            853       Move.L Black,D1
-00001AD0  4E4F                     854       TRAP   #15
-00001AD2  700B                     855      move.l      #11,d0          
-00001AD4  7201                     856      move.l      #$0001,d1           
-00001AD6  4E4F                     857      trap        #15
-00001AD8  43F9 000020C1            858      lea     ScoreDisplay,a1
-00001ADE  7011                     859      move.l      #17,d0
-00001AE0  2239 000020A8            860      move.l      Score,d1
-00001AE6  4E4F                     861      trap        #15
-00001AE8  4E75                     862      RTS 
-00001AEA                           863  
-00001AEA                           864  ;----------------------------------------------------------------Draw Time----------------------------------------------------------------------------
-00001AEA                           865  Get_Time
-00001AEA  701F                     866      MOVE.L #31,D0
-00001AEC  4E4F                     867      TRAP #15
-00001AEE  7016                     868      move.L #22,d0
-00001AF0  E0A9                     869      lsr.l d0,d1
-00001AF2  4E75                     870      RTS
-00001AF4                           871      
-00001AF4                           872  RESET_TIME
-00001AF4  61F4                     873       BSR Get_Time
-00001AF6  23C1 000020B4            874       Move.l D1,BEGIN_L_TIME
-00001AFC  4E75                     875       RTS
-00001AFE                           876  
-00001AFE                           877  Draw_Time
-00001AFE  61EA                     878      BSR Get_Time
-00001B00  92B9 000020B4            879      SUB.l       BEGIN_L_TIME,D1
-00001B06  23C1 000020B8            880      MOVE.L D1,CURRENT_TIME
-00001B0C  700B                     881      move.l      #11,d0          
-00001B0E  7202                     882      move.l      #$0002,d1           
-00001B10  4E4F                     883      trap        #15
-00001B12  43F9 000020D9            884      lea         TimeDisplay,a1
-00001B18  7011                     885      move.l      #17,d0
-00001B1A  2239 000020B8            886      MOVE.L CURRENT_TIME,D1
-00001B20  4E4F                     887      trap        #15
-00001B22  4E75                     888      RTS 
-00001B24                           889      
-00001B24                           890  ;----------------------------------------------------------------Draw Level---------------------------------------------------------------------------
-00001B24                           891      
-00001B24                           892  DRAW_LEVEL
-00001B24  700B                     893      move.l      #11,d0          
-00001B26  7200                     894      move.l      #$0000,d1           
-00001B28  4E4F                     895      trap        #15
-00001B2A  43F9 000020D1            896      lea         LevelDisplay,a1
-00001B30  7011                     897      move.l      #17,d0
-00001B32  2239 000020B0            898      move.l      LEVEL,d1
-00001B38  4E4F                     899      trap        #15
-00001B3A  4E75                     900      RTS 
-00001B3C                           901  ;----------------------------------------------------------------Draw Blocks---------------------------------------------------------------------------
-00001B3C                           902  
-00001B3C                           903  draw_block
-00001B3C  103C 0050                904       MOVE.B #80,D0
-00001B40  223C 00FF0000            905       Move.L #BLUE,D1                Draw block pen and fill color
-00001B46  4E4F                     906       TRAP   #15
-00001B48  103C 0051                907       MOVE.B #81,D0
-00001B4C  223C 00FF0000            908       Move.L #BLUE,D1
-00001B52  4E4F                     909       TRAP   #15
-00001B54  103C 0057                910       MOVE.B #87,D0 
-00001B58  2203                     911       MOVE.L D3,D1                 
-00001B5A  2404                     912       MOVE.L D4,D2
-00001B5C  0683 00000020            913       Add.L #BX,D3
-00001B62  0684 00000020            914       Add.L #BY,D4
-00001B68  4E4F                     915       TRAP   #15
-00001B6A  4E75                     916       RTS
-00001B6C                           917  
-00001B6C                           918  ;----------------------------------------------------------------Draw Small Coin---------------------------------------------------------------------------
-00001B6C                           919  
-00001B6C                           920  draw_coin     
-00001B6C  103C 0050                921       MOVE.B #80,D0
-00001B70  223C 00FFFFFF            922       Move.L #WHITE,D1                Draw coin pen and fill color
-00001B76  4E4F                     923       TRAP   #15
-00001B78  103C 0051                924       MOVE.B #81,D0
-00001B7C  223C 00FFFFFF            925       Move.L #WHITE,D1
-00001B82  4E4F                     926       TRAP   #15
-00001B84  103C 0058                927       MOVE.B #88,D0
-00001B88  0683 0000000B            928       ADD.L #11,D3
-00001B8E  0684 0000000B            929       ADD.L #11,D4
-00001B94  2203                     930       Move.L D3,D1
-00001B96  2404                     931       Move.L D4,D2
-00001B98                           932       
-00001B98  0683 0000000D            933       ADD.L #13,D3
-00001B9E  0684 0000000D            934       ADD.L #13,D4
-00001BA4  4E4F                     935       TRAP   #15
-00001BA6  4E75                     936       RTS
-00001BA8                           937       
-00001BA8                           938  ;----------------------------------------------------------------DRAW LIFES---------------------------------------------------------------------------
-00001BA8                           939   
-00001BA8                           940  DRAW_LIFES
-00001BA8  223C 00000000            941       move.l  #BLACK,d1   
-00001BAE  103C 0050                942       move.b  #80,d0  set pen color
-00001BB2  4E4F                     943       trap #15     
-00001BB4                           944  
-00001BB4  223C 00000000            945       move.l  #BLACK,d1   
-00001BBA  103C 0051                946       move.b  #81,d0  set fill color
-00001BBE  4E4F                     947       trap #15
-00001BC0                           948      
-00001BC0  720A                     949       move.L  #10,d1    
-00001BC2  243C 00000258            950       move.L  #600,d2  
-00001BC8  2601                     951       move.L  d1,d3  
-00001BCA  2802                     952       move.L  d2,d4
-00001BCC  0683 0000005A            953       add.L  #90,d3
-00001BD2  0684 00000020            954       add.L  #32,d4
-00001BD8  103C 0057                955       move.b  #87,d0     draw black filled rectangle
-00001BDC  4E4F                     956       trap #15
-00001BDE  7E00                     957       MOVE.L #0,D7
-00001BE0                           958       
-00001BE0  103C 0050                959  REDR MOVE.B #80,D0
-00001BE4  223C 0000FFFF            960       Move.L #YELLOW,D1                Draw player pen and fill color
-00001BEA  4E4F                     961       TRAP   #15
-00001BEC  103C 0051                962       MOVE.B #81,D0
-00001BF0  223C 0000FFFF            963       Move.L #YELLOW ,D1
-00001BF6  4E4F                     964       TRAP   #15
-00001BF8                           965       
-00001BF8  7A0A                     966       Move.L #10,D5      Player x position
-00001BFA  2C3C 00000258            967       Move.L #600,D6      Player y position
-00001C00  7020                     968       move.l #32,d0
-00001C02  C0C7                     969       MULU   d7,d0
-00001C04  DA80                     970       ADD.L D0,D5
-00001C06                           971       
-00001C06  103C 0058                972       MOVE.B #88,D0                    draw player
-00001C0A  2205                     973       MOVE.L D5,D1                       
-00001C0C  2406                     974       MOVE.L D6,D2
-00001C0E  0685 00000019            975       Add.L #25,D5
-00001C14  0686 00000019            976       Add.L #25,D6
-00001C1A  2605                     977       MOVE.L D5,D3
-00001C1C  2806                     978       MOVE.L D6,D4
-00001C1E  4E4F                     979       TRAP   #15
-00001C20                           980       
-00001C20  4280                     981       clr.l d0
-00001C22  103C 0050                982       MOVE.B #80,D0
-00001C26  223C 00000000            983       Move.L #Black,D1                Black pen and fill color
-00001C2C  4E4F                     984       TRAP   #15
-00001C2E  103C 0051                985       MOVE.B #81,D0
-00001C32  223C 00000000            986       Move.L #Black,D1
-00001C38  4E4F                     987       TRAP   #15
-00001C3A                           988       
-00001C3A  227C 00002026            989       MOVE.L #RIGHT_MOUTH,A1
-00001C40                           990  
-00001C40  103C 0058                991       MOVE.B #88,D0                   draw pacman mouth
-00001C44  720A                     992       MOVE.L #10,D1
-00001C46                           993       
-00001C46  7C20                     994       move.l #32,d6
-00001C48  CCC7                     995       MULU   d7,d6
-00001C4A  D286                     996       ADD.L D6,D1
-00001C4C                           997                        
-00001C4C  243C 00000258            998       MOVE.L #600,D2
-00001C52  2601                     999       MOVE.L D1,D3                      
-00001C54  283C 00000258           1000       MOVE.L #600,D4
-00001C5A  B3FC 000020A0           1001       CMP.L #$20A0,A1
-00001C60  6E00 F82A               1002       BGT  dd
-00001C64  D299                    1003       Add.L (A1)+,D1                   
-00001C66  D499                    1004       Add.L (A1)+,D2
-00001C68  D699                    1005       Add.L (A1)+,D3                 
-00001C6A  D891                    1006       Add.L (A1),D4
-00001C6C  4E4F                    1007       TRAP   #15
-00001C6E  5287                    1008       ADD.L #1,D7
-00001C70                          1009       
-00001C70  BEB9 000020A4           1010       CMP.L LIFE,D7
-00001C76  6700 0006               1011       BEQ RT
-00001C7A  6000 FF64               1012       BRA REDR
-00001C7E  4E75                    1013  RT   RTS     
-00001C80                          1014  ;----------------------------------------------------------------CLEAR G_COINS---------------------------------------------------------------------------
-00001C80                          1015  
-00001C80                          1016  draw_Gcoin     
-00001C80  103C 0050               1017       MOVE.B #80,D0
-00001C84  223C 00808080           1018       Move.L #GRAY,D1                Draw coin pen and fill color
-00001C8A  4E4F                    1019       TRAP   #15
-00001C8C  103C 0051               1020       MOVE.B #81,D0
-00001C90  223C 00808080           1021       Move.L #GRAY,D1
-00001C96  4E4F                    1022       TRAP   #15
-00001C98  103C 0058               1023       MOVE.B #88,D0
-00001C9C  5C83                    1024       ADD.L #6,D3
-00001C9E  5C84                    1025       ADD.L #6,D4
-00001CA0  2203                    1026       Move.L D3,D1
-00001CA2  2404                    1027       Move.L D4,D2
-00001CA4                          1028       
-00001CA4  0683 00000013           1029       ADD.L #19,D3
-00001CAA  0684 00000013           1030       ADD.L #19,D4
-00001CB0  4E4F                    1031       TRAP   #15
-00001CB2  4E75                    1032       RTS
-00001CB4                          1033  ;----------------------------------------------------------------CLEAR PACMAN---------------------------------------------------------------------------
-00001CB4                          1034  
-00001CB4                          1035  clr_pacman    
-00001CB4  223C 00000000           1036      move.l  #BLACK,d1   
-00001CBA  103C 0050               1037      move.b  #80,d0  set pen color
-00001CBE  4E4F                    1038      trap #15     
-00001CC0                          1039  
-00001CC0  223C 00000000           1040      move.l  #BLACK,d1   
-00001CC6  103C 0051               1041      move.b  #81,d0  set fill color
-00001CCA  4E4F                    1042      trap #15
-00001CCC                          1043      
-00001CCC  2239 00002002           1044      move.L  PACMAN_POSITION_X,d1    
-00001CD2  2439 00002006           1045      move.L  PACMAN_POSITION_Y,d2  
-00001CD8  2601                    1046      move.L  d1,d3  
-00001CDA  2802                    1047      move.L  d2,d4
-00001CDC  0683 00000019           1048      add.L  #DPX,d3
-00001CE2  0684 00000019           1049      add.L  #DPX,d4
-00001CE8  103C 0057               1050      move.b  #87,d0     draw black filled rectangle
-00001CEC  4E4F                    1051      trap #15
-00001CEE  4E75                    1052      RTS
-00001CF0                          1053      
-00001CF0                          1054  clr_ghost   
-00001CF0  223C 00000000           1055      move.l  #BLACK,d1   
-00001CF6  103C 0050               1056      move.b  #80,d0  set pen color
-00001CFA  4E4F                    1057      trap #15     
-00001CFC                          1058  
-00001CFC  223C 00000000           1059      move.l  #BLACK,d1   
-00001D02  103C 0051               1060      move.b  #81,d0  set fill color
-00001D06  4E4F                    1061      trap #15
-00001D08                          1062      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;A2-A3;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-00001D08  220A                    1063      move.L  A2,d1    
-00001D0A  240B                    1064      move.L  A3,d2  
-00001D0C                          1065      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-00001D0C  2601                    1066      move.L  d1,d3  
-00001D0E  2802                    1067      move.L  d2,d4
-00001D10  0683 00000019           1068      add.L  #DPX,d3
-00001D16  0684 00000019           1069      add.L  #DPX,d4
-00001D1C  103C 0057               1070      move.b  #87,d0     draw black filled rectangle
-00001D20  4E4F                    1071      trap #15
-00001D22                          1072      
-00001D22  2039 000020B0           1073      MOVE.L LEVEL,D0
-00001D28  5380                    1074      SUB.L #1,D0
-00001D2A  207C 00002287           1075      Move.L #MAP,A0
-00001D30  D1C0                    1076      ADD.L D0,A0
-00001D32  6100 0062               1077      BSR Get_Ghost_Coordinates
-00001D36  C2FC 0019               1078      MULU #25,D1
-00001D3A  D280                    1079      ADD.L D0,D1
-00001D3C  D1C1                    1080      ADD.L D1,A0
-00001D3E  260A                    1081      move.L  A2,d3   
-00001D40  280B                    1082      move.L  A3,d4
-00001D42  5583                    1083      SUB.L  #2,d3
-00001D44  5B84                    1084      SUB.L #5,D4
-00001D46                          1085      
-00001D46  0C10 0043               1086      CMP.B #'C',(A0)
-00001D4A  6600 0006               1087      BNE TG
-00001D4E  6100 FE1C               1088      BSR draw_coin
-00001D52  0C10 0047               1089  TG  CMP.B #'G',(A0)
-00001D56  6600 0006               1090      BNE KL 
-00001D5A  6100 FF24               1091      BSR draw_Gcoin
-00001D5E                          1092      
-00001D5E                          1093   
-00001D5E  4E75                    1094  KL  RTS            
-00001D60                          1095  ;----------------------------------------------------------------DELAY---------------------------------------------------------------------------------
-00001D60                          1096     
-00001D60                          1097  DELAY ; TIME = D0 SECOND
-00001D60  B03C 0000               1098      CMP.B #0,D0
-00001D64  6700 0014               1099      BEQ FIN
-00001D68  243C FFFFF000           1100      MOVE.L #$FFFFF000,D2
-00001D6E                          1101  LOOP_DELAY
-00001D6E  5282                    1102      ADD.L #$01,D2
-00001D70  66FC                    1103      BNE LOOP_DELAY
-00001D72  0680 FFFFFFFF           1104      ADD.L #$FFFFFFFF,D0
-00001D78  66E6                    1105      BNE DELAY
-00001D7A                          1106  FIN
-00001D7A  4E75                    1107      RTS
-00001D7C                          1108      
-00001D7C                          1109  ;----------------------------------------------------------------EMPTYING ATE COINS IN MEMORY----------------------------------------------------------
-00001D7C                          1110      
-00001D7C                          1111  Get_Pacman_Coordinates
-00001D7C  2039 0000200A           1112     Move.L NPACMAN_POSITION_X,D0
-00001D82  2239 0000200E           1113     Move.L NPACMAN_POSITION_Y,D1
-00001D88  5780                    1114     SUB.L #3,D0
-00001D8A  80FC 0020               1115     DIVU #32,D0
-00001D8E  5B81                    1116     SUB.L #5,D1
-00001D90  82FC 0020               1117     DIVU #32,D1
-00001D94  4E75                    1118     RTS
-00001D96                          1119     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;A2-A3;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-00001D96                          1120  Get_Ghost_Coordinates
-00001D96  200A                    1121     Move.L A2,D0
-00001D98  220B                    1122     Move.L A3,D1
-00001D9A  5780                    1123     SUB.L #3,D0
-00001D9C  80FC 0020               1124     DIVU #32,D0
-00001DA0  5781                    1125     SUB.L #3,D1
-00001DA2  82FC 0020               1126     DIVU #32,D1
-00001DA6  4E75                    1127     RTS
-00001DA8                          1128     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-00001DA8                          1129     
-00001DA8                          1130  Emptying_Ate_Coin
-00001DA8  323C 0003               1131      move    #pacman_eat,d1       ; pacman_eat sound cue
-00001DAC  303C 0048               1132      move    #72,d0               ; play pacman_eat sound
-00001DB0  4E4F                    1133      trap    #15
-00001DB2                          1134  
-00001DB2  207C 00002287           1135      Move.L #MAP,A0
-00001DB8  61C2                    1136      BSR Get_Pacman_Coordinates
-00001DBA                          1137      
-00001DBA  5339 000020E0           1138      SUB.b #1,CoinsNb
-00001DC0  0C39 0000 000020E0      1139      cmp.b #0,coinsnb
-00001DC8                          1140      
-00001DC8  6700 0010               1141      beq WIN
-00001DCC  C2FC 0019               1142      MULU #25,D1
-00001DD0  D280                    1143      ADD.L D0,D1
-00001DD2  D1C1                    1144      ADD.L D1,A0
-00001DD4  10BC 0045               1145      MOVE.B #'E',(A0)
-00001DD8  4E75                    1146      RTS
-00001DDA                          1147  WIN 
-00001DDA  6100 000A               1148      BSR READ_FILE                   read score
-00001DDE  6100 002A               1149      BSR Compare_score_highscore     compare and update score
-00001DE2  6000 F268               1150      bra Menu
-00001DE6                          1151   ;----------------------------------------------------------------HighScore---------------------------------------------------------------------------
-00001DE6                          1152  READ_FILE
-00001DE6                          1153      ;;;;;;;;;;;;;Read file;;;;;;;;;;;;;;;;;;;;;
-00001DE6  7033                    1154      move.l  #51,d0          Open file scores.txt
-00001DE8  227C 0000227C           1155      move.l  #ScoreFile,A1
-00001DEE  4E4F                    1156      trap    #15
-00001DF0  2801                    1157      move.l  d1,d4
-00001DF2                          1158      
-00001DF2  7400                    1159      move.l  #0,d2
-00001DF4  7037                    1160      move.l  #55,d0          init cursor position
-00001DF6  4E4F                    1161      trap    #15
-00001DF8                          1162      
-00001DF8  7404                    1163      move.l  #4,d2           
-00001DFA  7035                    1164      move.l  #53,d0          read highscore
-00001DFC  227C 000020AC           1165      move.L  #HIGHSCORE ,A1
-00001E02  4E4F                    1166      trap    #15
-00001E04  6100 0054               1167      BSR CLOSE_FILE
-00001E08  4E75                    1168      RTS
-00001E0A                          1169  
-00001E0A                          1170  COMPARE_SCORE_HIGHSCORE
-00001E0A  2039 000020AC           1171      move.L  HIGHSCORE,d0
-00001E10  2239 000020A8           1172      move.L  Score,d1
-00001E16  B240                    1173      CMP d0,d1
-00001E18  6E00 0020               1174      BGT write_highscore
-00001E1C  4E75                    1175      RTS
-00001E1E                          1176      
-00001E1E                          1177  Draw_HighScore
-00001E1E  303C 000B               1178      move.w  #11,d0      
-00001E22  223C 00000213           1179      move.l  #$0213,d1
-00001E28  4E4F                    1180      trap    #15
-00001E2A  740A                    1181      move.l  #10,d2  
-00001E2C  7200                    1182      move.L  #0,D1
-00001E2E  2239 000020AC           1183      move.L  HIGHSCORE,d1            
-00001E34  700F                    1184      move.l  #15,d0
-00001E36  4E4F                    1185      trap    #15
-00001E38  4E75                    1186      RTS
-00001E3A                          1187      
-00001E3A                          1188  WRITE_HIGHSCORE
-00001E3A  7033                    1189      move.l  #51,d0      Open file
-00001E3C  227C 0000227C           1190      move.l  #ScoreFile,A1
-00001E42  4E4F                    1191      trap    #15
-00001E44  2801                    1192      move.l  d1,d4
-00001E46                          1193      
-00001E46  7400                    1194      move.l  #0,d2
-00001E48  7037                    1195      move.l  #55,d0      init CURSOR POSITION
-00001E4A  4E4F                    1196      trap    #15
-00001E4C                          1197      
-00001E4C  2204                    1198      move.l  d4,d1
-00001E4E  7404                    1199      move.l  #4,d2       nb byste to write   
-00001E50  7036                    1200      move.l  #54,d0      Save score
-00001E52  227C 000020A8           1201      move.L  #Score,A1   
-00001E58  4E4F                    1202      trap    #15
-00001E5A                          1203  
-00001E5A                          1204  CLOSE_FILE
-00001E5A  2204                    1205      move.l  d4,d1
-00001E5C  7032                    1206      move.l  #50,d0      CLOSE FILE
-00001E5E  4E4F                    1207      trap    #15
-00001E60  4E75                    1208      RTS
-00001E62                          1209      
-00001E62                          1210   ;----------------------------------------------------------------CONSTANTS---------------------------------------------------------------------------
-00001E62                          1211  
-00001E62  FFFF FFFF               1212      SIMHALT             ; halt simulator
-00001E66                          1213  * Put variables and constants here
-00002000                          1214   ORG $2000
-00002000                          1215   
-00002000= 01                      1216  CURRENT_LEVEL dc.b 1
-00002001                          1217  
-00002002= 000000C3                1218  PACMAN_POSITION_X DC.L 195
-00002006= 00000025                1219  PACMAN_POSITION_Y DC.L 37
-0000200A                          1220  NPACMAN_POSITION_X DS.L 1
-0000200E                          1221  NPACMAN_POSITION_Y DS.L 1
-00002012= 55                      1222  PACMAN_MOUTH dc.b %01010101
-00002013= 44 00                   1223  PACMAN_DIRECTION dc.b 'D',0
-00002016= FFFFFFFE 0000000A ...   1224  LEFT_MOUTH dc.L -02,10,09,21     
-00002026= 00000010 00000009 ...   1225  RIGHT_MOUTH dc.L 16,09,28,21    
-00002036= 00000007 FFFFFFFE ...   1226  UP_MOUTH dc.L 07,-02,19,09
-00002046= 00000007 0000000F ...   1227  DOWN_MOUTH dc.L 07,15,19,26
-00002056= 0000000B 0000000A ...   1228  EYES dc.L 11,10,15,14
-00002066= 0000FFFF                1229  PacManColor Dc.l YELLOW 
-0000206A                          1230  
-0000206A= 000002C3                1231  GHOST_POSITION_X DC.L 707
-0000206E= 00000023                1232  GHOST_POSITION_Y DC.L 35
-00002072= 000002C3                1233  NGHOST_POSITION_X DC.L 707
-00002076= 00000023                1234  NGHOST_POSITION_Y DC.L 35
-0000207A                          1235  
-0000207A= 000001E3                1236  GHOST2_POSITION_X DC.L 483
-0000207E= 00000123                1237  GHOST2_POSITION_Y DC.L 291
-00002082= 000001E3                1238  NGHOST2_POSITION_X DC.L 483
-00002086= 00000123                1239  NGHOST2_POSITION_Y DC.L 291
-0000208A                          1240  
-0000208A= 000000C3                1241  GHOST3_POSITION_X DC.L 195
-0000208E= 00000263                1242  GHOST3_POSITION_Y DC.L 611
-00002092= 000000C3                1243  NGHOST3_POSITION_X DC.L 195
-00002096= 00000263                1244  NGHOST3_POSITION_Y DC.L 611
-0000209A                          1245  
-0000209A= 57 00                   1246  GHOST_DIRECTION dc.b 'W',0
-0000209C= 57 00                   1247  GHOST2_DIRECTION dc.b 'W',0
-0000209E= 53 00                   1248  GHOST3_DIRECTION dc.b 'S',0
-000020A0                          1249  
-000020A0= 00000000                1250  Random DC.L 0
-000020A4                          1251  
-000020A4= 00000003                1252  LIFE DC.L 3
-000020A8= 00000000                1253  SCORE DC.L 0
-000020AC= 00000000                1254  HIGHSCORE DC.L 0
-000020B0= 00000001                1255  LEVEL DC.L 1
-000020B4                          1256  BEGIN_L_TIME DS.L 1
-000020B8                          1257  CURRENT_TIME DS.L 1
-000020BC                          1258  BEGIN_G_TIME DS.L 1
-000020C0= 05                      1259  G_TIME DC.B 5
-000020C1                          1260  
-000020C1= 43 75 72 72 65 6E ...   1261  ScoreDisplay    dc.b        'Current Score: ',0
-000020D1= 4C 65 76 65 6C 3A ...   1262  LevelDisplay    dc.b        'Level: ',0
-000020D9= 54 49 4D 45 3A 20 00    1263  TimeDisplay dc.b        'TIME: ',0
-000020E0= 94                      1264  CoinsNb DC.B 148
-000020E1                          1265  
-000020E1  =00000020               1266  DX EQU 32
-000020E1  =00000020               1267  DY EQU 32
-000020E1                          1268  
-000020E1  =00000019               1269  DPX EQU 25
-000020E1  =00000019               1270  DPY EQU 25
-000020E1                          1271  
-000020E1  =00000020               1272  BX EQU 32
-000020E1  =00000020               1273  BY EQU 32
-000020E1                          1274  
-000020E1  =04120001               1275  MENU_FONT   equ $04120001
-000020E1  =0000000D               1276  CR      equ    $d
-000020E1  =0000000A               1277  LF      equ    $a
-000020E1                          1278  INSTRUCTIONS    
-000020E1= 0D 0A 0D 0A 0D 0A       1279          dc.b    CR,LF,CR,LF,CR,LF
-000020E7= 20 20 20 20 20 20 ...   1280          dc.b    '               PACMAN',CR,LF,CR,LF
-00002100= 20 20 3D 3D 3D 3D ...   1281          dc.b    '  ======= Pacman movement =======',CR,LF
-00002123= 0D 0A                   1282          dc.b    CR,LF
-00002125= 20 20 20 77 20 2D ...   1283          dc.b    '   w - UP ',CR,LF
-00002131= 20 20 20 64 20 2D ...   1284          dc.b    '   d - RIGHT ',CR,LF
-00002140= 20 20 20 73 20 2D ...   1285          dc.b    '   s - DOWN ',CR,LF
-0000214E= 20 20 20 61 20 2D ...   1286          dc.b    '   a - LEFT ',CR,LF
-0000215C= 0D 0A                   1287          dc.b    CR,LF
-0000215E= 20 20 3D 3D 3D 3D ...   1288          dc.b    '  ===========START GAME==========',CR,LF
-00002181= 0D 0A                   1289          dc.b    CR,LF
-00002183= 20 20 50 72 65 73 ...   1290          dc.b    '  Press 1 to play level 1',CR,LF
-0000219E= 20 20 50 72 65 73 ...   1291          dc.b    '  Press 2 to play level 2',CR,LF
-000021B9= 0D 0A                   1292          dc.b    CR,LF
-000021BB= 20 20 3D 3D 3D 3D ...   1293          dc.b    '  ============HIGHSCORE==========',CR,LF       
-000021DE= 0D 0A 0D 0A 0D 0A       1294          dc.b    CR,LF,CR,LF,CR,LF
-000021E4= 20 20 3D 3D 3D 3D ...   1295          dc.b    '  ===============================',CR,LF
-00002207= 0D 0A 0D 0A             1296          dc.b    CR,LF,CR,LF
-0000220B= 20 20 4D 61 64 65 ...   1297          dc.b    '  Made by Mohamad Dabboussi and Omar Ahmad',CR,LF,0
-00002238                          1298      
-00002238= 70 61 63 6D 61 6E ...   1299  pacman_beginning_wav  dc.b   'pacman_beginning.wav',0    sound file
-0000224D= 70 61 63 6D 61 6E ...   1300  pacman_chomp_wav  dc.b   'pacman_chomp.wav',0            sound file
-0000225E= 70 61 63 6D 61 6E ...   1301  pacman_death_wav  dc.b   'pacman_death.wav',0            sound file
-0000226F= 70 61 63 73 6F 75 ...   1302  pacman_eat_wav  dc.b   'pacsound.wav',0            sound file
-0000227C  =00000000               1303  pacman_beginning  equ    0      sound cue
-0000227C  =00000001               1304  pacman_chomp  equ    1          sound cue
-0000227C  =00000002               1305  pacman_death  equ    2          sound cue
-0000227C  =00000003               1306  pacman_eat  equ    3          sound cue
-0000227C= 73 63 6F 72 65 73 ...   1307  ScoreFile   dc.b    'scores.txt',0
-00002287                          1308  
-00002287                          1309  
-00002287                          1310  MAP ds.b 525
-00002494                          1311  
-00002494                          1312  MAP_LEVEL_1
-00002494= 45 45 45 45 45 42 ...   1313       DC.B 'EEEEEBBBBBBBBBBBBBBBBBBBE'                01
-000024AD= 45 45 45 45 45 42 ...   1314       DC.B 'EEEEEBECCCCCCCBCCCCCCCCBE'                02
-000024C6= 45 45 45 45 45 42 ...   1315       DC.B 'EEEEEBGBBCBBBCBCBBBCBBGBE'                03
-000024DF= 45 45 45 45 45 42 ...   1316       DC.B 'EEEEEBCCCCCCCCBCCCCCCCCBE'                04
-000024F8= 45 45 45 45 45 42 ...   1317       DC.B 'EEEEEBCBBCBCBBBBBCBCBBCBE'                05
-00002511= 45 45 45 45 45 42 ...   1318       DC.B 'EEEEEBCCCCBCCCBCCCBCCCCBE'                06
-0000252A= 45 45 45 45 45 42 ...   1319       DC.B 'EEEEEBBBBCBBBEBEBBBCBBBBE'                07
-00002543= 45 45 45 45 45 45 ...   1320       DC.B 'EEEEEEEEBCBEEEEEEEBCBEEEE'                08
-0000255C= 45 45 45 45 42 42 ...   1321       DC.B 'EEEEBBBBBCBEBEEEBEBCBBBBB'                09
-00002575= 45 45 45 45 45 45 ...   1322       DC.B 'EEEEEEEEECEEBEEEBEECEEEEE'                10
-0000258E= 45 45 45 45 42 42 ...   1323       DC.B 'EEEEBBBBBCBEBBBBBEBCBBBBB'                11
-000025A7= 45 45 45 45 45 45 ...   1324       DC.B 'EEEEEEEEBCBEEEEEEEBCBEEEE'                12
-000025C0= 45 45 45 45 45 42 ...   1325       DC.B 'EEEEEBBBBCBEBBBBBEBCBBBBE'                13
-000025D9= 45 45 45 45 45 42 ...   1326       DC.B 'EEEEEBCCCCCCCCBCCCCCCCCBE'                14
-000025F2= 45 45 45 45 45 42 ...   1327       DC.B 'EEEEEBCBBCBBBCBCBBBCBBCBE'                15
-0000260B= 45 45 45 45 45 42 ...   1328       DC.B 'EEEEEBGCBCCCCCECCCCCBCGBE'                16
-00002624= 45 45 45 45 45 42 ...   1329       DC.B 'EEEEEBBCBCBCBBBBBCBCBCBBE'                17
-0000263D= 45 45 45 45 45 42 ...   1330       DC.B 'EEEEEBCCCCBCCCBCCCBCCCCBE'                18
-00002656= 45 45 45 45 45 42 ...   1331       DC.B 'EEEEEBCBBBBBBCBCBBBBBBCBE'                19
-0000266F= 45 45 45 45 45 42 ...   1332       DC.B 'EEEEEBCCCCCCCCCCCCCCCCCBE'                20
-00002688= 45 45 45 45 45 42 ...   1333       DC.B 'EEEEEBBBBBBBBBBBBBBBBBBBE'                21
-000026A1                          1334  
-000026A1                          1335  MAP_LEVEL_2
-000026A1= 45 45 45 45 45 42 ...   1336       DC.B 'EEEEEBBBBBBBBBBBBBBBBBBBE'                01
-000026BA= 45 45 45 45 45 42 ...   1337       DC.B 'EEEEEBECCCCCCCCCCCCCCCCBE'                02
-000026D3= 45 45 45 45 45 42 ...   1338       DC.B 'EEEEEBCBBBBCBBBBCCBCCCCBE'                03
-000026EC= 45 45 45 45 45 42 ...   1339       DC.B 'EEEEEBCBCCCCBEEBCCBCCCCBE'                04
-00002705= 45 45 45 45 45 42 ...   1340       DC.B 'EEEEEBCBBBCCBBBBCCBCCCCBE'                05
-0000271E= 45 45 45 45 45 42 ...   1341       DC.B 'EEEEEBCBCCCCBCCBCCBCCCCBE'                06
-00002737= 45 45 45 45 45 42 ...   1342       DC.B 'EEEEEBCBCCCCBCCBCCBBBBCBE'                07
-00002750= 45 45 45 45 45 42 ...   1343       DC.B 'EEEEEBCCCCCCCCCCCCCCCCCBE'                08
-00002769= 45 45 45 45 45 42 ...   1344       DC.B 'EEEEEBCCCBBBBCCCBCCBCCCBB'                09
-00002782= 45 45 45 45 45 42 ...   1345       DC.B 'EEEEEBCCCBEEBCCCBCCBCCCBE'                10
-0000279B= 45 45 45 45 45 42 ...   1346       DC.B 'EEEEEBCCCBEEBCCCBCCBCCCBE'                11
-000027B4= 45 45 45 45 45 42 ...   1347       DC.B 'EEEEEBCCCBEEBCCCBCCBCCCBE'                12
-000027CD= 45 45 45 45 45 42 ...   1348       DC.B 'EEEEEBCCCBBBBCCCBBBBCCCBB'                13
-000027E6= 45 45 45 45 45 42 ...   1349       DC.B 'EEEEEBCCCCCCCCCCCCCCCCCBE'                14
-000027FF= 45 45 45 45 45 42 ...   1350       DC.B 'EEEEEBCCBBBBCCCBCCCBCCCBE'                15
-00002818= 45 45 45 45 45 42 ...   1351       DC.B 'EEEEEBCCBEEBCCCBBCBBCCCBE'                16
-00002831= 45 45 45 45 45 42 ...   1352       DC.B 'EEEEEBCCBEEBCCCBCBCBCCCBE'                17
-0000284A= 45 45 45 45 45 42 ...   1353       DC.B 'EEEEEBCCBEEBCCCBCCCBCCCBE'                18
-00002863= 45 45 45 45 45 42 ...   1354       DC.B 'EEEEEBCCBBBBCBCBCCCBCCCBE'                19
-0000287C= 45 45 45 45 45 42 ...   1355       DC.B 'EEEEEBCCCCCCCCCCCCCCCCCBE'                20
-00002895= 45 45 45 45 45 42 ...   1356       DC.B 'EEEEEBBBBBBBBBBBBBBBBBBBE'                21 
-000028AE                          1357  
-000028AE                          1358  
-000028AE  =00000000               1359  BLACK equ $00000000  
-000028AE  =00008000               1360  GREEN equ $00008000   
-000028AE  =00800080               1361  PURPLE equ $00800080 
-000028AE  =00808000               1362  TEAL equ $00808000 
-000028AE  =00808080               1363  GRAY equ $00808080 
-000028AE  =000000FF               1364  RED equ $000000FF 
-000028AE  =0000FF00               1365  LIME equ $0000FF00 
-000028AE  =0000FFFF               1366  YELLOW equ $0000FFFF 
-000028AE  =00FF0000               1367  BLUE equ $00FF0000 
-000028AE  =00FFFFFF               1368  WHITE equ $00FFFFFF 
-000028AE                          1369      END    START        ; last line of source
+000012B8  23FC 000000C3 0000208A   213       Move.L #195,GHOST3_POSITION_X
+000012C2  23FC 00000263 0000208E   214       Move.L #611,GHOST3_POSITION_Y
+000012CC                           215  
+000012CC  23FC 00000000 000020A8   216       Move.L #0,SCORE 
+000012D6  23FC 00000001 000020B8   217       Move.L #1,CURRENT_TIME
+000012E0  23FC 00000001 000020B4   218       Move.L #1,BEGIN_L_TIME
+000012EA  23FC 00000001 000020BC   219       Move.L #1,BEGIN_G_TIME
+000012F4                           220       
+000012F4  6100 0826                221       BSR RESET_TIME
+000012F8                           222       ;Move.L #0,Random
+000012F8  323C 0000                223       move    #pacman_beginning,d1 ; pacman_beginning sound cue
+000012FC  303C 0048                224       move    #72,d0               ; play pacman_beginning sound
+00001300  4E4F                     225       trap    #15
+00001302  0C39 0001 00002000       226       CMP.B #1,CURRENT_LEVEL
+0000130A  6600 0016                227       BNE LVL2
+0000130E  207C 00002496            228       Move.L #MAP_LEVEL_1,A0
+00001314  13F9 000020E1 000020E0   229       Move.B CoinsNb_Level1,CoinsNb
+0000131E  6000 0012                230       bra ctn1
+00001322                           231  LVL2
+00001322  207C 000026A3            232       Move.L #MAP_LEVEL_2,A0
+00001328  13F9 000020E2 000020E0   233       Move.B CoinsNb_Level2,CoinsNb
+00001332                           234  ctn1
+00001332  227C 00002289            235       Move.L #MAP,A1
+00001338  247C 00002289            236       Move.L #MAP,A2
+0000133E  D5FC 0000020D            237       Add.L #525,A2
+00001344                           238  RESET_MAP
+00001344  12D8                     239      Move.B (A0)+,(A1)+ 
+00001346  B2CA                     240      CMP A2,A1
+00001348  66FA                     241      BNE RESET_MAP
+0000134A                           242      
+0000134A                           243  RES_MAP
+0000134A                           244  
+0000134A  6100 0800                245       BSR DRAW_LEVEL
+0000134E  7200                     246       Move.L #$0,D1                  RESET D1
+00001350  7A00                     247       Move.L #$0,D5                  VERTICAL LOOP INDEX INIT
+00001352  2039 000020B0            248       MOVE.L LEVEL,D0
+00001358  5380                     249       SUB.L #1,D0
+0000135A  207C 00002289            250       Move.L #MAP,A0
+00001360  D1C0                     251       ADD.L D0,A0                 LOAD MAP POSITION IN MEMORY
+00001362                           252  
+00001362                           253       
+00001362  103C 000B                254       move.b  #11,D0
+00001366  323C FF00                255       move.w  #$FF00,D1
+0000136A  4E4F                     256       trap    #15
+0000136C                           257  Draw_map
+0000136C  7C00                     258       Move.L #$0,D6                  HORIZONTAL LOOP INDEX INIT
+0000136E                           259  Loop_draw_map
+0000136E  2E05                     260       Move.L D5,D7                   Calculate New Memory Position
+00001370  CEFC 0019                261       MULU.W #25,D7                  Calculate New Memory Position
+00001374  DE86                     262       ADD.L D6,D7                    Calculate New Memory Position
+00001376  2606                     263       Move.L D6,D3
+00001378  C6FC 0020                264       MULU.W #DX,D3                  PUT NEW X POSITION IN D3
+0000137C  2805                     265       Move.L D5,D4
+0000137E  C8FC 0020                266       MULU.W #DY,D4                  PUT NEW Y POSITION IN D4
+00001382  1030 7000                267       MOVE.B (A0,D7.w),D0
+00001386                           268       
+00001386  B03C 0042                269       CMP.B   #'B',D0
+0000138A  6600 0006                270       BNE COI
+0000138E  6100 07D4                271       BSR draw_block     
+00001392                           272       
+00001392  B03C 0043                273  COI  CMP.B   #'C',D0
+00001396  6600 0006                274       BNE GCO
+0000139A  6100 07F8                275       BSR draw_coin 
+0000139E                           276       
+0000139E  B03C 0047                277  GCO  CMP.B   #'G',D0
+000013A2  6600 0006                278       BNE Ctn0
+000013A6  6100 0900                279       BSR draw_Gcoin
+000013AA                           280       
+000013AA  5246                     281  Ctn0 ADDQ #1,D6
+000013AC  BC7C 0019                282       CMP #25,D6
+000013B0  66BC                     283       BNE Loop_draw_map
+000013B2  5245                     284       ADDQ #1,D5
+000013B4  BA7C 0015                285       CMP #21,D5
+000013B8  66B2                     286       BNE Draw_map
+000013BA  6100 000E                287       BSR draw_Pacman
+000013BE  6100 00F8                288       BSR loop
+000013C2                           289  
+000013C2                           290  
+000013C2                           291  
+000013C2                           292  ;----------------------------------------------------------------Draw PACMAN---------------------------------------------------------------------------
+000013C2  123C 0011                293          move.b  #17,D1
+000013C6  705C                     294      move.l  #92,D0
+000013C8  4E4F                     295      trap    #15
+000013CA                           296      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;buffer;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+000013CA                           297  draw_Pacman
+000013CA                           298       
+000013CA  103C 0050                299       MOVE.B #80,D0
+000013CE  2239 00002066            300       Move.L PacManColor,D1                Draw player pen and fill color
+000013D4  4E4F                     301       TRAP   #15
+000013D6  103C 0051                302       MOVE.B #81,D0
+000013DA  2239 00002066            303       Move.L PacManColor ,D1
+000013E0  4E4F                     304       TRAP   #15
+000013E2                           305       
+000013E2  2A39 00002002            306       Move.L PACMAN_POSITION_X,D5      Player x position
+000013E8  2C39 00002006            307       Move.L PACMAN_POSITION_Y,D6      Player y position
+000013EE  103C 0058                308       MOVE.B #88,D0                    draw player
+000013F2  2205                     309       MOVE.L D5,D1                       
+000013F4  2406                     310       MOVE.L D6,D2
+000013F6  0685 00000019            311       Add.L #25,D5
+000013FC  0686 00000019            312       Add.L #25,D6
+00001402  2605                     313       MOVE.L D5,D3
+00001404  2806                     314       MOVE.L D6,D4
+00001406  4E4F                     315       TRAP   #15
+00001408                           316       
+00001408                           317       
+00001408  103C 0050                318       MOVE.B #80,D0
+0000140C  223C 00000000            319       Move.L #Black,D1                Black pen and fill color
+00001412  4E4F                     320       TRAP   #15
+00001414  103C 0051                321       MOVE.B #81,D0
+00001418  223C 00000000            322       Move.L #Black,D1
+0000141E  4E4F                     323       TRAP   #15
+00001420                           324       
+00001420  1039 00002012            325       Move.B PACMAN_MOUTH,D0
+00001426  E218                     326       ror.b #1,d0
+00001428  13C0 00002012            327       Move.B d0,PACMAN_MOUTH      
+0000142E  0800 0000                328       Btst #$0,d0
+00001432  6600 0082                329       BNE Draw_Pacman_Eyes
+00001436  1039 00002013            330       Move.B PACMAN_DIRECTION,D0      CHECK PACMAN Direction
+0000143C                           331       
+0000143C                           332  CHECK_DIRECTION_D
+0000143C  B07C 0044                333       CMP #'D',D0
+00001440  6600 000C                334       BNE CHECK_DIRECTION_A
+00001444  227C 00002026            335       MOVE.L #RIGHT_MOUTH,A1
+0000144A  6000 0038                336       BRA Draw_Pacman_Mouth
+0000144E                           337  CHECK_DIRECTION_A
+0000144E  B07C 0041                338       CMP #'A',D0
+00001452  6600 000C                339       BNE CHECK_DIRECTION_W
+00001456  227C 00002016            340       MOVE.L #LEFT_MOUTH,A1
+0000145C  6000 0026                341       BRA Draw_Pacman_Mouth
+00001460                           342  CHECK_DIRECTION_W
+00001460  B07C 0057                343       CMP #'W',D0
+00001464  6600 000C                344       BNE CHECK_DIRECTION_S
+00001468  227C 00002036            345       MOVE.L #UP_MOUTH,A1
+0000146E  6000 0014                346       BRA Draw_Pacman_Mouth
+00001472                           347  CHECK_DIRECTION_S
+00001472  B07C 0053                348       CMP #'S',D0
+00001476  6600 000C                349       BNE Draw_Pacman_Mouth
+0000147A  227C 00002046            350       MOVE.L #DOWN_MOUTH,A1
+00001480  6000 0002                351       BRA Draw_Pacman_Mouth
+00001484                           352  Draw_Pacman_Mouth
+00001484  103C 0058                353       MOVE.B #88,D0                   draw pacman mouth
+00001488  2239 00002002            354       MOVE.L PACMAN_POSITION_X,D1                      
+0000148E  2439 00002006            355       MOVE.L PACMAN_POSITION_Y,D2
+00001494  2639 00002002            356       MOVE.L PACMAN_POSITION_X,D3                       
+0000149A  2839 00002006            357       MOVE.L PACMAN_POSITION_Y,D4
+000014A0  B3FC 000020A0            358       CMP.L #$20A0,A1
+000014A6  6E00 000C                359       BGT  dd
+000014AA  D299                     360       Add.L (A1)+,D1                   
+000014AC  D499                     361       Add.L (A1)+,D2
+000014AE  D699                     362       Add.L (A1)+,D3                 
+000014B0  D891                     363       Add.L (A1),D4
+000014B2  4E4F                     364       TRAP   #15
+000014B4  4E75                     365  dd   RTS
+000014B6                           366       
+000014B6                           367  Draw_Pacman_Eyes
+000014B6                           368       ;MOVE.B #88,D0                   draw pacman eyes
+000014B6                           369       ;MOVE.L #EYES,A1
+000014B6                           370       ;MOVE.L PACMAN_POSITION_X,D1                      
+000014B6                           371       ;MOVE.L PACMAN_POSITION_Y,D2
+000014B6                           372       ;MOVE.L PACMAN_POSITION_X,D3                       
+000014B6                           373       ;MOVE.L PACMAN_POSITION_Y,D4 
+000014B6                           374       ;Add.L (A1)+,D1                   
+000014B6                           375       ;Add.L (A1)+,D2
+000014B6                           376       ;Add.L (A1)+,D3                 
+000014B6                           377       ;Add.L (A1),D4
+000014B6                           378       ;TRAP   #15
+000014B6  4E75                     379       RTS
+000014B8                           380  
+000014B8                           381      
+000014B8                           382      
+000014B8                           383  ;----------------------------------------------------------------Game Loop-----------------------------------------------------------------------------
+000014B8                           384      
+000014B8                           385  loop  
+000014B8  6100 0628                386       BSR DRAW_SCORE
+000014BC  700C                     387       Move.L #12,D0                             DELAY TIME
+000014BE  6100 08C8                388       BSR DELAY
+000014C2  6100 070C                389       BSR DRAW_LIFES
+000014C6                           390       ;Move Ghost 
+000014C6  6100 065E                391       BSR Draw_Time     
+000014CA  2239 00002002            392       MOVE.L PACMAN_POSITION_X,D1
+000014D0  2439 00002006            393       MOVE.L PACMAN_POSITION_Y,D2
+000014D6  23C1 0000200A            394       MOVE.L D1,NPACMAN_POSITION_X
+000014DC  23C2 0000200E            395       MOVE.L D2,NPACMAN_POSITION_Y     
+000014E2                           396       
+000014E2                           397       
+000014E2  103C 0013                398       MOVE.B #19,D0     
+000014E6  223C 41534457            399       MOVE.L #'A'<<24+'S'<<16+'D'<<8+'W',D1      Check for keypress (a,s,d,w)
+000014EC  4E4F                     400       TRAP   #15
+000014EE  2C01                     401       Move.l d1,d6
+000014F0  0801 0018                402       BTST.L #24,D1     ; test for 'a'
+000014F4                           403       IF <NE> THEN      ; if 'a'
+000014F8  2A39 00002002            404       Move.L PACMAN_POSITION_X,D5 
+000014FE  0485 00000020            405       SUB.L #DX,D5
+00001504  23C5 0000200A            406       Move.L D5,NPACMAN_POSITION_X
+0000150A  13FC 0041 00002013       407       Move.B #'A',PACMAN_DIRECTION
+00001512                           408  
+00001512                           409      
+00001512                           410       ENDI
+00001512                           411       
+00001512  0801 0000                412       BTST.L #0,D1     ; test for 'w'
+00001516                           413       IF <NE> THEN      ; if 'w'
+0000151A                           414  
+0000151A  2C39 00002006            415       Move.L PACMAN_POSITION_Y,D6
+00001520  0486 00000020            416       SUB.L #DY,D6
+00001526  23C6 0000200E            417       Move.L D6,NPACMAN_POSITION_Y
+0000152C  13FC 0057 00002013       418       Move.B #'W',PACMAN_DIRECTION
+00001534                           419  
+00001534                           420       ENDI
+00001534                           421  
+00001534  0801 0008                422       BTST.L #8,D1     ; test for 'd'
+00001538                           423       IF <NE> THEN      ; if 'd'
+0000153C  2A39 00002002            424       Move.L PACMAN_POSITION_X,D5 
+00001542  0685 00000020            425       ADD.L #DX,D5
+00001548  23C5 0000200A            426       Move.L D5,NPACMAN_POSITION_X
+0000154E  13FC 0044 00002013       427       Move.B #'D',PACMAN_DIRECTION
+00001556                           428  
+00001556                           429       ENDI
+00001556                           430       
+00001556  0801 0010                431       BTST.L #16,D1     ; test for 's'
+0000155A                           432       IF <NE> THEN      ; if 's'
+0000155E  2C39 00002006            433       Move.L PACMAN_POSITION_Y,D6
+00001564  0686 00000020            434       ADD.L #DY,D6
+0000156A  23C6 0000200E            435       Move.L D6,NPACMAN_POSITION_Y
+00001570  13FC 0053 00002013       436       Move.B #'S',PACMAN_DIRECTION
+00001578                           437  
+00001578                           438       ENDI
+00001578                           439  
+00001578                           440  
+00001578                           441       
+00001578  6100 04F2                442       BSR CHECK_G_COIN
+0000157C  6100 04B8                443       BSR CHECK_COIN
+00001580  4EB9 00001CDC            444       JSR clr_pacman                            Clear Pacman
+00001586                           445  
+00001586                           446  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;MOHAMAD;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+00001586                           447  
+00001586                           448       ;BSR CHECK_GHOST                          ; fi marten check ??? 
+00001586                           449       ;Bne ewq
+00001586                           450       ;CMP #PURPLE,PacManColor
+00001586                           451       ;BEQ RESET_GHOST_POSITION
+00001586                           452       ;bsr RESET_POSITION
+00001586                           453       ;bra SKIP
+00001586                           454  
+00001586                           455  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+00001586  6100 0122                456  ewq  BSR CHECK_P_BLOCK
+0000158A  2A39 00002002            457       Move.L PACMAN_POSITION_X,D5
+00001590  6100 00F6                458       BSR CHECK_EXIT
+00001594  23C5 00002002            459       MOVE.L D5,PACMAN_POSITION_X
+0000159A  2A39 0000206A            460       Move.L GHOST_POSITION_X,D5
+000015A0  6100 00E6                461       BSR CHECK_EXIT
+000015A4  23C5 0000206A            462       MOVE.L D5,GHOST_POSITION_X
+000015AA  2A39 0000207A            463       Move.L GHOST2_POSITION_X,D5
+000015B0  6100 00D6                464       BSR CHECK_EXIT
+000015B4  23C5 0000207A            465       MOVE.L D5,GHOST2_POSITION_X
+000015BA                           466  
+000015BA  4EB8 13CA                467  SKIP jsr draw_Pacman
+000015BE  2479 0000206A            468       Move.L GHOST_POSITION_X,A2
+000015C4  2679 0000206E            469       Move.L GHOST_POSITION_Y,A3
+000015CA  2879 00002072            470       Move.L NGHOST_POSITION_X,A4
+000015D0  2A79 00002076            471       Move.L NGHOST_POSITION_Y,A5
+000015D6  1E39 0000209A            472       Move.B GHOST_DIRECTION,D7        
+000015DC  4EB9 00001780            473       jsr Draw_Ghost
+000015E2  23CA 0000206A            474       Move.L A2,GHOST_POSITION_X
+000015E8  23CB 0000206E            475       Move.L A3,GHOST_POSITION_Y
+000015EE  23CC 00002072            476       Move.L A4,NGHOST_POSITION_X
+000015F4  23CD 00002076            477       Move.L A5,NGHOST_POSITION_Y
+000015FA  13C7 0000209A            478       Move.B D7,GHOST_DIRECTION
+00001600  2479 0000207A            479       Move.L GHOST2_POSITION_X,A2
+00001606  2679 0000207E            480       Move.L GHOST2_POSITION_Y,A3
+0000160C  2879 00002082            481       Move.L NGHOST2_POSITION_X,A4
+00001612  2A79 00002086            482       Move.L NGHOST2_POSITION_Y,A5
+00001618  1E39 0000209C            483       Move.B GHOST2_DIRECTION,D7
+0000161E  4EB9 00001780            484       jsr Draw_Ghost    
+00001624  23CA 0000207A            485       Move.L A2,GHOST2_POSITION_X
+0000162A  23CB 0000207E            486       Move.L A3,GHOST2_POSITION_Y
+00001630  23CC 00002082            487       Move.L A4,NGHOST2_POSITION_X
+00001636  23CD 00002086            488       Move.L A5,NGHOST2_POSITION_Y
+0000163C  13C7 0000209C            489       Move.B D7,GHOST2_DIRECTION
+00001642  2479 0000208A            490       Move.L GHOST3_POSITION_X,A2
+00001648  2679 0000208E            491       Move.L GHOST3_POSITION_Y,A3
+0000164E  2879 00002092            492       Move.L NGHOST3_POSITION_X,A4
+00001654  2A79 00002096            493       Move.L NGHOST3_POSITION_Y,A5
+0000165A  1E39 0000209E            494       Move.B GHOST3_DIRECTION,D7
+00001660  4EB9 00001780            495       jsr Draw_Ghost    
+00001666  23CA 0000208A            496       Move.L A2,GHOST3_POSITION_X
+0000166C  23CB 0000208E            497       Move.L A3,GHOST3_POSITION_Y
+00001672  23CC 00002092            498       Move.L A4,NGHOST3_POSITION_X
+00001678  23CD 00002096            499       Move.L A5,NGHOST3_POSITION_Y
+0000167E  13C7 0000209E            500       Move.B D7,GHOST3_DIRECTION
+00001684  6000 FE32                501       BRA loop
+00001688                           502  
+00001688                           503   
+00001688                           504  ;----------------------------------------------------------------CHECK Block---------------------------------------------------------------------------
+00001688                           505  CHECK_EXIT
+00001688  BABC 00000320            506      CMP.L #800,D5
+0000168E  6D00 0008                507      BLT LC
+00001692  0485 000002A0            508      SUB.L #672,D5
+00001698  BABC 00000080            509  LC  CMP.L #128,D5
+0000169E  6E00 0008                510      BGT DR
+000016A2  0685 000002A0            511      ADD.L #672,D5
+000016A8  4E75                     512  DR  RTS 
+000016AA                           513  
+000016AA                           514  CHECK_P_BLOCK
+000016AA                           515  
+000016AA  7053                     516      MOVE.L #83,D0
+000016AC  2239 0000200A            517      MOVE.L NPACMAN_POSITION_X,D1
+000016B2  2439 0000200E            518      MOVE.L NPACMAN_POSITION_Y,D2
+000016B8  4E4F                     519      TRAP #15
+000016BA                           520      
+000016BA  B0BC 00FF0000            521      CMP.L #BLUE,D0
+000016C0  6700 000E                522      BEQ F
+000016C4                           523      
+000016C4  23C1 00002002            524      MOVE.L D1,PACMAN_POSITION_X
+000016CA  23C2 00002006            525      MOVE.L D2,PACMAN_POSITION_Y
+000016D0  4E75                     526  F   RTS
+000016D2                           527  
+000016D2                           528  RESET_POSITION
+000016D2  700A                     529      Move.L #10,D0
+000016D4  6100 06B2                530      bsr delay
+000016D8  23FC 000000C3 00002002   531      MOVE.L #195,PACMAN_POSITION_X
+000016E2  23FC 00000025 00002006   532      MOVE.L #37,PACMAN_POSITION_Y
+000016EC  23FC 000002C3 0000206A   533      MOVE.L #707,GHOST_POSITION_X
+000016F6  23FC 00000023 0000206E   534      MOVE.L #35,GHOST_POSITION_Y
+00001700  23FC 000001E3 0000207A   535      MOVE.L #483,GHOST2_POSITION_X
+0000170A  23FC 00000123 0000207E   536      MOVE.L #291,GHOST2_POSITION_Y
+00001714  23FC 000002C3 00002072   537      MOVE.L #707,NGHOST_POSITION_X
+0000171E  23FC 00000023 00002076   538      MOVE.L #35,NGHOST_POSITION_Y
+00001728  23FC 000001E3 00002082   539      MOVE.L #483,NGHOST2_POSITION_X
+00001732  23FC 00000123 00002086   540      MOVE.L #291,NGHOST2_POSITION_Y
+0000173C  23FC 000000C3 0000208A   541      MOVE.L #195,GHOST3_POSITION_X
+00001746  23FC 00000263 0000208E   542      MOVE.L #611,GHOST3_POSITION_Y
+00001750  23FC 000000C3 00002092   543      MOVE.L #195,NGHOST3_POSITION_X
+0000175A  23FC 00000263 00002096   544      MOVE.L #611,NGHOST3_POSITION_Y
+00001764  6000 FBE4                545      BRA RES_MAP
+00001768                           546  
+00001768                           547  
+00001768                           548  RESET_GHOST_POSITION
+00001768  700A                     549      Move.L #10,D0
+0000176A  6100 061C                550      bsr delay
+0000176E  6100 05A8                551      BSR clr_ghost
+00001772  247C 000001C3            552      MOVE.L #451,A2
+00001778  267C 00000123            553      MOVE.L #291,A3
+0000177E  4E75                     554      RTS
+00001780                           555      
+00001780                           556  DRAW_GHOST
+00001780                           557  
+00001780  6100 0194                558      BSR Try_move
+00001784  7053                     559      MOVE.L #83,D0
+00001786  220C                     560      MOVE.L A4,D1
+00001788  240D                     561      MOVE.L A5,D2
+0000178A  5A81                     562      ADD.L #5,D1
+0000178C  5A82                     563      ADD.L #5,D2
+0000178E  4E4F                     564      TRAP #15    
+00001790  B0BC 0000FFFF            565      CMP.L #YELLOW,D0
+00001796  6600 001E                566      BNE PUR
+0000179A  53B9 000020A4            567      SUB.L #1,LIFE
+000017A0  2439 000020A4            568      Move.L LIFE,D2
+000017A6  B47C 0000                569      CMP #0,D2
+000017AA  6700 0052                570      BEQ END
+000017AE  6000 FF22                571      BRA RESET_POSITION    
+000017B2  6000 000C                572      BRA FF
+000017B6  B0BC 00800080            573  PUR CMP.L #PURPLE,D0
+000017BC  6700 001A                574      BEQ EAT_GHOST
+000017C0                           575  FF
+000017C0  4EB9 00001D18            576      JSR clr_Ghost  
+000017C6  220C                     577      MOVE.L A4,D1
+000017C8  240D                     578      MOVE.L A5,D2
+000017CA  2441                     579      MOVE.L D1,A2
+000017CC  2642                     580      MOVE.L D2,A3
+000017CE                           581  FFF 
+000017CE  6100 0044                582      BSR Draw_Ghost_On_Map
+000017D2  6100 0078                583      BSR Draw_GHOST_Destails
+000017D6  4E75                     584      RTS
+000017D8                           585  
+000017D8                           586  EAT_GHOST
+000017D8  618E                     587      BSR RESET_GHOST_POSITION
+000017DA  06B9 00000032 000020A8   588      Add.L #50,SCORE
+000017E4  60E8                     589      BRA FFF
+000017E6                           590  
+000017E6                           591  CHECK_GHOST
+000017E6  7053                     592      MOVE.L #83,D0
+000017E8  2239 0000200A            593      MOVE.L NPACMAN_POSITION_X,D1
+000017EE  2439 0000200E            594      MOVE.L NPACMAN_POSITION_Y,D2
+000017F4  4E4F                     595      TRAP #15
+000017F6                           596      
+000017F6  B0BC 000000FF            597      CMP.L #RED,D0
+000017FC                           598      
+000017FC  4E75                     599  e   RTS
+000017FE                           600  
+000017FE                           601  END
+000017FE                           602  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+000017FE  6100 060E                603      BSR READ_FILE                   read score
+00001802  6100 062E                604      BSR Compare_score_highscore     compare and update score
+00001806                           605      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+00001806  323C 0002                606       move    #pacman_death,d1     ; pacman_death sound cue
+0000180A  303C 0048                607       move    #72,d0               ; play pacman_death sound
+0000180E  4E4F                     608       trap    #15
+00001810  6000 F83A                609       bra menu
+00001814                           610  
+00001814                           611  ;----------------------------------------------------------------DRAW GHOST---------------------------------------------------------------------------
+00001814                           612  
+00001814                           613  Draw_Ghost_On_Map
+00001814  103C 0050                614       MOVE.B #80,D0
+00001818  223C 000000FF            615       Move.L #Red,D1                Black pen and fill color
+0000181E  4E4F                     616       TRAP   #15
+00001820  103C 0051                617       MOVE.B #81,D0
+00001824  223C 000000FF            618       Move.L #Red,D1
+0000182A  4E4F                     619       TRAP   #15
+0000182C  2A0A                     620       Move.L A2,D5      ghost x position
+0000182E  2C0B                     621       Move.L A3,D6      ghost y position
+00001830  103C 0057                622       MOVE.B #87,D0  
+00001834  2205                     623       MOVE.L D5,D1                       
+00001836  2406                     624       MOVE.L D6,D2
+00001838  0685 00000019            625       Add.L #25,D5
+0000183E  0686 00000019            626       Add.L #25,D6
+00001844  2605                     627       MOVE.L D5,D3
+00001846  2806                     628       MOVE.L D6,D4
+00001848  4E4F                     629       TRAP   #15 
+0000184A  4E75                     630       RTS 
+0000184C                           631       
+0000184C                           632  Draw_GHOST_Destails
+0000184C  103C 0050                633       MOVE.B #80,D0
+00001850  223C 00000000            634       Move.L #Black,D1                Black pen and fill color
+00001856  4E4F                     635       TRAP   #15
+00001858  103C 0051                636       MOVE.B #81,D0
+0000185C  223C 00000000            637       Move.L #Black,D1
+00001862  4E4F                     638       TRAP   #15
+00001864                           639  
+00001864  103C 0058                640       MOVE.B #88,D0                   draw ghost 1 details 1ST LEG
+00001868  220A                     641       MOVE.L A2,D1                      
+0000186A  240B                     642       MOVE.L A3,D2
+0000186C  260A                     643       MOVE.L A2,D3                       
+0000186E  280B                     644       MOVE.L A3,D4 
+00001870  5881                     645       Add.L #04,D1                   
+00001872  0682 00000011            646       Add.L #17,D2
+00001878  0683 0000000A            647       Add.L #10,D3                 
+0000187E  0684 0000001B            648       Add.L #27,D4
+00001884  4E4F                     649       TRAP   #15
+00001886                           650  
+00001886  103C 0058                651       MOVE.B #88,D0                   draw ghost 1 details 2nd leg
+0000188A  220A                     652       MOVE.L A2,D1                      
+0000188C  260A                     653       MOVE.L A2,D3                        
+0000188E  0681 0000000F            654       Add.L #15,D1                   
+00001894  0683 00000015            655       Add.L #21,D3                 
+0000189A  4E4F                     656       TRAP   #15
+0000189C                           657       
+0000189C  103C 0058                658       MOVE.B #88,D0                   draw ghost 1 details 1st eye
+000018A0  220A                     659       MOVE.L A2,D1                      
+000018A2  240B                     660       MOVE.L A3,D2
+000018A4  260A                     661       MOVE.L A2,D3                       
+000018A6  280B                     662       MOVE.L A3,D4 
+000018A8  5481                     663       Add.L #2,D1                   
+000018AA  5682                     664       Add.L #3,D2
+000018AC  0683 0000000A            665       Add.L #10,D3                 
+000018B2  0684 0000000C            666       Add.L #12,D4
+000018B8  4E4F                     667       TRAP   #15
+000018BA                           668       
+000018BA  103C 0058                669       MOVE.B #88,D0                   draw ghost 1 details 2nd eye
+000018BE  220A                     670       MOVE.L A2,D1                      
+000018C0  260A                     671       MOVE.L A2,D3                       
+000018C2  0681 0000000F            672       Add.L #15,D1                   
+000018C8  0683 00000017            673       Add.L #23,D3                 
+000018CE  4E4F                     674       TRAP   #15
+000018D0                           675       
+000018D0  103C 0050                676            MOVE.B #80,D0
+000018D4  223C 00FFFFFF            677       Move.L #White,D1                Black pen and fill color
+000018DA  4E4F                     678       TRAP   #15
+000018DC  103C 0051                679       MOVE.B #81,D0
+000018E0  223C 00FFFFFF            680       Move.L #White,D1
+000018E6  4E4F                     681       TRAP   #15
+000018E8                           682       
+000018E8  103C 0058                683            MOVE.B #88,D0                   draw ghost 1 details 1st eye pupil
+000018EC  220A                     684       MOVE.L A2,D1                      
+000018EE  240B                     685       MOVE.L A3,D2
+000018F0  260A                     686       MOVE.L A2,D3                       
+000018F2  280B                     687       MOVE.L A3,D4 
+000018F4  5A81                     688       Add.L #5,D1                   
+000018F6  5682                     689       Add.L #3,D2
+000018F8  5E83                     690       Add.L #7,D3                 
+000018FA  5E84                     691       Add.L #7,D4
+000018FC  4E4F                     692       TRAP   #15
+000018FE                           693  
+000018FE                           694      
+000018FE  103C 0058                695            MOVE.B #88,D0                   draw ghost 1 details 2nd eye pupil
+00001902  220A                     696       MOVE.L A2,D1                      
+00001904  260A                     697       MOVE.L A2,D3                        
+00001906  0681 00000012            698       Add.L #18,D1                   
+0000190C  0683 00000014            699       Add.L #20,D3                 
+00001912  4E4F                     700       TRAP   #15
+00001914  4E75                     701      RTS
+00001916                           702      
+00001916                           703  ;----------------------------------------------------------------Move Ghost----------------------------------------------------------------------------
+00001916                           704   
+00001916                           705  Try_move
+00001916  1007                     706      Move.B D7,D0
+00001918  B07C 0057                707      CMP #'W',D0
+0000191C  6700 005E                708      BEQ Try_up
+00001920  B07C 0041                709      CMP #'A',D0
+00001924  6700 00DC                710      BEQ Try_left
+00001928  B07C 0053                711      CMP #'S',D0
+0000192C  6700 00A6                712      BEQ Try_down
+00001930  B07C 0044                713      CMP #'D',D0
+00001934  6700 0070                714      BEQ Try_right
+00001938                           715  
+00001938                           716  GET_RANDOM
+00001938                           717    
+00001938  52B9 000020A0            718      AddI.L #1,Random
+0000193E  103C 0008                719      move.b  #8,d0       Read timer, get 100ths of a second since midnight in D1.L
+00001942  4E4F                     720      trap    #15
+00001944  C2BC 04FFFFFF            721      and.l   #$04FFFFFF,d1 
+0000194A  82FC 0500                722      divu #1280,d1  
+0000194E  4841                     723      swap d1 
+00001950                           724  
+00001950                           725  
+00001950  D2B9 000020A0            726      Add.L Random,D1
+00001956                           727  
+00001956  C2BC 00000003            728      AND.L #$3,D1
+0000195C  B27C 0000                729      CMP #0,D1
+00001960  6700 001A                730      BEQ Try_up
+00001964  B27C 0001                731      CMP #1,D1
+00001968  6700 003C                732      BEQ Try_Right
+0000196C  B27C 0002                733      CMP #2,D1
+00001970  6700 0062                734      BEQ Try_Down
+00001974  B27C 0003                735      CMP #3,D1
+00001978  6700 0088                736      BEQ Try_left
+0000197C                           737      
+0000197C                           738  Try_up
+0000197C                           739       ;CHeck block
+0000197C  7053                     740      MOVE.L #83,D0
+0000197E  220A                     741      Move.L A2,D1
+00001980  240B                     742      Move.L A3,D2
+00001982  0482 00000020            743      Sub.L #DY,D2
+00001988  4E4F                     744      TRAP #15
+0000198A  B0BC 00FF0000            745      CMP.L #BLUE,D0
+00001990  67A6                     746      BEQ GET_RANDOM
+00001992  7053                     747      MOVE.L #83,D0
+00001994  4E4F                     748      TRAP #15
+00001996  B0BC 000000FF            749      CMP.L #RED,D0
+0000199C  679A                     750      BEQ GET_RANDOM
+0000199E  1E3C 0057                751      MOVE.B #'W',D7
+000019A2  6000 008C                752      BRA Move_ghost
+000019A6                           753  Try_right    
+000019A6                           754       ;CHeck block
+000019A6  7053                     755      MOVE.L #83,D0
+000019A8  220A                     756      Move.L A2,D1
+000019AA  240B                     757      Move.L A3,D2
+000019AC  0681 00000020            758      Add.L #DX,D1
+000019B2  4E4F                     759      TRAP #15
+000019B4  B0BC 00FF0000            760      CMP.L #BLUE,D0
+000019BA  6700 FF7C                761      BEQ GET_RANDOM
+000019BE  7053                     762      MOVE.L #83,D0
+000019C0  4E4F                     763      TRAP #15
+000019C2  B0BC 000000FF            764      CMP.L #RED,D0
+000019C8  6700 FF6E                765      BEQ GET_RANDOM
+000019CC  1E3C 0044                766      MOVE.B #'D',D7
+000019D0  6000 005E                767      BRA Move_ghost
+000019D4                           768      
+000019D4                           769  Try_Down   
+000019D4                           770       ;CHeck block
+000019D4  7053                     771      MOVE.L #83,D0
+000019D6  220A                     772      Move.L A2,D1
+000019D8  240B                     773      Move.L A3,D2
+000019DA  0682 00000020            774      Add.L #DY,D2
+000019E0  4E4F                     775      TRAP #15
+000019E2  B0BC 00FF0000            776      CMP.L #BLUE,D0
+000019E8  6700 FF4E                777      BEQ GET_RANDOM
+000019EC  7053                     778      MOVE.L #83,D0
+000019EE  4E4F                     779      TRAP #15
+000019F0  B0BC 000000FF            780      CMP.L #RED,D0
+000019F6  6700 FF40                781      BEQ GET_RANDOM
+000019FA  1E3C 0053                782      MOVE.B #'S',D7
+000019FE  6000 0030                783      BRA Move_ghost
+00001A02                           784  Try_left  
+00001A02                           785       ;CHeck block
+00001A02  7053                     786      MOVE.L #83,D0
+00001A04  220A                     787       Move.L A2,D1
+00001A06  240B                     788       Move.L A3,D2
+00001A08  0481 00000020            789      Sub.L #DX,D1
+00001A0E  4E4F                     790      TRAP #15
+00001A10  B0BC 00FF0000            791      CMP.L #BLUE,D0
+00001A16  6700 FF20                792      BEQ GET_RANDOM
+00001A1A  7053                     793      MOVE.L #83,D0
+00001A1C  4E4F                     794      TRAP #15
+00001A1E  B0BC 000000FF            795      CMP.L #RED,D0
+00001A24  6700 FF12                796      BEQ GET_RANDOM
+00001A28  1E3C 0041                797      MOVE.B #'A',D7
+00001A2C  6000 0002                798      BRA Move_ghost
+00001A30                           799  
+00001A30                           800   
+00001A30                           801  Move_ghost
+00001A30  2841                     802       Move.L D1,A4
+00001A32  2A42                     803       Move.L D2,A5
+00001A34  4E75                     804       RTS
+00001A36                           805  
+00001A36                           806  ;----------------------------------------------------------------CHECK Coin---------------------------------------------------------------------------
+00001A36                           807  CHECK_COIN
+00001A36  7053                     808      MOVE.L #83,D0
+00001A38  2239 0000200A            809      MOVE.L NPACMAN_POSITION_X,D1
+00001A3E  2439 0000200E            810      MOVE.L NPACMAN_POSITION_Y,D2
+00001A44  0682 0000000C            811      ADD.L #12,D2
+00001A4A  0681 0000000C            812      ADD.L #12,D1
+00001A50  4E4F                     813      TRAP #15
+00001A52                           814      
+00001A52  B0BC 00FFFFFF            815      CMP.L #WHITE,D0
+00001A58  6600 0010                816      BNE eq
+00001A5C  52B9 000020A8            817      AddI.L #1,SCORE
+00001A62  6100 007E                818      BSR DRAW_SCORE
+00001A66  6100 0368                819      BSR Emptying_Ate_Coin
+00001A6A  4E75                     820  eq  RTS
+00001A6C                           821  
+00001A6C                           822    
+00001A6C                           823  ;----------------------------------------------------------------CHECK G_Coin---------------------------------------------------------------------------
+00001A6C                           824     
+00001A6C                           825  CHECK_G_COIN
+00001A6C  6100 00A4                826      BSR Get_Time
+00001A70  92B9 000020BC            827      SUB.L BEGIN_G_TIME,D1
+00001A76  B239 000020C0            828      CMP.B G_TIME,D1
+00001A7C  6600 000C                829      BNE SK
+00001A80  23FC 0000FFFF 00002066   830      MOVE.L #YELLOW,PacManColor
+00001A8A                           831      
+00001A8A  7053                     832  SK  MOVE.L #83,D0
+00001A8C  2239 0000200A            833      MOVE.L NPACMAN_POSITION_X,D1
+00001A92  2439 0000200E            834      MOVE.L NPACMAN_POSITION_Y,D2
+00001A98  0682 0000000C            835      ADD.L #12,D2
+00001A9E  0681 0000000C            836      ADD.L #12,D1
+00001AA4  4E4F                     837      TRAP #15
+00001AA6  B0BC 00808080            838      CMP.L #GRAY,D0
+00001AAC  6600 0032                839      BNE COIN
+00001AB0  6100 0060                840      BSR Get_Time
+00001AB4  23C1 000020BC            841      MOVE.L D1,BEGIN_G_TIME 
+00001ABA  06B9 0000000A 000020A8   842      AddI.L #10,SCORE
+00001AC4  6100 030A                843      BSR Emptying_Ate_Coin
+00001AC8  6100 0018                844      BSR DRAW_SCORE
+00001ACC  23FC 00800080 00002066   845      MOVE.L #PURPLE,PacManColor
+00001AD6  323C 0001                846      move    #pacman_chomp,d1     ; pacman_chomp sound cue
+00001ADA  303C 0048                847      move    #72,d0               ; play pacman_chomp sound
+00001ADE  4E4F                     848      trap    #15
+00001AE0                           849  
+00001AE0  4E75                     850  COIN RTS
+00001AE2                           851      
+00001AE2                           852  ;----------------------------------------------------------------Draw Score---------------------------------------------------------------------------
+00001AE2                           853      
+00001AE2                           854  DRAW_SCORE
+00001AE2  103C 0050                855       MOVE.B #80,D0
+00001AE6  2239 00000000            856       Move.L Black,D1                Draw player pen and fill color
+00001AEC  4E4F                     857       TRAP   #15
+00001AEE  103C 0051                858       MOVE.B #81,D0
+00001AF2  2239 00000000            859       Move.L Black,D1
+00001AF8  4E4F                     860       TRAP   #15
+00001AFA  700B                     861      move.l      #11,d0          
+00001AFC  7201                     862      move.l      #$0001,d1           
+00001AFE  4E4F                     863      trap        #15
+00001B00  43F9 000020C1            864      lea     ScoreDisplay,a1
+00001B06  7011                     865      move.l      #17,d0
+00001B08  2239 000020A8            866      move.l      Score,d1
+00001B0E  4E4F                     867      trap        #15
+00001B10  4E75                     868      RTS 
+00001B12                           869  
+00001B12                           870  ;----------------------------------------------------------------Draw Time----------------------------------------------------------------------------
+00001B12                           871  Get_Time
+00001B12  701F                     872      MOVE.L #31,D0
+00001B14  4E4F                     873      TRAP #15
+00001B16  7016                     874      move.L #22,d0
+00001B18  E0A9                     875      lsr.l d0,d1
+00001B1A  4E75                     876      RTS
+00001B1C                           877      
+00001B1C                           878  RESET_TIME
+00001B1C  61F4                     879       BSR Get_Time
+00001B1E  23C1 000020B4            880       Move.l D1,BEGIN_L_TIME
+00001B24  4E75                     881       RTS
+00001B26                           882  
+00001B26                           883  Draw_Time
+00001B26  61EA                     884      BSR Get_Time
+00001B28  92B9 000020B4            885      SUB.l       BEGIN_L_TIME,D1
+00001B2E  23C1 000020B8            886      MOVE.L D1,CURRENT_TIME
+00001B34  700B                     887      move.l      #11,d0          
+00001B36  7202                     888      move.l      #$0002,d1           
+00001B38  4E4F                     889      trap        #15
+00001B3A  43F9 000020D9            890      lea         TimeDisplay,a1
+00001B40  7011                     891      move.l      #17,d0
+00001B42  2239 000020B8            892      MOVE.L CURRENT_TIME,D1
+00001B48  4E4F                     893      trap        #15
+00001B4A  4E75                     894      RTS 
+00001B4C                           895      
+00001B4C                           896  ;----------------------------------------------------------------Draw Level---------------------------------------------------------------------------
+00001B4C                           897      
+00001B4C                           898  DRAW_LEVEL
+00001B4C  700B                     899      move.l      #11,d0          
+00001B4E  7200                     900      move.l      #$0000,d1           
+00001B50  4E4F                     901      trap        #15
+00001B52  43F9 000020D1            902      lea         LevelDisplay,a1
+00001B58  7011                     903      move.l      #17,d0
+00001B5A  2239 000020B0            904      move.l      LEVEL,d1
+00001B60  4E4F                     905      trap        #15
+00001B62  4E75                     906      RTS 
+00001B64                           907  ;----------------------------------------------------------------Draw Blocks---------------------------------------------------------------------------
+00001B64                           908  
+00001B64                           909  draw_block
+00001B64  103C 0050                910       MOVE.B #80,D0
+00001B68  223C 00FF0000            911       Move.L #BLUE,D1                Draw block pen and fill color
+00001B6E  4E4F                     912       TRAP   #15
+00001B70  103C 0051                913       MOVE.B #81,D0
+00001B74  223C 00FF0000            914       Move.L #BLUE,D1
+00001B7A  4E4F                     915       TRAP   #15
+00001B7C  103C 0057                916       MOVE.B #87,D0 
+00001B80  2203                     917       MOVE.L D3,D1                 
+00001B82  2404                     918       MOVE.L D4,D2
+00001B84  0683 00000020            919       Add.L #BX,D3
+00001B8A  0684 00000020            920       Add.L #BY,D4
+00001B90  4E4F                     921       TRAP   #15
+00001B92  4E75                     922       RTS
+00001B94                           923  
+00001B94                           924  ;----------------------------------------------------------------Draw Small Coin---------------------------------------------------------------------------
+00001B94                           925  
+00001B94                           926  draw_coin     
+00001B94  103C 0050                927       MOVE.B #80,D0
+00001B98  223C 00FFFFFF            928       Move.L #WHITE,D1                Draw coin pen and fill color
+00001B9E  4E4F                     929       TRAP   #15
+00001BA0  103C 0051                930       MOVE.B #81,D0
+00001BA4  223C 00FFFFFF            931       Move.L #WHITE,D1
+00001BAA  4E4F                     932       TRAP   #15
+00001BAC  103C 0058                933       MOVE.B #88,D0
+00001BB0  0683 0000000B            934       ADD.L #11,D3
+00001BB6  0684 0000000B            935       ADD.L #11,D4
+00001BBC  2203                     936       Move.L D3,D1
+00001BBE  2404                     937       Move.L D4,D2
+00001BC0                           938       
+00001BC0  0683 0000000D            939       ADD.L #13,D3
+00001BC6  0684 0000000D            940       ADD.L #13,D4
+00001BCC  4E4F                     941       TRAP   #15
+00001BCE  4E75                     942       RTS
+00001BD0                           943       
+00001BD0                           944  ;----------------------------------------------------------------DRAW LIFES---------------------------------------------------------------------------
+00001BD0                           945   
+00001BD0                           946  DRAW_LIFES
+00001BD0  223C 00000000            947       move.l  #BLACK,d1   
+00001BD6  103C 0050                948       move.b  #80,d0  set pen color
+00001BDA  4E4F                     949       trap #15     
+00001BDC                           950  
+00001BDC  223C 00000000            951       move.l  #BLACK,d1   
+00001BE2  103C 0051                952       move.b  #81,d0  set fill color
+00001BE6  4E4F                     953       trap #15
+00001BE8                           954      
+00001BE8  720A                     955       move.L  #10,d1    
+00001BEA  243C 00000258            956       move.L  #600,d2  
+00001BF0  2601                     957       move.L  d1,d3  
+00001BF2  2802                     958       move.L  d2,d4
+00001BF4  0683 0000005A            959       add.L  #90,d3
+00001BFA  0684 00000020            960       add.L  #32,d4
+00001C00  103C 0057                961       move.b  #87,d0     draw black filled rectangle
+00001C04  4E4F                     962       trap #15
+00001C06  7E00                     963       MOVE.L #0,D7
+00001C08                           964       
+00001C08  103C 0050                965  REDR MOVE.B #80,D0
+00001C0C  223C 0000FFFF            966       Move.L #YELLOW,D1                Draw player pen and fill color
+00001C12  4E4F                     967       TRAP   #15
+00001C14  103C 0051                968       MOVE.B #81,D0
+00001C18  223C 0000FFFF            969       Move.L #YELLOW ,D1
+00001C1E  4E4F                     970       TRAP   #15
+00001C20                           971       
+00001C20  7A0A                     972       Move.L #10,D5      Player x position
+00001C22  2C3C 00000258            973       Move.L #600,D6      Player y position
+00001C28  7020                     974       move.l #32,d0
+00001C2A  C0C7                     975       MULU   d7,d0
+00001C2C  DA80                     976       ADD.L D0,D5
+00001C2E                           977       
+00001C2E  103C 0058                978       MOVE.B #88,D0                    draw player
+00001C32  2205                     979       MOVE.L D5,D1                       
+00001C34  2406                     980       MOVE.L D6,D2
+00001C36  0685 00000019            981       Add.L #25,D5
+00001C3C  0686 00000019            982       Add.L #25,D6
+00001C42  2605                     983       MOVE.L D5,D3
+00001C44  2806                     984       MOVE.L D6,D4
+00001C46  4E4F                     985       TRAP   #15
+00001C48                           986       
+00001C48  4280                     987       clr.l d0
+00001C4A  103C 0050                988       MOVE.B #80,D0
+00001C4E  223C 00000000            989       Move.L #Black,D1                Black pen and fill color
+00001C54  4E4F                     990       TRAP   #15
+00001C56  103C 0051                991       MOVE.B #81,D0
+00001C5A  223C 00000000            992       Move.L #Black,D1
+00001C60  4E4F                     993       TRAP   #15
+00001C62                           994       
+00001C62  227C 00002026            995       MOVE.L #RIGHT_MOUTH,A1
+00001C68                           996  
+00001C68  103C 0058                997       MOVE.B #88,D0                   draw pacman mouth
+00001C6C  720A                     998       MOVE.L #10,D1
+00001C6E                           999       
+00001C6E  7C20                    1000       move.l #32,d6
+00001C70  CCC7                    1001       MULU   d7,d6
+00001C72  D286                    1002       ADD.L D6,D1
+00001C74                          1003                        
+00001C74  243C 00000258           1004       MOVE.L #600,D2
+00001C7A  2601                    1005       MOVE.L D1,D3                      
+00001C7C  283C 00000258           1006       MOVE.L #600,D4
+00001C82  B3FC 000020A0           1007       CMP.L #$20A0,A1
+00001C88  6E00 F82A               1008       BGT  dd
+00001C8C  D299                    1009       Add.L (A1)+,D1                   
+00001C8E  D499                    1010       Add.L (A1)+,D2
+00001C90  D699                    1011       Add.L (A1)+,D3                 
+00001C92  D891                    1012       Add.L (A1),D4
+00001C94  4E4F                    1013       TRAP   #15
+00001C96  5287                    1014       ADD.L #1,D7
+00001C98                          1015       
+00001C98  BEB9 000020A4           1016       CMP.L LIFE,D7
+00001C9E  6700 0006               1017       BEQ RT
+00001CA2  6000 FF64               1018       BRA REDR
+00001CA6  4E75                    1019  RT   RTS     
+00001CA8                          1020  ;----------------------------------------------------------------CLEAR G_COINS---------------------------------------------------------------------------
+00001CA8                          1021  
+00001CA8                          1022  draw_Gcoin     
+00001CA8  103C 0050               1023       MOVE.B #80,D0
+00001CAC  223C 00808080           1024       Move.L #GRAY,D1                Draw coin pen and fill color
+00001CB2  4E4F                    1025       TRAP   #15
+00001CB4  103C 0051               1026       MOVE.B #81,D0
+00001CB8  223C 00808080           1027       Move.L #GRAY,D1
+00001CBE  4E4F                    1028       TRAP   #15
+00001CC0  103C 0058               1029       MOVE.B #88,D0
+00001CC4  5C83                    1030       ADD.L #6,D3
+00001CC6  5C84                    1031       ADD.L #6,D4
+00001CC8  2203                    1032       Move.L D3,D1
+00001CCA  2404                    1033       Move.L D4,D2
+00001CCC                          1034       
+00001CCC  0683 00000013           1035       ADD.L #19,D3
+00001CD2  0684 00000013           1036       ADD.L #19,D4
+00001CD8  4E4F                    1037       TRAP   #15
+00001CDA  4E75                    1038       RTS
+00001CDC                          1039  ;----------------------------------------------------------------CLEAR PACMAN---------------------------------------------------------------------------
+00001CDC                          1040  
+00001CDC                          1041  clr_pacman    
+00001CDC  223C 00000000           1042      move.l  #BLACK,d1   
+00001CE2  103C 0050               1043      move.b  #80,d0  set pen color
+00001CE6  4E4F                    1044      trap #15     
+00001CE8                          1045  
+00001CE8  223C 00000000           1046      move.l  #BLACK,d1   
+00001CEE  103C 0051               1047      move.b  #81,d0  set fill color
+00001CF2  4E4F                    1048      trap #15
+00001CF4                          1049      
+00001CF4  2239 00002002           1050      move.L  PACMAN_POSITION_X,d1    
+00001CFA  2439 00002006           1051      move.L  PACMAN_POSITION_Y,d2  
+00001D00  2601                    1052      move.L  d1,d3  
+00001D02  2802                    1053      move.L  d2,d4
+00001D04  0683 00000019           1054      add.L  #DPX,d3
+00001D0A  0684 00000019           1055      add.L  #DPX,d4
+00001D10  103C 0057               1056      move.b  #87,d0     draw black filled rectangle
+00001D14  4E4F                    1057      trap #15
+00001D16  4E75                    1058      RTS
+00001D18                          1059      
+00001D18                          1060  clr_ghost   
+00001D18  223C 00000000           1061      move.l  #BLACK,d1   
+00001D1E  103C 0050               1062      move.b  #80,d0  set pen color
+00001D22  4E4F                    1063      trap #15     
+00001D24                          1064  
+00001D24  223C 00000000           1065      move.l  #BLACK,d1   
+00001D2A  103C 0051               1066      move.b  #81,d0  set fill color
+00001D2E  4E4F                    1067      trap #15
+00001D30                          1068      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;A2-A3;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+00001D30  220A                    1069      move.L  A2,d1    
+00001D32  240B                    1070      move.L  A3,d2  
+00001D34                          1071      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+00001D34  2601                    1072      move.L  d1,d3  
+00001D36  2802                    1073      move.L  d2,d4
+00001D38  0683 00000019           1074      add.L  #DPX,d3
+00001D3E  0684 00000019           1075      add.L  #DPX,d4
+00001D44  103C 0057               1076      move.b  #87,d0     draw black filled rectangle
+00001D48  4E4F                    1077      trap #15
+00001D4A                          1078      
+00001D4A  2039 000020B0           1079      MOVE.L LEVEL,D0
+00001D50  5380                    1080      SUB.L #1,D0
+00001D52  207C 00002289           1081      Move.L #MAP,A0
+00001D58  D1C0                    1082      ADD.L D0,A0
+00001D5A  6100 0062               1083      BSR Get_Ghost_Coordinates
+00001D5E  C2FC 0019               1084      MULU #25,D1
+00001D62  D280                    1085      ADD.L D0,D1
+00001D64  D1C1                    1086      ADD.L D1,A0
+00001D66  260A                    1087      move.L  A2,d3   
+00001D68  280B                    1088      move.L  A3,d4
+00001D6A  5583                    1089      SUB.L  #2,d3
+00001D6C  5B84                    1090      SUB.L #5,D4
+00001D6E                          1091      
+00001D6E  0C10 0043               1092      CMP.B #'C',(A0)
+00001D72  6600 0006               1093      BNE TG
+00001D76  6100 FE1C               1094      BSR draw_coin
+00001D7A  0C10 0047               1095  TG  CMP.B #'G',(A0)
+00001D7E  6600 0006               1096      BNE KL 
+00001D82  6100 FF24               1097      BSR draw_Gcoin
+00001D86                          1098      
+00001D86                          1099   
+00001D86  4E75                    1100  KL  RTS            
+00001D88                          1101  ;----------------------------------------------------------------DELAY---------------------------------------------------------------------------------
+00001D88                          1102     
+00001D88                          1103  DELAY ; TIME = D0 SECOND
+00001D88  B03C 0000               1104      CMP.B #0,D0
+00001D8C  6700 0014               1105      BEQ FIN
+00001D90  243C FFFFF000           1106      MOVE.L #$FFFFF000,D2
+00001D96                          1107  LOOP_DELAY
+00001D96  5282                    1108      ADD.L #$01,D2
+00001D98  66FC                    1109      BNE LOOP_DELAY
+00001D9A  0680 FFFFFFFF           1110      ADD.L #$FFFFFFFF,D0
+00001DA0  66E6                    1111      BNE DELAY
+00001DA2                          1112  FIN
+00001DA2  4E75                    1113      RTS
+00001DA4                          1114      
+00001DA4                          1115  ;----------------------------------------------------------------EMPTYING ATE COINS IN MEMORY----------------------------------------------------------
+00001DA4                          1116      
+00001DA4                          1117  Get_Pacman_Coordinates
+00001DA4  2039 0000200A           1118     Move.L NPACMAN_POSITION_X,D0
+00001DAA  2239 0000200E           1119     Move.L NPACMAN_POSITION_Y,D1
+00001DB0  5780                    1120     SUB.L #3,D0
+00001DB2  80FC 0020               1121     DIVU #32,D0
+00001DB6  5B81                    1122     SUB.L #5,D1
+00001DB8  82FC 0020               1123     DIVU #32,D1
+00001DBC  4E75                    1124     RTS
+00001DBE                          1125     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;A2-A3;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+00001DBE                          1126  Get_Ghost_Coordinates
+00001DBE  200A                    1127     Move.L A2,D0
+00001DC0  220B                    1128     Move.L A3,D1
+00001DC2  5780                    1129     SUB.L #3,D0
+00001DC4  80FC 0020               1130     DIVU #32,D0
+00001DC8  5781                    1131     SUB.L #3,D1
+00001DCA  82FC 0020               1132     DIVU #32,D1
+00001DCE  4E75                    1133     RTS
+00001DD0                          1134     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+00001DD0                          1135     
+00001DD0                          1136  Emptying_Ate_Coin
+00001DD0  323C 0003               1137      move    #pacman_eat,d1       ; pacman_eat sound cue
+00001DD4  303C 0048               1138      move    #72,d0               ; play pacman_eat sound
+00001DD8  4E4F                    1139      trap    #15
+00001DDA                          1140  
+00001DDA  207C 00002289           1141      Move.L #MAP,A0
+00001DE0  61C2                    1142      BSR Get_Pacman_Coordinates
+00001DE2                          1143      
+00001DE2  5339 000020E0           1144      SUB.b #1,CoinsNb
+00001DE8  0C39 0000 000020E0      1145      cmp.b #0,coinsnb
+00001DF0                          1146      
+00001DF0  6700 0010               1147      beq WIN
+00001DF4  C2FC 0019               1148      MULU #25,D1
+00001DF8  D280                    1149      ADD.L D0,D1
+00001DFA  D1C1                    1150      ADD.L D1,A0
+00001DFC  10BC 0045               1151      MOVE.B #'E',(A0)
+00001E00  4E75                    1152      RTS
+00001E02                          1153  WIN 
+00001E02  6100 000A               1154      BSR READ_FILE                   read score
+00001E06  6100 002A               1155      BSR Compare_score_highscore     compare and update score
+00001E0A  6000 F240               1156      bra Menu
+00001E0E                          1157   ;----------------------------------------------------------------HighScore---------------------------------------------------------------------------
+00001E0E                          1158  READ_FILE
+00001E0E                          1159      ;;;;;;;;;;;;;Read file;;;;;;;;;;;;;;;;;;;;;
+00001E0E  7033                    1160      move.l  #51,d0          Open file scores.txt
+00001E10  227C 0000227E           1161      move.l  #ScoreFile,A1
+00001E16  4E4F                    1162      trap    #15
+00001E18  2801                    1163      move.l  d1,d4
+00001E1A                          1164      
+00001E1A  7400                    1165      move.l  #0,d2
+00001E1C  7037                    1166      move.l  #55,d0          init cursor position
+00001E1E  4E4F                    1167      trap    #15
+00001E20                          1168      
+00001E20  7404                    1169      move.l  #4,d2           
+00001E22  7035                    1170      move.l  #53,d0          read highscore
+00001E24  227C 000020AC           1171      move.L  #HIGHSCORE ,A1
+00001E2A  4E4F                    1172      trap    #15
+00001E2C  6100 0054               1173      BSR CLOSE_FILE
+00001E30  4E75                    1174      RTS
+00001E32                          1175  
+00001E32                          1176  COMPARE_SCORE_HIGHSCORE
+00001E32  2039 000020AC           1177      move.L  HIGHSCORE,d0
+00001E38  2239 000020A8           1178      move.L  Score,d1
+00001E3E  B240                    1179      CMP d0,d1
+00001E40  6E00 0020               1180      BGT write_highscore
+00001E44  4E75                    1181      RTS
+00001E46                          1182      
+00001E46                          1183  Draw_HighScore
+00001E46  303C 000B               1184      move.w  #11,d0      
+00001E4A  223C 00000213           1185      move.l  #$0213,d1
+00001E50  4E4F                    1186      trap    #15
+00001E52  740A                    1187      move.l  #10,d2  
+00001E54  7200                    1188      move.L  #0,D1
+00001E56  2239 000020AC           1189      move.L  HIGHSCORE,d1            
+00001E5C  700F                    1190      move.l  #15,d0
+00001E5E  4E4F                    1191      trap    #15
+00001E60  4E75                    1192      RTS
+00001E62                          1193      
+00001E62                          1194  WRITE_HIGHSCORE
+00001E62  7033                    1195      move.l  #51,d0      Open file
+00001E64  227C 0000227E           1196      move.l  #ScoreFile,A1
+00001E6A  4E4F                    1197      trap    #15
+00001E6C  2801                    1198      move.l  d1,d4
+00001E6E                          1199      
+00001E6E  7400                    1200      move.l  #0,d2
+00001E70  7037                    1201      move.l  #55,d0      init CURSOR POSITION
+00001E72  4E4F                    1202      trap    #15
+00001E74                          1203      
+00001E74  2204                    1204      move.l  d4,d1
+00001E76  7404                    1205      move.l  #4,d2       nb byste to write   
+00001E78  7036                    1206      move.l  #54,d0      Save score
+00001E7A  227C 000020A8           1207      move.L  #Score,A1   
+00001E80  4E4F                    1208      trap    #15
+00001E82                          1209  
+00001E82                          1210  CLOSE_FILE
+00001E82  2204                    1211      move.l  d4,d1
+00001E84  7032                    1212      move.l  #50,d0      CLOSE FILE
+00001E86  4E4F                    1213      trap    #15
+00001E88  4E75                    1214      RTS
+00001E8A                          1215      
+00001E8A                          1216   ;----------------------------------------------------------------CONSTANTS---------------------------------------------------------------------------
+00001E8A                          1217  
+00001E8A  FFFF FFFF               1218      SIMHALT             ; halt simulator
+00001E8E                          1219  * Put variables and constants here
+00002000                          1220   ORG $2000
+00002000                          1221   
+00002000= 01                      1222  CURRENT_LEVEL dc.b 1
+00002001                          1223  
+00002002= 000000C3                1224  PACMAN_POSITION_X DC.L 195
+00002006= 00000025                1225  PACMAN_POSITION_Y DC.L 37
+0000200A                          1226  NPACMAN_POSITION_X DS.L 1
+0000200E                          1227  NPACMAN_POSITION_Y DS.L 1
+00002012= 55                      1228  PACMAN_MOUTH dc.b %01010101
+00002013= 44 00                   1229  PACMAN_DIRECTION dc.b 'D',0
+00002016= FFFFFFFE 0000000A ...   1230  LEFT_MOUTH dc.L -02,10,09,21     
+00002026= 00000010 00000009 ...   1231  RIGHT_MOUTH dc.L 16,09,28,21    
+00002036= 00000007 FFFFFFFE ...   1232  UP_MOUTH dc.L 07,-02,19,09
+00002046= 00000007 0000000F ...   1233  DOWN_MOUTH dc.L 07,15,19,26
+00002056= 0000000B 0000000A ...   1234  EYES dc.L 11,10,15,14
+00002066= 0000FFFF                1235  PacManColor Dc.l YELLOW 
+0000206A                          1236  
+0000206A= 000002C3                1237  GHOST_POSITION_X DC.L 707
+0000206E= 00000023                1238  GHOST_POSITION_Y DC.L 35
+00002072= 000002C3                1239  NGHOST_POSITION_X DC.L 707
+00002076= 00000023                1240  NGHOST_POSITION_Y DC.L 35
+0000207A                          1241  
+0000207A= 000001E3                1242  GHOST2_POSITION_X DC.L 483
+0000207E= 00000123                1243  GHOST2_POSITION_Y DC.L 291
+00002082= 000001E3                1244  NGHOST2_POSITION_X DC.L 483
+00002086= 00000123                1245  NGHOST2_POSITION_Y DC.L 291
+0000208A                          1246  
+0000208A= 000000C3                1247  GHOST3_POSITION_X DC.L 195
+0000208E= 00000263                1248  GHOST3_POSITION_Y DC.L 611
+00002092= 000000C3                1249  NGHOST3_POSITION_X DC.L 195
+00002096= 00000263                1250  NGHOST3_POSITION_Y DC.L 611
+0000209A                          1251  
+0000209A= 57 00                   1252  GHOST_DIRECTION dc.b 'W',0
+0000209C= 57 00                   1253  GHOST2_DIRECTION dc.b 'W',0
+0000209E= 53 00                   1254  GHOST3_DIRECTION dc.b 'S',0
+000020A0                          1255  
+000020A0= 00000000                1256  Random DC.L 0
+000020A4                          1257  
+000020A4= 00000003                1258  LIFE DC.L 3
+000020A8= 00000000                1259  SCORE DC.L 0
+000020AC= 00000000                1260  HIGHSCORE DC.L 0
+000020B0= 00000001                1261  LEVEL DC.L 1
+000020B4                          1262  BEGIN_L_TIME DS.L 1
+000020B8                          1263  CURRENT_TIME DS.L 1
+000020BC                          1264  BEGIN_G_TIME DS.L 1
+000020C0= 05                      1265  G_TIME DC.B 5
+000020C1                          1266  
+000020C1= 43 75 72 72 65 6E ...   1267  ScoreDisplay    dc.b        'Current Score: ',0
+000020D1= 4C 65 76 65 6C 3A ...   1268  LevelDisplay    dc.b        'Level: ',0
+000020D9= 54 49 4D 45 3A 20 00    1269  TimeDisplay dc.b        'TIME: ',0
+000020E0                          1270  CoinsNb DS.B 1
+000020E1= 94                      1271  CoinsNb_Level1 DC.B 148
+000020E2= DE                      1272  CoinsNb_Level2 DC.B 222
+000020E3                          1273  
+000020E3  =00000020               1274  DX EQU 32
+000020E3  =00000020               1275  DY EQU 32
+000020E3                          1276  
+000020E3  =00000019               1277  DPX EQU 25
+000020E3  =00000019               1278  DPY EQU 25
+000020E3                          1279  
+000020E3  =00000020               1280  BX EQU 32
+000020E3  =00000020               1281  BY EQU 32
+000020E3                          1282  
+000020E3  =04120001               1283  MENU_FONT   equ $04120001
+000020E3  =0000000D               1284  CR      equ    $d
+000020E3  =0000000A               1285  LF      equ    $a
+000020E3                          1286  INSTRUCTIONS    
+000020E3= 0D 0A 0D 0A 0D 0A       1287          dc.b    CR,LF,CR,LF,CR,LF
+000020E9= 20 20 20 20 20 20 ...   1288          dc.b    '               PACMAN',CR,LF,CR,LF
+00002102= 20 20 3D 3D 3D 3D ...   1289          dc.b    '  ======= Pacman movement =======',CR,LF
+00002125= 0D 0A                   1290          dc.b    CR,LF
+00002127= 20 20 20 77 20 2D ...   1291          dc.b    '   w - UP ',CR,LF
+00002133= 20 20 20 64 20 2D ...   1292          dc.b    '   d - RIGHT ',CR,LF
+00002142= 20 20 20 73 20 2D ...   1293          dc.b    '   s - DOWN ',CR,LF
+00002150= 20 20 20 61 20 2D ...   1294          dc.b    '   a - LEFT ',CR,LF
+0000215E= 0D 0A                   1295          dc.b    CR,LF
+00002160= 20 20 3D 3D 3D 3D ...   1296          dc.b    '  ===========START GAME==========',CR,LF
+00002183= 0D 0A                   1297          dc.b    CR,LF
+00002185= 20 20 50 72 65 73 ...   1298          dc.b    '  Press 1 to play level 1',CR,LF
+000021A0= 20 20 50 72 65 73 ...   1299          dc.b    '  Press 2 to play level 2',CR,LF
+000021BB= 0D 0A                   1300          dc.b    CR,LF
+000021BD= 20 20 3D 3D 3D 3D ...   1301          dc.b    '  ============HIGHSCORE==========',CR,LF       
+000021E0= 0D 0A 0D 0A 0D 0A       1302          dc.b    CR,LF,CR,LF,CR,LF
+000021E6= 20 20 3D 3D 3D 3D ...   1303          dc.b    '  ===============================',CR,LF
+00002209= 0D 0A 0D 0A             1304          dc.b    CR,LF,CR,LF
+0000220D= 20 20 4D 61 64 65 ...   1305          dc.b    '  Made by Mohamad Dabboussi and Omar Ahmad',CR,LF,0
+0000223A                          1306      
+0000223A= 70 61 63 6D 61 6E ...   1307  pacman_beginning_wav  dc.b   'pacman_beginning.wav',0    sound file
+0000224F= 70 61 63 6D 61 6E ...   1308  pacman_chomp_wav  dc.b   'pacman_chomp.wav',0            sound file
+00002260= 70 61 63 6D 61 6E ...   1309  pacman_death_wav  dc.b   'pacman_death.wav',0            sound file
+00002271= 70 61 63 73 6F 75 ...   1310  pacman_eat_wav  dc.b   'pacsound.wav',0            sound file
+0000227E  =00000000               1311  pacman_beginning  equ    0      sound cue
+0000227E  =00000001               1312  pacman_chomp  equ    1          sound cue
+0000227E  =00000002               1313  pacman_death  equ    2          sound cue
+0000227E  =00000003               1314  pacman_eat  equ    3          sound cue
+0000227E= 73 63 6F 72 65 73 ...   1315  ScoreFile   dc.b    'scores.txt',0
+00002289                          1316  
+00002289                          1317  
+00002289                          1318  MAP ds.b 525
+00002496                          1319  
+00002496                          1320  MAP_LEVEL_1
+00002496= 45 45 45 45 45 42 ...   1321       DC.B 'EEEEEBBBBBBBBBBBBBBBBBBBE'                01
+000024AF= 45 45 45 45 45 42 ...   1322       DC.B 'EEEEEBECCCCCCCBCCCCCCCCBE'                02
+000024C8= 45 45 45 45 45 42 ...   1323       DC.B 'EEEEEBGBBCBBBCBCBBBCBBGBE'                03
+000024E1= 45 45 45 45 45 42 ...   1324       DC.B 'EEEEEBCCCCCCCCBCCCCCCCCBE'                04
+000024FA= 45 45 45 45 45 42 ...   1325       DC.B 'EEEEEBCBBCBCBBBBBCBCBBCBE'                05
+00002513= 45 45 45 45 45 42 ...   1326       DC.B 'EEEEEBCCCCBCCCBCCCBCCCCBE'                06
+0000252C= 45 45 45 45 45 42 ...   1327       DC.B 'EEEEEBBBBCBBBEBEBBBCBBBBE'                07
+00002545= 45 45 45 45 45 45 ...   1328       DC.B 'EEEEEEEEBCBEEEEEEEBCBEEEE'                08
+0000255E= 45 45 45 45 42 42 ...   1329       DC.B 'EEEEBBBBBCBEBEEEBEBCBBBBB'                09
+00002577= 45 45 45 45 45 45 ...   1330       DC.B 'EEEEEEEEECEEBEEEBEECEEEEE'                10
+00002590= 45 45 45 45 42 42 ...   1331       DC.B 'EEEEBBBBBCBEBBBBBEBCBBBBB'                11
+000025A9= 45 45 45 45 45 45 ...   1332       DC.B 'EEEEEEEEBCBEEEEEEEBCBEEEE'                12
+000025C2= 45 45 45 45 45 42 ...   1333       DC.B 'EEEEEBBBBCBEBBBBBEBCBBBBE'                13
+000025DB= 45 45 45 45 45 42 ...   1334       DC.B 'EEEEEBCCCCCCCCBCCCCCCCCBE'                14
+000025F4= 45 45 45 45 45 42 ...   1335       DC.B 'EEEEEBCBBCBBBCBCBBBCBBCBE'                15
+0000260D= 45 45 45 45 45 42 ...   1336       DC.B 'EEEEEBGCBCCCCCECCCCCBCGBE'                16
+00002626= 45 45 45 45 45 42 ...   1337       DC.B 'EEEEEBBCBCBCBBBBBCBCBCBBE'                17
+0000263F= 45 45 45 45 45 42 ...   1338       DC.B 'EEEEEBCCCCBCCCBCCCBCCCCBE'                18
+00002658= 45 45 45 45 45 42 ...   1339       DC.B 'EEEEEBCBBBBBBCBCBBBBBBCBE'                19
+00002671= 45 45 45 45 45 42 ...   1340       DC.B 'EEEEEBCCCCCCCCCCCCCCCCCBE'                20
+0000268A= 45 45 45 45 45 42 ...   1341       DC.B 'EEEEEBBBBBBBBBBBBBBBBBBBE'                21
+000026A3                          1342  
+000026A3                          1343  MAP_LEVEL_2
+000026A3= 45 45 45 45 45 42 ...   1344       DC.B 'EEEEEBBBBBBBBBBBBBBBBBBBE'                01
+000026BC= 45 45 45 45 45 42 ...   1345       DC.B 'EEEEEBECCCCCCCCCCCCCCCCBE'                02
+000026D5= 45 45 45 45 45 42 ...   1346       DC.B 'EEEEEBCBBBBCBBBBCCBCCCCBE'                03
+000026EE= 45 45 45 45 45 42 ...   1347       DC.B 'EEEEEBCBCCCCBEEBCCBCCCCBE'                04
+00002707= 45 45 45 45 45 42 ...   1348       DC.B 'EEEEEBCBBBCCBBBBCCBCCCCBE'                05
+00002720= 45 45 45 45 45 42 ...   1349       DC.B 'EEEEEBCBCCCCBCCBCCBCCCCBE'                06
+00002739= 45 45 45 45 45 42 ...   1350       DC.B 'EEEEEBCBCCCCBCCBCCBBBBCBE'                07
+00002752= 45 45 45 45 45 42 ...   1351       DC.B 'EEEEEBCCCCCCCCCCCCCCCCCBE'                08
+0000276B= 45 45 45 45 45 42 ...   1352       DC.B 'EEEEEBCCCBBBBCCCBCCBCCCBB'                09
+00002784= 45 45 45 45 45 42 ...   1353       DC.B 'EEEEEBCCCBEEBCCCBCCBCCCBE'                10
+0000279D= 45 45 45 45 45 42 ...   1354       DC.B 'EEEEEBCCCBEEBCCCBCCBCCCBE'                11
+000027B6= 45 45 45 45 45 42 ...   1355       DC.B 'EEEEEBCCCBEEBCCCBCCBCCCBE'                12
+000027CF= 45 45 45 45 45 42 ...   1356       DC.B 'EEEEEBCCCBBBBCCCBBBBCCCBB'                13
+000027E8= 45 45 45 45 45 42 ...   1357       DC.B 'EEEEEBCCCCCCCCCCCCCCCCCBE'                14
+00002801= 45 45 45 45 45 42 ...   1358       DC.B 'EEEEEBCCBBBBCCCBCCCBCCCBE'                15
+0000281A= 45 45 45 45 45 42 ...   1359       DC.B 'EEEEEBCCBEEBCCCBBCBBCCCBE'                16
+00002833= 45 45 45 45 45 42 ...   1360       DC.B 'EEEEEBCCBEEBCCCBCBCBCCCBE'                17
+0000284C= 45 45 45 45 45 42 ...   1361       DC.B 'EEEEEBCCBEEBCCCBCCCBCCCBE'                18
+00002865= 45 45 45 45 45 42 ...   1362       DC.B 'EEEEEBCCBBBBCBCBCCCBCCCBE'                19
+0000287E= 45 45 45 45 45 42 ...   1363       DC.B 'EEEEEBCCCCCCCCCCCCCCCCCBE'                20
+00002897= 45 45 45 45 45 42 ...   1364       DC.B 'EEEEEBBBBBBBBBBBBBBBBBBBE'                21 
+000028B0                          1365  
+000028B0                          1366  
+000028B0  =00000000               1367  BLACK equ $00000000  
+000028B0  =00008000               1368  GREEN equ $00008000   
+000028B0  =00800080               1369  PURPLE equ $00800080 
+000028B0  =00808000               1370  TEAL equ $00808000 
+000028B0  =00808080               1371  GRAY equ $00808080 
+000028B0  =000000FF               1372  RED equ $000000FF 
+000028B0  =0000FF00               1373  LIME equ $0000FF00 
+000028B0  =0000FFFF               1374  YELLOW equ $0000FFFF 
+000028B0  =00FF0000               1375  BLUE equ $00FF0000 
+000028B0  =00FFFFFF               1376  WHITE equ $00FFFFFF 
+000028B0                          1377      END    START        ; last line of source
 
 No errors detected
 No warnings generated
@@ -1385,66 +1393,68 @@ BLACK               0
 BLUE                FF0000
 BX                  20
 BY                  20
-CHECK_COIN          1A0E
-CHECK_DIRECTION_A   1426
-CHECK_DIRECTION_D   1414
-CHECK_DIRECTION_S   144A
-CHECK_DIRECTION_W   1438
-CHECK_EXIT          1660
-CHECK_GHOST         17BE
-CHECK_G_COIN        1A44
-CHECK_P_BLOCK       1682
-CLOSE_FILE          1E5A
-CLR_GHOST           1CF0
-CLR_PACMAN          1CB4
-COI                 136A
-COIN                1AB8
+CHECK_COIN          1A36
+CHECK_DIRECTION_A   144E
+CHECK_DIRECTION_D   143C
+CHECK_DIRECTION_S   1472
+CHECK_DIRECTION_W   1460
+CHECK_EXIT          1688
+CHECK_GHOST         17E6
+CHECK_G_COIN        1A6C
+CHECK_P_BLOCK       16AA
+CLOSE_FILE          1E82
+CLR_GHOST           1D18
+CLR_PACMAN          1CDC
+COI                 1392
+COIN                1AE0
 COINSNB             20E0
-COMPARE_SCORE_HIGHSCORE  1E0A
+COINSNB_LEVEL1      20E1
+COINSNB_LEVEL2      20E2
+COMPARE_SCORE_HIGHSCORE  1E32
 CR                  D
-CTN0                1382
-CTN1                130A
+CTN0                13AA
+CTN1                1332
 CURRENT_LEVEL       2000
 CURRENT_TIME        20B8
-DD                  148C
-DELAY               1D60
+DD                  14B4
+DELAY               1D88
 DOWN_MOUTH          2046
 DPX                 19
 DPY                 19
-DR                  1680
-DRAW_BLOCK          1B3C
-DRAW_COIN           1B6C
-DRAW_GCOIN          1C80
-DRAW_GHOST          1758
-DRAW_GHOST_DESTAILS  1824
-DRAW_GHOST_ON_MAP   17EC
-DRAW_HIGHSCORE      1E1E
-DRAW_LEVEL          1B24
-DRAW_LIFES          1BA8
-DRAW_MAP            1344
-DRAW_PACMAN         13A2
-DRAW_PACMAN_EYES    148E
-DRAW_PACMAN_MOUTH   145C
-DRAW_SCORE          1ABA
-DRAW_TIME           1AFE
+DR                  16A8
+DRAW_BLOCK          1B64
+DRAW_COIN           1B94
+DRAW_GCOIN          1CA8
+DRAW_GHOST          1780
+DRAW_GHOST_DESTAILS  184C
+DRAW_GHOST_ON_MAP   1814
+DRAW_HIGHSCORE      1E46
+DRAW_LEVEL          1B4C
+DRAW_LIFES          1BD0
+DRAW_MAP            136C
+DRAW_PACMAN         13CA
+DRAW_PACMAN_EYES    14B6
+DRAW_PACMAN_MOUTH   1484
+DRAW_SCORE          1AE2
+DRAW_TIME           1B26
 DX                  20
 DY                  20
-E                   17D4
-EAT_GHOST           17B0
-EMPTYING_ATE_COIN   1DA8
-END                 17D6
-EQ                  1A42
-EWQ                 155E
+E                   17FC
+EAT_GHOST           17D8
+EMPTYING_ATE_COIN   1DD0
+END                 17FE
+EQ                  1A6A
+EWQ                 1586
 EYES                2056
-F                   16A8
-FF                  1798
-FFF                 17A6
-FIN                 1D7A
-GCO                 1376
-GET_GHOST_COORDINATES  1D96
-GET_PACMAN_COORDINATES  1D7C
-GET_RANDOM          1910
-GET_TIME            1AEA
+F                   16D0
+FF                  17C0
+FFF                 17CE
+FIN                 1DA2
+GCO                 139E
+GET_GHOST_COORDINATES  1DBE
+GET_PACMAN_COORDINATES  1DA4
+GET_RANDOM          1938
+GET_TIME            1B12
 GHOST2_DIRECTION    209C
 GHOST2_POSITION_X   207A
 GHOST2_POSITION_Y   207E
@@ -1458,25 +1468,25 @@ GRAY                808080
 GREEN               8000
 G_TIME              20C0
 HIGHSCORE           20AC
-INSTRUCTIONS        20E1
-KL                  1D5E
-LC                  1670
+INSTRUCTIONS        20E3
+KL                  1D86
+LC                  1698
 LEFT_MOUTH          2016
 LEVEL               20B0
 LEVELDISPLAY        20D1
 LF                  A
 LIFE                20A4
 LIME                FF00
-LOOP                1490
-LOOP_DELAY          1D6E
-LOOP_DRAW_MAP       1346
-LVL2                1304
-MAP                 2287
-MAP_LEVEL_1         2494
-MAP_LEVEL_2         26A1
+LOOP                14B8
+LOOP_DELAY          1D96
+LOOP_DRAW_MAP       136E
+LVL2                1322
+MAP                 2289
+MAP_LEVEL_1         2496
+MAP_LEVEL_2         26A3
 MENU                104C
 MENU_FONT           4120001
-MOVE_GHOST          1A08
+MOVE_GHOST          1A30
 NGHOST2_POSITION_X  2082
 NGHOST2_POSITION_Y  2086
 NGHOST3_POSITION_X  2092
@@ -1487,55 +1497,55 @@ NPACMAN_POSITION_X  200A
 NPACMAN_POSITION_Y  200E
 PACMANCOLOR         2066
 PACMAN_BEGINNING    0
-PACMAN_BEGINNING_WAV  2238
+PACMAN_BEGINNING_WAV  223A
 PACMAN_CHOMP        1
-PACMAN_CHOMP_WAV    224D
+PACMAN_CHOMP_WAV    224F
 PACMAN_DEATH        2
-PACMAN_DEATH_WAV    225E
+PACMAN_DEATH_WAV    2260
 PACMAN_DIRECTION    2013
 PACMAN_EAT          3
-PACMAN_EAT_WAV      226F
+PACMAN_EAT_WAV      2271
 PACMAN_MOUTH        2012
 PACMAN_POSITION_X   2002
 PACMAN_POSITION_Y   2006
-PUR                 178E
+PUR                 17B6
 PURPLE              800080
 RANDOM              20A0
-READ_FILE           1DE6
+READ_FILE           1E0E
 RED                 FF
-REDR                1BE0
-RESET_GHOST_POSITION  1740
-RESET_MAP           131C
-RESET_POSITION      16AA
-RESET_TIME          1AF4
-RES_MAP             1322
+REDR                1C08
+RESET_GHOST_POSITION  1768
+RESET_MAP           1344
+RESET_POSITION      16D2
+RESET_TIME          1B1C
+RES_MAP             134A
 RIGHT_MOUTH         2026
-RT                  1C7E
+RT                  1CA6
 SCORE               20A8
 SCOREDISPLAY        20C1
-SCOREFILE           227C
-SK                  1A62
-SKIP                1592
+SCOREFILE           227E
+SK                  1A8A
+SKIP                15BA
 START               1000
 STARTG              1268
 STRT                1246
 TEAL                808000
-TG                  1D52
+TG                  1D7A
 TIMEDISPLAY         20D9
-TRY_DOWN            19AC
-TRY_LEFT            19DA
-TRY_MOVE            18EE
-TRY_RIGHT           197E
-TRY_UP              1954
+TRY_DOWN            19D4
+TRY_LEFT            1A02
+TRY_MOVE            1916
+TRY_RIGHT           19A6
+TRY_UP              197C
 UP_MOUTH            2036
 WAIT_START          121A
 WHITE               FFFFFF
-WIN                 1DDA
-WRITE_HIGHSCORE     1E3A
+WIN                 1E02
+WRITE_HIGHSCORE     1E62
 YELLOW              FFFF
 _00000000           1232
 _00000001           1244
-_00000002           14EA
-_00000003           150C
-_00000004           152E
-_00000005           1550
+_00000002           1512
+_00000003           1534
+_00000004           1556
+_00000005           1578
