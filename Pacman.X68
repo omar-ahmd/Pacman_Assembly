@@ -1,8 +1,8 @@
  *-----------------------------------------------------------
-* Title      :
+* Title      : PACMAN GAME
 * Written by :
-* Date       :
-* Description:
+* Date       : 1-1-2021
+* Description: 
 *-----------------------------------------------------------
     ORG    $1000   
 START:                  ; first instruction of program
@@ -36,7 +36,7 @@ START:                  ; first instruction of program
     move    #pacman_eat,d1     sound cue
     move    #71,d0
     trap    #15
-    
+  
 MENU
     move.b  #11,D0
     move.w  #$FF00,D1
@@ -47,7 +47,7 @@ MENU
     move.l  #BLACK,d1
     move.b  #81,d0  set fill color
     trap #15
-    
+ 
 * draw ghost
      MOVE.B #80,D0
      Move.L #Red,D1                Black pen and fill color
@@ -71,7 +71,7 @@ MENU
 
      MOVE.B #88,D0                   draw ghost 1 details 1ST LEG
      MOVE.L #615,D1                      
-     MOVE.L #360,D2
+     MOVE.L #375,D2
      MOVE.L #645,D3                       
      MOVE.L #450,D4                  
      TRAP   #15
@@ -82,17 +82,15 @@ MENU
      TRAP   #15
      
      MOVE.B #88,D0                   draw ghost 1 details 1st eye
-     MOVE.L #615,D1                      
+     MOVE.L #617,D1                      
      MOVE.L #310,D2
-     MOVE.L #635,D3                       
+     MOVE.L #638,D3                       
      MOVE.L #345,D4 
      TRAP   #15
      
      MOVE.B #88,D0                   draw ghost 1 details 2nd eye
-     MOVE.L A2,D1                      
-     MOVE.L A2,D3                       
-     Add.L #15,D1                   
-     Add.L #23,D3                 
+     MOVE.L #662,D1                      
+     MOVE.L #683,D3                 
      TRAP   #15
      
           MOVE.B #80,D0
@@ -103,22 +101,16 @@ MENU
      TRAP   #15
      
           MOVE.B #88,D0                   draw ghost 1 details 1st eye pupil
-     MOVE.L A2,D1                      
-     MOVE.L A3,D2
-     MOVE.L A2,D3                       
-     MOVE.L A3,D4 
-     Add.L #5,D1                   
-     Add.L #3,D2
-     Add.L #7,D3                 
-     Add.L #7,D4
+     MOVE.L #622,D1                      
+     MOVE.L #310,D2
+     MOVE.L #633,D3                       
+     MOVE.L #325,D4 
      TRAP   #15
 
     
           MOVE.B #88,D0                   draw ghost 1 details 2nd eye pupil
-     MOVE.L A2,D1                      
-     MOVE.L A2,D3                        
-     Add.L #18,D1                   
-     Add.L #20,D3                 
+     MOVE.L #667,D1                      
+     MOVE.L #678,D3                                       
      TRAP   #15
 
 
@@ -167,8 +159,18 @@ MENU
     move.b  #21,d0              ; set font
     trap    #15
     lea     INSTRUCTIONS,a1
-    move.b  #14,d0              ; display string
+    move.L  #14,d0              ; display string
     trap    #15
+    
+    BSR READ_FILE
+	BSR Draw_HighScore
+
+    move.l		#11,d0			
+	move.l		#$9999,d1			
+	trap		#15
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 WAIT_START  
      ;MOVE.B #19,D0 
      ;MOVE.L #$20,D1
@@ -188,7 +190,7 @@ WAIT_START
      bra WAIT_START
 strt
     move.b  #11,D0
-    move.w  #$FF00,D1
+    move.L  #$0000FF00,D1
     trap    #15                 ; clear screen
     move.l  #White,d1
     move.l  #$01090000,d2
@@ -282,7 +284,10 @@ Ctn0 ADDQ #1,D6
 
 
 ;----------------------------------------------------------------Draw PACMAN---------------------------------------------------------------------------
-    
+        move.b	#17,D1
+	move.l	#92,D0
+	trap	#15
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;buffer;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 draw_Pacman
      
      MOVE.B #80,D0
@@ -588,6 +593,10 @@ CHECK_GHOST
 e   RTS
 
 END
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    BSR READ_FILE                   read score
+    BSR Compare_score_highscore     compare and update score
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
      move    #pacman_death,d1     ; pacman_death sound cue
      move    #72,d0               ; play pacman_death sound
      trap    #15
@@ -1119,22 +1128,84 @@ Get_Ghost_Coordinates
    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
    
 Emptying_Ate_Coin
+    move    #pacman_eat,d1       ; pacman_eat sound cue
+    move    #72,d0               ; play pacman_eat sound
+    trap    #15
 
     Move.L #MAP,A0
     BSR Get_Pacman_Coordinates
     
     SUB.b #1,CoinsNb
     cmp.b #0,coinsnb
-    move    #pacman_eat,d1       ; pacman_eat sound cue
-    move    #72,d0               ; play pacman_eat sound
-    trap    #15
-    beq Menu
+    
+    beq WIN
     MULU #25,D1
     ADD.L D0,D1
     ADD.L D1,A0
     MOVE.B #'E',(A0)
     RTS
-    
+WIN 
+    BSR READ_FILE                   read score
+    BSR Compare_score_highscore     compare and update score
+    bra Menu
+ ;----------------------------------------------------------------HighScore---------------------------------------------------------------------------
+READ_FILE
+    ;;;;;;;;;;;;;Read file;;;;;;;;;;;;;;;;;;;;;
+    move.l	#51,d0		    Open file scores.txt
+	move.l	#ScoreFile,A1
+	trap	#15
+	move.l	d1,d4
+	
+    move.l	#0,d2
+	move.l	#55,d0		    init cursor position
+	trap	#15
+	
+	move.l	#4,d2			
+	move.l	#53,d0		    read highscore
+	move.L	#HIGHSCORE ,A1
+	trap	#15
+	BSR CLOSE_FILE
+    RTS
+
+COMPARE_SCORE_HIGHSCORE
+	move.L	HIGHSCORE,d0
+	move.L	Score,d1
+	CMP	d0,d1
+	BGT	write_highscore
+	RTS
+	
+Draw_HighScore
+    move.w	#11,d0		
+	move.l	#$0213,d1
+	trap	#15
+    move.l	#10,d2	
+    move.L  #0,D1
+    move.L	HIGHSCORE,d1			
+	move.l	#15,d0
+	trap	#15
+	RTS
+	
+WRITE_HIGHSCORE
+    move.l	#51,d0		Open file
+	move.l	#ScoreFile,A1
+	trap	#15
+	move.l	d1,d4
+	
+    move.l	#0,d2
+	move.l	#55,d0		init CURSOR POSITION
+	trap	#15
+	
+	move.l	d4,d1
+	move.l	#4,d2		nb byste to write	
+	move.l	#54,d0		Save score
+	move.L	#Score,A1	
+	trap	#15
+
+CLOSE_FILE
+    move.l	d4,d1
+	move.l	#50,d0		CLOSE FILE
+	trap	#15
+	RTS
     
  ;----------------------------------------------------------------CONSTANTS---------------------------------------------------------------------------
 
@@ -1180,6 +1251,7 @@ Random DC.L 0
 
 LIFE DC.L 3
 SCORE DC.L 0
+HIGHSCORE DC.L 0
 LEVEL DC.L 1
 BEGIN_L_TIME DS.L 1
 CURRENT_TIME DS.L 1
@@ -1207,14 +1279,22 @@ INSTRUCTIONS
         dc.b    CR,LF,CR,LF,CR,LF
         dc.b    '               PACMAN',CR,LF,CR,LF
         dc.b    '  ======= Pacman movement =======',CR,LF
+        dc.b    CR,LF
         dc.b    '   w - UP ',CR,LF
         dc.b    '   d - RIGHT ',CR,LF
         dc.b    '   s - DOWN ',CR,LF
         dc.b    '   a - LEFT ',CR,LF
+        dc.b    CR,LF
+        dc.b    '  ===========START GAME==========',CR,LF
+        dc.b    CR,LF
+        dc.b    '  Press 1 to play level 1',CR,LF
+        dc.b    '  Press 2 to play level 2',CR,LF
+        dc.b    CR,LF
+        dc.b    '  ============HIGHSCORE==========',CR,LF       
+        dc.b    CR,LF,CR,LF,CR,LF
         dc.b    '  ===============================',CR,LF
         dc.b    CR,LF,CR,LF
-        dc.b    '  Press 1 to play level 1',CR,LF
-        dc.b    '  Press 2 to play level 2',CR,LF,0
+        dc.b    '  Made by Mohamad Dabboussi and Omar Ahmad',CR,LF,0
     
 pacman_beginning_wav  dc.b   'pacman_beginning.wav',0    sound file
 pacman_chomp_wav  dc.b   'pacman_chomp.wav',0            sound file
@@ -1224,9 +1304,10 @@ pacman_beginning  equ    0      sound cue
 pacman_chomp  equ    1          sound cue
 pacman_death  equ    2          sound cue
 pacman_eat  equ    3          sound cue
+ScoreFile	dc.b	'scores.txt',0
+
 
 MAP ds.b 525
-
 
 MAP_LEVEL_1
      DC.B 'EEEEEBBBBBBBBBBBBBBBBBBBE'                01
@@ -1286,6 +1367,7 @@ YELLOW equ $0000FFFF
 BLUE equ $00FF0000 
 WHITE equ $00FFFFFF 
     END    START        ; last line of source
+
 
 
 
